@@ -36,6 +36,12 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    MainScreen()
+                }
                 Scaffold(
                     bottomBar = {
                         BottomBar(
@@ -52,12 +58,6 @@ class MainActivity : ComponentActivity() {
                     }
                 ) {
                     MyNavGraph(navController = navController)
-                }
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    MainScreen()
                 }
             }
         }
