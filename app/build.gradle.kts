@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "hci.app"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "hci.app"
