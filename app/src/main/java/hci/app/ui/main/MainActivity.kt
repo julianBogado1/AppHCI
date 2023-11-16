@@ -19,12 +19,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import ar.edu.itba.example.api.ui.main.MainViewModel
 import hci.app.BottomBar
 import hci.app.MyNavGraph
 import hci.app.R
 import hci.app.ui.theme.TPETheme
-import hci.app.util.getViewModelFactory
+//import hci.app.util.getViewModelFactory
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
@@ -87,16 +86,18 @@ fun ActionButton(
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = viewModel(factory = getViewModelFactory())
+    /*viewModel: MainViewModel = viewModel(factory = getViewModelFactoFry())*/
 ) {
-    val uiState = viewModel.uiState
+    //val uiState = viewModel.uiState
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-        if (!uiState.isAuthenticated) {
+
+
+        /*if (!uiState.isAuthenticated) {
             ActionButton(
                 resId = R.string.login,
                 onClick = {
@@ -193,5 +194,6 @@ fun MainScreen(
                 )
             }
         }
+    */
     }
 }

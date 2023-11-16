@@ -10,7 +10,7 @@ import java.util.*
 
 object RetrofitClient {
 
-    @Volatile
+    /*@Volatile
     private var instance: Retrofit? = null
 
     private fun getInstance(context: Context): Retrofit =
@@ -44,5 +44,5 @@ object RetrofitClient {
 
     fun getApiSportService(context: Context): ApiSportService {
         return getInstance(context).create(ApiSportService::class.java)
-    }
+    }*/
 }
