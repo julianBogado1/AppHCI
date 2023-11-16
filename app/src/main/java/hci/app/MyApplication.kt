@@ -7,7 +7,7 @@ import hci.app.util.SessionManager
 
 
 class MyApplication : Application() {
-
+/*
     private val database : MyDatabase
         get() = MyDatabase.getInstance(this)
 
@@ -27,5 +27,5 @@ class MyApplication : Application() {
         get() = UserRepository(userRemoteDataSource)
 
     val sportRepository: SportRepository
-        get() = SportRepository(sportLocalDataSource, sportRemoteDataSource)
+        get() = SportRepository(sportLocalDataSource, sportRemoteDataSource)*/
 }

@@ -14,10 +14,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import ar.edu.itba.example.api.ui.main.MainViewModel
 import hci.app.R
 import hci.app.ui.theme.TPETheme
-import hci.app.util.getViewModelFactory
+//import hci.app.util.getViewModelFactory
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
@@ -58,16 +57,18 @@ fun ActionButton(
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = viewModel(factory = getViewModelFactory())
+    /*viewModel: MainViewModel = viewModel(factory = getViewModelFactoFry())*/
 ) {
-    val uiState = viewModel.uiState
+    //val uiState = viewModel.uiState
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-        if (!uiState.isAuthenticated) {
+
+
+        /*if (!uiState.isAuthenticated) {
             ActionButton(
                 resId = R.string.login,
                 onClick = {
@@ -164,5 +165,6 @@ fun MainScreen(
                 )
             }
         }
+    */
     }
 }
