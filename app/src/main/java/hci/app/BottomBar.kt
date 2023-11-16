@@ -2,9 +2,13 @@ package hci.app
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import hci.app.ui.theme.Green
+import hci.app.ui.theme.GreenGhost
+import hci.app.ui.theme.GreenLime
 
 @Composable
 fun BottomBar(
@@ -17,14 +21,17 @@ fun BottomBar(
         Screen.SettingsScreen
     )
 
-    NavigationBar {
+    NavigationBar(
+        containerColor = GreenGhost,
+
+    ) {
         items.forEach { item ->
             NavigationBarItem(
-                icon = { Icon(imageVector = item.icon, contentDescription = item.title) },
+                icon = { Icon(imageVector = item.icon, contentDescription = item.title)},
                 label = { Text(text = item.title) },
                 alwaysShowLabel = true,
                 selected = currentRoute == item.route,
-                onClick = { onNavigateToRoute(item.route) }
+                onClick = { onNavigateToRoute(item.route) },
             )
         }
     }
