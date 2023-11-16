@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import hci.app.ui.theme.TPETheme
+import hci.app.Composables.PlainBottomNavBar
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +23,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    var navBar = PlainBottomNavBar()
+                    navBar.PlainBottomAppBar()
                 }
             }
         }
@@ -37,10 +39,19 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     )
 }
 
-@Preview(showBackground = true)
+
 @Composable
 fun GreetingPreview() {
     TPETheme {
         Greeting("Android")
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AppPreview() {
+    TPETheme {
+        var navBar = PlainBottomNavBar()
+        navBar.PlainBottomAppBar()
     }
 }
