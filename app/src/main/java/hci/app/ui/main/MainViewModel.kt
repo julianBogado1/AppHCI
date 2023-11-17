@@ -12,6 +12,7 @@ import hci.app.data.repository.UserRepository
 import hci.app.util.SessionManager
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import hci.app.data.model.Error
 
 class MainViewModel(
     sessionManager: SessionManager,
@@ -89,15 +90,15 @@ class MainViewModel(
         }.onSuccess { response ->
             uiState = updateState(uiState, response).copy(isFetching = false)
         }.onFailure { e ->
-            uiState = uiState.copy(isFetching = false, error = Error(e))    //handleError(e)) iria aca todo
+            uiState = uiState.copy(isFetching = false, error = handleError(e))    //handleError(e)) iria aca todo
         }
     }
 
-    /*private fun handleError(e: Throwable): Error {
+    private fun handleError(e: Throwable): Error {
         return if (e is DataSourceException) {
             Error(e.code, e.message ?: "", e.details)
         } else {
             Error(null, e.message ?: "", null)
         }
-    }*/
+    }
 }

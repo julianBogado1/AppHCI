@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">TPE</string>
+    <!-- Nombres de los botones y el mensaje que muestran !-->
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="get_current_user">Get current user</string>
+    <string name="get_all_sports">Get all sports</string>
+    <string name="get_current_sport">Get current sport</string>
+    <string name="add_sport">Add sport</string>
+    <string name="delete_sport">Delete sport</string>
+    <string name="modify_sport">Modify sport</string>
+
 </resources>

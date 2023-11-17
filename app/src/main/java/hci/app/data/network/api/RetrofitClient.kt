@@ -2,6 +2,7 @@ package hci.app.data.network.api
 
 import android.content.Context
 import com.google.gson.GsonBuilder
+import hci.app.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -32,7 +33,7 @@ object RetrofitClient {
             .create()
 
         return Retrofit.Builder()
-            //.baseUrl(buildConfig.API_BASE_URL)
+            .baseUrl(BuildConfig.API_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(okHttpClient)
             .build()

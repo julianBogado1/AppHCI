@@ -28,13 +28,13 @@ import hci.app.BottomBar
 import hci.app.MyNavGraph
 import hci.app.R
 import hci.app.composables.MyTextField
+import hci.app.data.model.Sport
 import hci.app.ui.theme.TPETheme
-//import hci.app.util.getViewModelFactory
+import hci.app.util.getViewModelFactory
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -46,9 +46,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    //MainScreen()
+                    MainScreen()
                 }
-                Scaffold(
+                /*Scaffold(
 
                     bottomBar = {
                         BottomBar(
@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                     }
                 ) {
                     MyNavGraph(navController = navController)
-                }
+                }*/
             }
         }
     }
@@ -90,10 +90,10 @@ fun ActionButton(
         )
     }
 }
-/*
+
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = viewModel(factory = getViewModelFactoFry())
+    viewModel: MainViewModel = viewModel(factory = getViewModelFactory())
 ) {
     val uiState = viewModel.uiState
 
@@ -102,8 +102,6 @@ fun MainScreen(
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-
-
         if (!uiState.isAuthenticated) {
             ActionButton(
                 resId = R.string.login,
@@ -201,9 +199,8 @@ fun MainScreen(
                 )
             }
         }
-
     }
-}*/
+}
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -221,7 +218,7 @@ fun MyTextFieldPreview() {
             MyTextField(
                 value = "Nombre de usuario"
             )
-            //MainScreen()
+            MainScreen()
         }
 
     }

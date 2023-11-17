@@ -2,6 +2,7 @@ package hci.app.ui.main
 
 import hci.app.data.model.Sport
 import hci.app.data.model.User
+import hci.app.data.model.Error
 
 
 data class MainUiState(
