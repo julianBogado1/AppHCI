@@ -17,25 +17,52 @@ data class Rutina(
     val description: String,
     val rating: Int,
     val duration: Int,
+    val dUnit: String,
+    val cicles: List<Cicle>
+)
+
+data class Cicle(
+    val name: String,
+    val number: Int,
+    val rep: Int,
+    val ejs: List<Ejercicio>
+)
+
+data class Ejercicio(
+    val name: String,
+    val description: String,
+    val series: Int,
+    val duration: Int,
     val dUnit: String
 )
 
 @Composable
 fun MyListScreen() {
+    val excicle =listOf(
+        Cicle(
+            name = "Ejercitación",
+            number = 1,
+            rep = 3,
+            ejs = listOf(
+                Ejercicio("Squats", "Leg workout", 3, 30, "s"),
+                Ejercicio("Push-ups", "Upper body workout", 3, 20, "s"),
+            )
+        ))
+
     val rutineList = remember {
         listOf(
-            Rutina("Rutina 1", "Desc 1", 2, 12, "min"),
-            Rutina("Rutina 2", "Desc 2", 3, 9, "min"),
-            Rutina("Rutina 3", "Desc 3", 2, 15, "min"),
-            Rutina("Rutina 1", "Desc 1", 2, 12, "min"),
-            Rutina("Rutina 2", "Desc 2", 3, 9, "min"),
-            Rutina("Rutina 3", "Desc 3", 2, 15, "min"),
-            Rutina("Rutina 1", "Desc 1", 2, 12, "min"),
-            Rutina("Rutina 2", "Desc 2", 3, 9, "min"),
-            Rutina("Rutina 3", "Desc 3", 2, 15, "min"),
-            Rutina("Rutina 1", "Desc 1", 2, 12, "min"),
-            Rutina("Rutina 2", "Desc 2", 3, 9, "min"),
-            Rutina("Rutina 3", "Desc 3", 2, 15, "min")
+            Rutina("Rutina 1", "Desc 1", 2, 12, "min",excicle),
+            Rutina("Rutina 2", "Desc 2", 3, 9, "min",excicle),
+            Rutina("Rutina 3", "Desc 3", 2, 15, "min",excicle),
+            Rutina("Rutina 1", "Desc 1", 2, 12, "min",excicle),
+            Rutina("Rutina 2", "Desc 2", 3, 9, "min",excicle),
+            Rutina("Rutina 3", "Desc 3", 2, 15, "min",excicle),
+            Rutina("Rutina 1", "Desc 1", 2, 12, "min",excicle),
+            Rutina("Rutina 2", "Desc 2", 3, 9, "min",excicle),
+            Rutina("Rutina 3", "Desc 3", 2, 15, "min",excicle),
+            Rutina("Rutina 1", "Desc 1", 2, 12, "min",excicle),
+            Rutina("Rutina 2", "Desc 2", 3, 9, "min",excicle),
+            Rutina("Rutina 3", "Desc 3", 2, 15, "min",excicle)
         )
     }
 
