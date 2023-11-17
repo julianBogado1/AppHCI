@@ -34,6 +34,7 @@ import hci.app.util.getViewModelFactory
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +49,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     MainScreen()
                 }
-                /*Scaffold(
+                Scaffold(
 
                     bottomBar = {
                         BottomBar(
@@ -65,7 +66,7 @@ class MainActivity : ComponentActivity() {
                     }
                 ) {
                     MyNavGraph(navController = navController)
-                }*/
+                }
             }
         }
     }
@@ -203,6 +204,7 @@ fun MainScreen(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Preview
 @Composable
