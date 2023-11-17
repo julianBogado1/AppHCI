@@ -5,14 +5,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,6 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import hci.app.BottomBar
 import hci.app.MyNavGraph
 import hci.app.R
+import hci.app.composables.MyTextField
 import hci.app.ui.theme.TPETheme
 //import hci.app.util.getViewModelFactory
 import kotlin.random.Random
@@ -40,9 +46,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen()
+                    //MainScreen()
                 }
                 Scaffold(
+
                     bottomBar = {
                         BottomBar(
                             currentRoute = currentRoute
@@ -83,12 +90,12 @@ fun ActionButton(
         )
     }
 }
-
+/*
 @Composable
 fun MainScreen(
-    /*viewModel: MainViewModel = viewModel(factory = getViewModelFactoFry())*/
+    viewModel: MainViewModel = viewModel(factory = getViewModelFactoFry())
 ) {
-    //val uiState = viewModel.uiState
+    val uiState = viewModel.uiState
 
     Column(
         modifier = Modifier
@@ -97,7 +104,7 @@ fun MainScreen(
     ) {
 
 
-        /*if (!uiState.isAuthenticated) {
+        if (!uiState.isAuthenticated) {
             ActionButton(
                 resId = R.string.login,
                 onClick = {
@@ -194,6 +201,46 @@ fun MainScreen(
                 )
             }
         }
-    */
+
     }
+}*/
+
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Preview
+@Composable
+fun MyTextFieldPreview() {
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Column {
+            MyTextField(
+                value = "Nombre de usuario"
+            )
+            //MainScreen()
+        }
+
+    }
+    Scaffold(
+        bottomBar = {
+            BottomBar(
+                currentRoute = currentRoute
+            ) { route ->
+                navController.navigate(route) {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
+        }
+    ) {
+        MyNavGraph(navController = navController)
+    }
+
 }

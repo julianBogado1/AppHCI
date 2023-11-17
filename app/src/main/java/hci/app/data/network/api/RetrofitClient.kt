@@ -10,7 +10,7 @@ import java.util.*
 
 object RetrofitClient {
 
-    /*@Volatile
+    @Volatile
     private var instance: Retrofit? = null
 
     private fun getInstance(context: Context): Retrofit =
@@ -32,7 +32,7 @@ object RetrofitClient {
             .create()
 
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.API_BASE_URL)
+            //.baseUrl(buildConfig.API_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(okHttpClient)
             .build()
@@ -44,5 +44,5 @@ object RetrofitClient {
 
     fun getApiSportService(context: Context): ApiSportService {
         return getInstance(context).create(ApiSportService::class.java)
-    }*/
+    }
 }

@@ -18,6 +18,29 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        buildTypes {
+            release {
+                isMinifyEnabled = false
+                proguardFiles(
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
+                )
+                // No usar localhost o la IP 127.0.0.1 porque es la interfaz de loopback
+                // del emulador. La forma de salir del emulador para acceder al localhost
+                // de host del mismo es usando la IP 10.0.2.2.
+                buildConfigField("String", "API_BASE_URL",
+                    "\"http://10.0.2.2:8080/api/\"")
+            }
+            debug {
+                debug {
+                    // No usar localhost o la IP 127.0.0.1 porque es la interfaz de loopback
+                    // del emulador. La forma de salir del emulador para acceder al localhost
+                    // de host del mismo es usando la IP 10.0.2.2.
+                    buildConfigField("String", "API_BASE_URL",
+                        "\"http://10.0.2.2:8080/api/\"")
+                }
+            }
+        }
     }
 
     buildTypes {
@@ -38,6 +61,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
@@ -61,7 +85,7 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3:material3:1.2.0-alpha09")
     implementation("com.google.firebase:firebase-crashlytics-buildtools:2.9.9")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -79,7 +103,6 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
     implementation ("com.google.code.gson:gson:2.8.6")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
