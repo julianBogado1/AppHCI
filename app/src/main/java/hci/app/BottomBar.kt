@@ -27,8 +27,8 @@ fun BottomBar(
     ) {
         items.forEach { item ->
             NavigationBarItem(
-                icon = { Icon(imageVector = item.icon, contentDescription = item.title)},
-                label = { Text(text = item.title) },
+                icon = { Icon(imageVector = item.icon, contentDescription = getTitle(item.titleId))},
+                label = { Text(text = getTitle(item.titleId)) },
                 alwaysShowLabel = true,
                 selected = currentRoute == item.route,
                 onClick = { onNavigateToRoute(item.route) },
