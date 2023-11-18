@@ -5,6 +5,7 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
+import hci.app.MyApplication
 import hci.app.data.repository.SportRepository
 import hci.app.data.repository.UserRepository
 import hci.app.ui.main.MainViewModel
@@ -29,4 +30,6 @@ class ViewModelFactory constructor(
                 throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }
     } as T
+
+
 }

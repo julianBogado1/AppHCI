@@ -40,10 +40,17 @@ class MainViewModel(
         }
     )
 
-    fun getCurrentUser() = runOnViewModelScope(
+    /*fun getCurrentUser() = runOnViewModelScope(
         { userRepository.getCurrentUser(uiState.currentUser == null) },
         { state, response -> state.copy(currentUser = response) }
-    )
+    )*/
+
+    fun getCurrentUser(){
+        viewModelScope.launch{
+            uiState = uiState.copy(isLoading = true)
+
+        }
+    }
 
     fun getSports() = runOnViewModelScope(
         { sportRepository.getSports(true) },
