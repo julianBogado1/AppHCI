@@ -14,7 +14,7 @@ import hci.app.data.model.Routine
 
 @Composable
 fun RoutinesScreen() {
-    val rutineList = remember {
+    val routineList = remember {
         listOf(
             Routine("Rutina 1", "Desc 1", 2, 12, "min"),
             Routine("Rutina 2", "Desc 2", 3, 9, "min"),
@@ -33,8 +33,8 @@ fun RoutinesScreen() {
 
     LazyColumn(
     ) {
-        items(rutineList.size) { index ->
-            val item = rutineList[index]
+        items(routineList.size) { index ->
+            val item = routineList[index]
             ListItemComponent(item = item)
         }
     }
