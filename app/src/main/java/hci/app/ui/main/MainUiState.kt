@@ -11,9 +11,11 @@ data class MainUiState(
     val currentUser: User? = null,
     val sports: List<Sport>? = null,
     val currentSport: Sport? = null,
-    val error: Error? = null
+    val error: Error? = null,
+    val isLoading: Boolean = false
 )
 
+val MainUiState.hasError: Boolean get() = error != null
 val MainUiState.canGetCurrentUser: Boolean get() = isAuthenticated
 val MainUiState.canGetAllSports: Boolean get() = isAuthenticated
 val MainUiState.canGetCurrentSport: Boolean get() = isAuthenticated && currentSport != null

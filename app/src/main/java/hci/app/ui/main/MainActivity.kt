@@ -2,6 +2,7 @@ package hci.app.ui.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
@@ -48,7 +49,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     MainScreen()
-                }
+                }/*
                 Scaffold(
 
                     bottomBar = {
@@ -66,7 +67,7 @@ class MainActivity : ComponentActivity() {
                     }
                 ) {
                     MyNavGraph(navController = navController)
-                }
+                }*/
             }
         }
     }
@@ -97,25 +98,29 @@ fun MainScreen(
     viewModel: MainViewModel = viewModel(factory = getViewModelFactory())
 ) {
     val uiState = viewModel.uiState
-
+    if(!viewModel.uiState.isLoading) {
+        Log.d("USER", viewModel.uiState.currentUser.toString())
+        Log.d("AUTH", uiState.isAuthenticated.toString())
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-        if (!uiState.isAuthenticated) {
+        //if (!uiState.isAuthenticated) {
             ActionButton(
                 resId = R.string.login,
                 onClick = {
                     viewModel.login("johndoe", "1234567890")
                 })
-        } else {
+        /*} else {
+
             ActionButton(
                 resId = R.string.logout,
                 onClick = {
                     viewModel.logout()
                 })
-        }
+        }*/
 
         ActionButton(
             resId = R.string.get_current_user,
