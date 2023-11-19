@@ -1,5 +1,6 @@
 package hci.app.Composables
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -78,6 +79,25 @@ fun MyLoginScreen(viewModel : MainViewModel) {
             colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
             fontWeight = FontWeight.Bold,
             onClick = {viewModel.login(username.value.text, password.value.text)},
+        )
+        ActionButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+            colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
+            fontWeight = FontWeight.Bold,
+            resId = R.string.logout,
+            onClick = {
+                var routines = viewModel.getRoutines()
+                Log.d("rutinas?", routines.toString())
+                var text = ""
+                for (routine in routines) {
+                    for (routineContentIt in routine.content) {
+                        text += (routineContentIt.name + " ")
+                    }
+                }
+                Log.d("SARACATUNGA-TEXT", text)
+            }
         )
     }
 }
