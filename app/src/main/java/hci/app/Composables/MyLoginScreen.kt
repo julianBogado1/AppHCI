@@ -88,15 +88,16 @@ fun MyLoginScreen(viewModel : MainViewModel) {
             fontWeight = FontWeight.Bold,
             resId = R.string.logout,
             onClick = {
-                var routines = viewModel.getRoutines()
-                Log.d("rutinas?", routines.toString())
-                var text = ""
-                for (routine in routines) {
-                    for (routineContentIt in routine.content) {
+                viewModel.getRoutines()
+                if (viewModel.uiState.routines != null) {
+                    var text = ""
+                    Log.d("routines????idk man", viewModel.uiState.routines.toString())
+                    for (routineContentIt in viewModel.uiState.routines!!.content) {
+                        Log.d("routineContentIt", routineContentIt.toString())
                         text += (routineContentIt.name + " ")
                     }
+                    Log.d("SARACATUNGA-TEXT", text)
                 }
-                Log.d("SARACATUNGA-TEXT", text)
             }
         )
     }

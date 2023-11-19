@@ -8,6 +8,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ApiUserService {
     @POST("users/login")
@@ -19,8 +20,6 @@ interface ApiUserService {
     @GET("users/current")
     suspend fun getCurrentUser(): Response<NetworkUser>
 
-    @GET("routines")
-    suspend fun getRoutines(categoryId : Int? = null, userId : Int? = null, difficulty : String? = null, score : Int? = null,
-                            search : String? = null, page : Int? = null, size : Int? = null, orderBy : String? = null,
-                            direction : String? = null) : Response<ArrayList<NetworkRoutines>>
+    @GET("users/current/routines")
+    suspend fun getRoutines(@Query("size") size : Int? = 90) : Response<NetworkRoutines>
 }

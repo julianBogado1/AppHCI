@@ -71,22 +71,18 @@ class MainViewModel(private val sessionManager: SessionManager,private val userR
 
     fun getRoutines(categoryId : Int? = null, userId : Int? = null, difficulty : String? = null, score : Int? = null,
                     search : String? = null, page : Int? = null, size : Int? = null, orderBy : String? = null,
-                    direction : String? = null) : ArrayList<NetworkRoutines>{
-
-        var result : ArrayList<NetworkRoutines> = arrayListOf()
+                    direction : String? = null){
 
         viewModelScope.launch{
             uiState = uiState.copy(isLoading = true)
             runCatching {
                 userRemoteDataSource.getRoutines()
             }.onSuccess { response ->
-                result = response
-                uiState = uiState.copy(isLoading = false)
+                uiState = uiState.copy(isLoading = false, routines = response)
             }.onFailure { e ->
                 uiState = uiState.copy(isLoading = false, error = handleError(e), message = e.message?:"")
             }
         }
-        return result
     }
 
 

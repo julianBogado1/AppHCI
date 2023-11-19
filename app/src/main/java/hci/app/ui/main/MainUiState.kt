@@ -3,6 +3,7 @@ package hci.app.ui.main
 import hci.app.data.model.Sport
 import hci.app.data.model.User
 import hci.app.data.model.Error
+import hci.app.data.network.model.NetworkRoutines
 
 
 data class MainUiState(
@@ -14,6 +15,7 @@ data class MainUiState(
     val error: Error? = null,
     val isLoading: Boolean = false,
     val message: String = "",
+    val routines: NetworkRoutines? = null,
 )
 
 val MainUiState.hasError: Boolean get() = error != null
@@ -23,3 +25,5 @@ val MainUiState.canGetCurrentSport: Boolean get() = isAuthenticated && currentSp
 val MainUiState.canAddSport: Boolean get() = isAuthenticated && currentSport == null
 val MainUiState.canModifySport: Boolean get() = isAuthenticated && currentSport != null
 val MainUiState.canDeleteSport: Boolean get() = canModifySport
+
+val routines : NetworkRoutines? = null

@@ -29,9 +29,7 @@ class UserRemoteDataSource(
     }
 
     //todo chequear estos parametros
-    suspend fun getRoutines(categoryId : Int? = null, userId : Int? = null, difficulty : String? = null, score : Int? = null,
-                            search : String? = null, page : Int? = null, size : Int? = null, orderBy : String? = null,
-                            direction : String? = null) : ArrayList<NetworkRoutines>{
-        return handleApiResponse { apiUserService.getRoutines(categoryId, userId, difficulty, score, search, page, size, orderBy, direction) }
+    suspend fun getRoutines() : NetworkRoutines{
+        return handleApiResponse { apiUserService.getRoutines() }
     }
 }
