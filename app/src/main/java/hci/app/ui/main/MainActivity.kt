@@ -122,6 +122,7 @@ fun MainScreen(
                     onClick = {
                         viewModel.login("johndoe", "1234567890").invokeOnCompletion {
                             viewModel.getCurrentUser()
+                            Thread.sleep(1000)
                             if(viewModel.uiState.currentUser!=null)
                                 Log.d("USER_SARACATUNGA_LCDLL", viewModel.uiState.currentUser!!.firstName + " " + viewModel.uiState.currentUser!!.lastName )
                             else{

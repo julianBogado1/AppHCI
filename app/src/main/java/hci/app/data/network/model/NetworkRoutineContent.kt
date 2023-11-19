@@ -1,7 +1,7 @@
 package hci.app.data.network.model
 
 import com.google.gson.annotations.SerializedName
-
+/*
 data class NetworkRoutineContent (
 
     @SerializedName("id"         ) var id         : Int?      = null,
@@ -15,4 +15,4 @@ data class NetworkRoutineContent (
     @SerializedName("category"   ) var category   : Category? = Category(),
     @SerializedName("metadata"   ) var metadata   : String?   = null
 
-)
+)*/

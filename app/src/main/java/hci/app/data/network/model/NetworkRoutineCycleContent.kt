@@ -1,7 +1,7 @@
 package hci.app.data.network.model
 
 import com.google.gson.annotations.SerializedName
-
+/*
 data class NetworkRoutineCycleContent {
 
     @SerializedName("id"         ) var id         : Int?      = null,
@@ -12,4 +12,4 @@ data class NetworkRoutineCycleContent {
     @SerializedName("repetitions") var isPublic   : Boolean?  = null,
     @SerializedName("metadata"   ) var metadata   : String?   = null
 
-}
+}*/

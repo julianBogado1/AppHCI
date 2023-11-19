@@ -1,7 +1,7 @@
 package hci.app.data.network.model
 
 import com.google.gson.annotations.SerializedName
-
+/*
 class NetworkCycleExercises {
 
     @SerializedName("totalCount" ) var totalCount : Int?               = null,
@@ -12,4 +12,4 @@ class NetworkCycleExercises {
     @SerializedName("page"       ) var page       : Int?               = null,
     @SerializedName("isLastPage" ) var isLastPage : Boolean?           = null
 
-}
+}*/

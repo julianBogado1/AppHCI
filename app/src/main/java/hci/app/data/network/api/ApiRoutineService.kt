@@ -1,6 +1,9 @@
 package hci.app.data.network.api
-
+/*
 import hci.app.data.network.model.NetworkRoutines
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface ApiRoutineService {
 
@@ -10,4 +13,4 @@ interface ApiRoutineService {
     @GET("routine/{id}")
     suspend fun getRoutine(@Path("id") id: String): Response<NetworkRoutines>
 
-}
+}*/
