@@ -17,6 +17,4 @@ interface ApiUserService {
 
     @GET("users/current")
     suspend fun getCurrentUser(): Response<NetworkUser>
-
-
 }

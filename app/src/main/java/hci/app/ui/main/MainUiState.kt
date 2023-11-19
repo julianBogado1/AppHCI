@@ -12,7 +12,8 @@ data class MainUiState(
     val sports: List<Sport>? = null,
     val currentSport: Sport? = null,
     val error: Error? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val message: String = "",
 )
 
 val MainUiState.hasError: Boolean get() = error != null

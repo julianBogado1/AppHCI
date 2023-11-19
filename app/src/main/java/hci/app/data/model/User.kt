@@ -9,4 +9,5 @@ data class User(
     var lastName: String,
     var email: String,
     var lastActivity: Date? = null
+
 )

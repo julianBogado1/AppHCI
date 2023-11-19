@@ -10,7 +10,14 @@ import hci.app.util.SessionManager
 
 
 class MyApplication : Application() {
-
+    override fun onCreate() {
+        super.onCreate()
+        instance = this
+    }
+    companion object{
+        lateinit var instance: MyApplication
+            private set
+    }
     private val userRemoteDataSource: UserRemoteDataSource
         get() = UserRemoteDataSource(sessionManager, RetrofitClient.getApiUserService(this))
 

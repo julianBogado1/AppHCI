@@ -6,7 +6,6 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiSportService {
-
     @GET("sports")
     suspend fun getSports(@Query("size") size: Int = 50): Response<NetworkPagedContent<NetworkSport>>
 

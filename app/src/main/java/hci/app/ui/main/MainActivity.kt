@@ -30,6 +30,7 @@ import hci.app.MyNavGraph
 import hci.app.R
 import hci.app.composables.MyTextField
 import hci.app.data.model.Sport
+import hci.app.data.model.User
 import hci.app.ui.theme.TPETheme
 import hci.app.util.getViewModelFactory
 import kotlin.random.Random
@@ -44,32 +45,33 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
+                val appState = rememberMyAppState()
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen()
-                }/*
-                Scaffold(
-
-                    bottomBar = {
-                        BottomBar(
-                            currentRoute = currentRoute
-                        ) { route ->
-                            navController.navigate(route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                    Scaffold(
+                        snackbarHost = {appState.snackbarHostState},
+                        bottomBar = {
+                            BottomBar(
+                                currentRoute = currentRoute
+                            ) { route ->
+                                navController.navigate(route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
                             }
                         }
+                    ) {
+                        MainScreen(appState = appState)
+                        MyNavGraph(navController = navController)
                     }
-                ) {
-                    MyNavGraph(navController = navController)
-                }*/
+                }
             }
-        }
     }
 }
 
@@ -95,101 +97,47 @@ fun ActionButton(
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = viewModel(factory = getViewModelFactory())
+    viewModel: MainViewModel = viewModel(factory = getViewModelFactory()),
+    appState: MyAppState
 ) {
+
     val uiState = viewModel.uiState
     if(!viewModel.uiState.isLoading) {
-        Log.d("USER", viewModel.uiState.currentUser.toString())
-        Log.d("AUTH", uiState.isAuthenticated.toString())
+        Log.d("UISTATE_AUTH", uiState.isAuthenticated.toString())
+        viewModel.printAuth()
     }
+    if(uiState.hasError){
+        appState.showSnackbar(uiState.message, {viewModel.dismissMessage()}, {viewModel.dismissMessage()})
+    }
+
+    /*#######cuerpo de MainScreen######*/
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-        //if (!uiState.isAuthenticated) {
-            ActionButton(
-                resId = R.string.login,
-                onClick = {
-                    viewModel.login("johndoe", "1234567890")
-                })
-        /*} else {
-
-            ActionButton(
-                resId = R.string.logout,
-                onClick = {
-                    viewModel.logout()
-                })
-        }*/
-
-        ActionButton(
-            resId = R.string.get_current_user,
-            enabled = uiState.canGetCurrentUser,
-            onClick = {
-                viewModel.getCurrentUser()
-            })
-        ActionButton(
-            resId = R.string.get_all_sports,
-            enabled = uiState.canGetAllSports,
-            onClick = {
-                viewModel.getSports()
-            })
-        ActionButton(
-            resId = R.string.get_current_sport,
-            enabled = uiState.canGetCurrentSport,
-            onClick = {
-                val currentSport = uiState.currentSport!!
-                viewModel.getSport(currentSport.id!!)
-            })
-        ActionButton(
-            resId = R.string.add_sport,
-            enabled = uiState.canAddSport,
-            onClick = {
-                val random = Random.nextInt(0, 100)
-                val sport = Sport(name = "Sport $random", detail = "Detail $random")
-                viewModel.addOrModifySport(sport)
-            })
-        ActionButton(
-            resId = R.string.modify_sport,
-            enabled = uiState.canModifySport,
-            onClick = {
-                val random = Random.nextInt(0, 100)
-                val currentSport = uiState.currentSport!!
-                val sport = Sport(currentSport.id, currentSport.name, detail = "Detail $random")
-                viewModel.addOrModifySport(sport)
-            })
-        ActionButton(
-            resId = R.string.delete_sport,
-            enabled = uiState.canDeleteSport,
-            onClick = {
-                val currentSport = uiState.currentSport!!
-                viewModel.deleteSport(currentSport.id!!)
-            })
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            val currentUserData = uiState.currentUser?.let {
-                "Current User: ${it.firstName} ${it.lastName} (${it.email})"
-            }
+            if (!uiState.isAuthenticated) {
+                ActionButton(
+                    resId = R.string.login,
+                    onClick = {
+                        viewModel.login("johndoe", "1234567890").invokeOnCompletion {
+                            viewModel.getCurrentUser()
+                            if(viewModel.uiState.currentUser!=null)
+                                Log.d("USER_SARACATUNGA_LCDLL", viewModel.uiState.currentUser!!.firstName + " " + viewModel.uiState.currentUser!!.lastName )
+                            else{
+                                Log.d("SARACATUNGAN'T", "TODO ES TRISTEZA Y DOLOR")
+                            }
+                        }
+                    })
+            } else {
+                ActionButton(
+                    resId = R.string.logout,
+                    onClick = {
+                        viewModel.logout()
+                    })
+                }
             Text(
-                text = currentUserData ?: "",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                fontSize = 18.sp
-            )
-            val currentSportData = uiState.currentSport?.let {
-                "Current Sport: (${it.id}) ${it.name} - ${it.detail}"
-            }
-            Text(
-                text = currentSportData ?: "",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                fontSize = 18.sp
-            )
-            Text(
-                text = "Total Sports: ${uiState.sports?.size ?: "unknown"}",
+                text = "placeholder",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp, start = 16.dp, end = 16.dp),
@@ -208,43 +156,3 @@ fun MainScreen(
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@Preview
-@Composable
-fun MyTextFieldPreview() {
-    val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column {
-            MyTextField(
-                value = "Nombre de usuario"
-            )
-            MainScreen()
-        }
-
-    }
-    Scaffold(
-        bottomBar = {
-            BottomBar(
-                currentRoute = currentRoute
-            ) { route ->
-                navController.navigate(route) {
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = true
-                    }
-                    launchSingleTop = true
-                    restoreState = true
-                }
-            }
-        }
-    ) {
-        MyNavGraph(navController = navController)
-    }
-
-}

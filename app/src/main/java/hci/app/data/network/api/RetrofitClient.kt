@@ -11,7 +11,7 @@ import java.util.*
 
 object RetrofitClient {
 
-/*    @Volatile
+    @Volatile
     private var instance: Retrofit? = null
 
     private fun getInstance(context: Context): Retrofit =
@@ -37,28 +37,13 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(okHttpClient)
             .build()
-    }*/
-    private val retrofit: Retrofit
-    init{
-        val httpLoggingInterceptor = HttpLoggingInterceptor()
-        .setLevel(HttpLoggingInterceptor.Level.BODY)
-
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
-            .build()
-
-        retrofit = Retrofit.Builder()
-            .baseUrl(BuildConfig.API_BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient)
-            .build()
     }
 
     fun getApiUserService(context: Context): ApiUserService {
-        return retrofit.create(ApiUserService::class.java)
+        return getInstance(context).create(ApiUserService::class.java)
     }
 
     fun getApiSportService(context: Context): ApiSportService {
-        return retrofit.create(ApiSportService::class.java)
+        return getInstance(context).create(ApiSportService::class.java)
     }
 }

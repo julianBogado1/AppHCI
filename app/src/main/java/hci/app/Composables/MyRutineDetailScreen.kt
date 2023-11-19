@@ -1,7 +1,10 @@
 package hci.app.Composables
 
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -10,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-
 
 @Composable
 fun MyRutineDetailScreen(rutina: Rutina) {
@@ -30,7 +32,16 @@ fun MyRutineDetailScreen(rutina: Rutina) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(text = rutina.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+
+        Row(modifier = Modifier
+            .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            Text(text = rutina.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+
+            Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
+        }
+
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -39,9 +50,31 @@ fun MyRutineDetailScreen(rutina: Rutina) {
             .height(1.dp)
             .background(Color.Gray))
 
-        Text(text = "Descripcion: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+        Text(text = "Descripción: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
 
         Text(text = "${rutina.description}", style = MaterialTheme.typography.bodyLarge)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Divider(modifier = Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(Color.Gray))
+
+        Text(text = "Categoría: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+
+        Text(text = "${rutina.category}", style = MaterialTheme.typography.bodyLarge)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Divider(modifier = Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(Color.Gray))
+
+        Text(text = "Fecha de Creación: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+
+        Text(text = "${rutina.date}", style = MaterialTheme.typography.bodyLarge)
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -63,7 +96,34 @@ fun MyRutineDetailScreen(rutina: Rutina) {
 
         Text(text = "Dificultad: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
 
-        Text(text = "${rutina.rating}", style = MaterialTheme.typography.bodyLarge)
+        when (rutina.rating) {
+            1 -> Row(){
+                ArmFlexIcon()
+                ArmFlexOutlineIcon()
+                ArmFlexOutlineIcon()
+            }
+            2 -> Row(){
+                ArmFlexIcon()
+                ArmFlexIcon()
+                ArmFlexOutlineIcon()
+            }
+            3 -> Row(){
+                ArmFlexIcon()
+                ArmFlexIcon()
+                ArmFlexIcon()
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Divider(modifier = Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(Color.Gray))
+
+        Text(text = "Puntuación: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+
+        Text(text = "${rutina.points}", style = MaterialTheme.typography.bodyLarge)
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -364,6 +424,7 @@ fun RutinaDetailScreenPreview() {
 
     val excicle= listOf(cicle,cicle,cicle)
 
-    val rutina = Rutina("Rutina 1", "Description for Rutina 1", 4, 30, "min",excicle)
+    val rutina = Rutina("Rutina 1", "Description for Rutina 1", 2, 30, "min",excicle,7.5, "13/11/2023", "Cardio")
     MyRutineDetailScreen(rutina = rutina)
 }
+

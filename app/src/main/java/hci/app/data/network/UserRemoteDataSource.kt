@@ -19,8 +19,8 @@ class UserRemoteDataSource(
     }
 
     suspend fun logout() {
-        handleApiResponse { apiUserService.logout() }
         sessionManager.removeAuthToken()
+        handleApiResponse { apiUserService.logout() }
     }
 
     suspend fun getCurrentUser(): NetworkUser {
