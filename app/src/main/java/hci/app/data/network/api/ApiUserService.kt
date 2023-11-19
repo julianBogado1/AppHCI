@@ -1,6 +1,7 @@
 package hci.app.data.network.api
 
 import hci.app.data.network.model.NetworkCredentials
+import hci.app.data.network.model.NetworkRoutines
 import hci.app.data.network.model.NetworkToken
 import hci.app.data.network.model.NetworkUser
 import retrofit2.Response
@@ -17,4 +18,9 @@ interface ApiUserService {
 
     @GET("users/current")
     suspend fun getCurrentUser(): Response<NetworkUser>
+
+    @GET("routines")
+    suspend fun getRoutines(categoryId : Int? = null, userId : Int? = null, difficulty : String? = null, score : Int? = null,
+                            search : String? = null, page : Int? = null, size : Int? = null, orderBy : String? = null,
+                            direction : String? = null) : Response<ArrayList<NetworkRoutines>>
 }

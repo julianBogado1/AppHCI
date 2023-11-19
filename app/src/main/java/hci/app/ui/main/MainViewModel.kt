@@ -14,9 +14,11 @@ import hci.app.util.SessionManager
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import hci.app.data.model.Error
+import hci.app.data.network.UserRemoteDataSource
+import hci.app.data.network.model.NetworkRoutines
 
 class MainViewModel(private val sessionManager: SessionManager,private val userRepository: UserRepository,
-    private val sportRepository: SportRepository) : ViewModel() {
+                    private val sportRepository: SportRepository, private val userRemoteDataSource: UserRemoteDataSource) : ViewModel() {
 
     var uiState by mutableStateOf(MainUiState(isAuthenticated = sessionManager.loadAuthToken() != null))
         private set
@@ -67,6 +69,25 @@ class MainViewModel(private val sessionManager: SessionManager,private val userR
         }
     }
 
+    fun getRoutines(categoryId : Int? = null, userId : Int? = null, difficulty : String? = null, score : Int? = null,
+                    search : String? = null, page : Int? = null, size : Int? = null, orderBy : String? = null,
+                    direction : String? = null) : ArrayList<NetworkRoutines>{
+
+        var result : ArrayList<NetworkRoutines> = arrayListOf()
+
+        viewModelScope.launch{
+            uiState = uiState.copy(isLoading = true)
+            runCatching {
+                userRemoteDataSource.getRoutines()
+            }.onSuccess { response ->
+                result = response
+                uiState = uiState.copy(isLoading = false)
+            }.onFailure { e ->
+                uiState = uiState.copy(isLoading = false, error = handleError(e), message = e.message?:"")
+            }
+        }
+        return result
+    }
 
 
     fun getSports() = runOnViewModelScope(

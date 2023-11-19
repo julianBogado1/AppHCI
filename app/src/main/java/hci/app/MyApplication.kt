@@ -18,10 +18,10 @@ class MyApplication : Application() {
         lateinit var instance: MyApplication
             private set
     }
-    private val userRemoteDataSource: UserRemoteDataSource
+    val userRemoteDataSource: UserRemoteDataSource
         get() = UserRemoteDataSource(sessionManager, RetrofitClient.getApiUserService(this))
 
-    private val sportRemoteDataSource: SportRemoteDataSource
+    val sportRemoteDataSource: SportRemoteDataSource
         get() = SportRemoteDataSource(RetrofitClient.getApiSportService(this))
 
     val sessionManager: SessionManager
@@ -32,4 +32,6 @@ class MyApplication : Application() {
 
     val sportRepository: SportRepository
         get() = SportRepository(sportRemoteDataSource)
+
+
 }

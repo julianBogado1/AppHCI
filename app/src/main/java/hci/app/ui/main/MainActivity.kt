@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,11 +27,14 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import hci.app.BottomBar
+import hci.app.Composables.MyLoginScreen
 import hci.app.MyNavGraph
 import hci.app.R
 import hci.app.composables.MyTextField
 import hci.app.data.model.Sport
 import hci.app.data.model.User
+import hci.app.data.network.model.NetworkRoutineContent
+import hci.app.data.network.model.NetworkRoutines
 import hci.app.ui.theme.TPETheme
 import hci.app.util.getViewModelFactory
 import kotlin.random.Random
@@ -68,10 +72,11 @@ class MainActivity : ComponentActivity() {
                         }
                     ) {
                         MainScreen(appState = appState)
-                        MyNavGraph(navController = navController)
+                        //MyNavGraph(navController = navController)
                     }
                 }
             }
+        }
     }
 }
 
@@ -79,17 +84,20 @@ class MainActivity : ComponentActivity() {
 fun ActionButton(
     @StringRes resId: Int,
     enabled: Boolean = true,
+    modifier : Modifier,
+    colors : ButtonColors = ButtonDefaults.buttonColors(),
+    fontWeight: FontWeight,
     onClick: () -> Unit
 ) {
     Button(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+        modifier = modifier,
         enabled = enabled,
+        colors = colors,
         onClick = onClick,
     ) {
         Text(
             text = stringResource(resId),
+            fontWeight = fontWeight,
             modifier = Modifier.padding(8.dp)
         )
     }
@@ -102,13 +110,35 @@ fun MainScreen(
 ) {
 
     val uiState = viewModel.uiState
-    if(!viewModel.uiState.isLoading) {
+    var text : String?
+
+    MyLoginScreen(viewModel)
+    if(viewModel.uiState.isAuthenticated) {
+        Text(
+            text = "${uiState.currentUser?.firstName} ${uiState.currentUser?.lastName}"
+        )
+    }
+}
+
+
+
+/*if(!viewModel.uiState.isLoading && viewModel.uiState.isAuthenticated) {
+        var routines = viewModel.getRoutines()
+        text = ""
+        for (routine in routines) {
+            for (routineContentIt in routine.content) {
+                text += (routineContentIt.name + " ")
+            }
+        }
+        Log.d("SARACATUNGA-TEXT", text)
+    }
+    /*if(!viewModel.uiState.isLoading) {
         Log.d("UISTATE_AUTH", uiState.isAuthenticated.toString())
         viewModel.printAuth()
     }
     if(uiState.hasError){
         appState.showSnackbar(uiState.message, {viewModel.dismissMessage()}, {viewModel.dismissMessage()})
-    }
+    }*/
 
     /*#######cuerpo de MainScreen######*/
     Column(
@@ -120,16 +150,9 @@ fun MainScreen(
                 ActionButton(
                     resId = R.string.login,
                     onClick = {
-                        viewModel.login("johndoe", "1234567890").invokeOnCompletion {
-                            viewModel.getCurrentUser()
-                            Thread.sleep(1000)
-                            if(viewModel.uiState.currentUser!=null)
-                                Log.d("USER_SARACATUNGA_LCDLL", viewModel.uiState.currentUser!!.firstName + " " + viewModel.uiState.currentUser!!.lastName )
-                            else{
-                                Log.d("SARACATUNGAN'T", "TODO ES TRISTEZA Y DOLOR")
-                            }
-                        }
+                        viewModel.login("johndoe", "1234567890")
                     })
+
             } else {
                 ActionButton(
                     resId = R.string.logout,
@@ -137,13 +160,6 @@ fun MainScreen(
                         viewModel.logout()
                     })
                 }
-            Text(
-                text = "placeholder",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                fontSize = 18.sp
-            )
             if (uiState.error != null) {
                 Text(
                     text = "${uiState.error.code} - ${uiState.error.message}",
@@ -154,6 +170,5 @@ fun MainScreen(
                 )
             }
         }
-    }
-}
+    }*/
 

@@ -13,4 +13,6 @@
     <string name="routines">Routines</string>
     <string name="settings">Settings</string>
     <string name="dismiss">Dismiss</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="password">Contraseña</string>
 </resources>
