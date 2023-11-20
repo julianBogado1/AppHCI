@@ -49,12 +49,6 @@ class MainViewModel(private val sessionManager: SessionManager,private val userR
                 currentUser = null, currentSport = null, sports = null) }
     }
 
-
-    /*fun getCurrentUser() = runOnViewModelScope(
-        { userRepository.getCurrentUser(uiState.currentUser == null) },
-        { state, response -> state.copy(currentUser = response) }
-    )*/
-
     fun getCurrentUser(){
         //fetchJob?.cancel()
         viewModelScope.launch{
@@ -69,16 +63,53 @@ class MainViewModel(private val sessionManager: SessionManager,private val userR
         }
     }
 
-    fun getRoutines(categoryId : Int? = null, userId : Int? = null, difficulty : String? = null, score : Int? = null,
-                    search : String? = null, page : Int? = null, size : Int? = null, orderBy : String? = null,
-                    direction : String? = null){
-
+    fun getRoutines(){
         viewModelScope.launch{
             uiState = uiState.copy(isLoading = true)
             runCatching {
                 userRemoteDataSource.getRoutines()
             }.onSuccess { response ->
                 uiState = uiState.copy(isLoading = false, routines = response)
+            }.onFailure { e ->
+                uiState = uiState.copy(isLoading = false, error = handleError(e), message = e.message?:"")
+            }
+        }
+    }
+
+    fun getOneRoutine(routineId : Int){
+
+        viewModelScope.launch{
+            uiState = uiState.copy(isLoading = true)
+            runCatching {
+                userRemoteDataSource.getOneRoutine(routineId)
+            }.onSuccess { response ->
+                uiState = uiState.copy(isLoading = false, oneRoutine = response)
+            }.onFailure { e ->
+                uiState = uiState.copy(isLoading = false, error = handleError(e), message = e.message?:"")
+            }
+        }
+    }
+    fun getCycles(routineId : Int){
+
+        viewModelScope.launch{
+            uiState = uiState.copy(isLoading = true)
+            runCatching {
+                userRemoteDataSource.getCycles(routineId)
+            }.onSuccess { response ->
+                uiState = uiState.copy(isLoading = false, cycles = response)
+            }.onFailure { e ->
+                uiState = uiState.copy(isLoading = false, error = handleError(e), message = e.message?:"")
+            }
+        }
+    }
+    fun getOneCycle(routineId : Int, cycleId : Int){
+
+        viewModelScope.launch{
+            uiState = uiState.copy(isLoading = true)
+            runCatching {
+                userRemoteDataSource.getOneCycle(routineId, cycleId)
+            }.onSuccess { response ->
+                uiState = uiState.copy(isLoading = false, oneCycle = response)
             }.onFailure { e ->
                 uiState = uiState.copy(isLoading = false, error = handleError(e), message = e.message?:"")
             }

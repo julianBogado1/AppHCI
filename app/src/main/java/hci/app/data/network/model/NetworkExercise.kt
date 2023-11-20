@@ -9,7 +9,7 @@ class NetworkExercise(
     @SerializedName("detail")   var detail     : String?   = null,
     @SerializedName("date")     var date       : Int?      = null,
     @SerializedName("type")     var score      : String?   = null,
-    @SerializedName("order")    var isPublic   : Int?      = null,
+    @SerializedName("order")    var isPublic   : Boolean?      = null,
     @SerializedName("metadata") var metadata   : String?   = null
 
 )
