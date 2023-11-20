@@ -22,11 +22,14 @@ data class Routine(
     val description: String,
     val rating: Int,
     val duration: Int,
-    val dUnit: String
+    val dUnit: String,
+    val category: String
 )
 
 data class Cycle(
     val name: String,
+    val number: Int,
+    val ejs: List<Exercise>,
     val repetitions: Int
 )
 
@@ -34,5 +37,6 @@ data class Exercise(
     val name: String,
     val description: String,
     val repetitions: Int,
-    val duration: Int
+    val duration: Int,
+    val dUnit: String,
 )

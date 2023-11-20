@@ -13,35 +13,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import hci.app.data.model.Routine
+import hci.app.data.network.model.NetworkRoutineContent
 import hci.app.ui.main.MainViewModel
 
 @Composable
 fun RoutinesScreen(viewModel: MainViewModel) {
-
     viewModel.getRoutines() // Trigger fetching routines
 
     val uiState = viewModel.uiState
 
-    val routineList = uiState.routines?.content?.map { networkRoutine ->
-        Routine(
-            name = networkRoutine.name ?: "",
-            description = networkRoutine.detail ?: "",
-            rating = networkRoutine.score ?: 0,
-            duration = networkRoutine.date ?: 0,
-            dUnit = "min"
-        )
-    } ?: emptyList()
+    val routineList = uiState.routines?.content
 
     LazyColumn {
-        items(routineList.size) { index ->
-            val item = routineList[index]
-            ListItemComponent(item = item)
+        if (routineList != null) {
+            items(routineList.size) { index ->
+                val item = routineList?.get(index)
+                if (item != null) {
+                    ListItemComponent(item = item)
+                }
+            }
         }
     }
 }
 
 @Composable
-fun ListItemComponent(item: Routine) {
+fun ListItemComponent(item: NetworkRoutineContent) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -62,7 +58,7 @@ fun ListItemComponent(item: Routine) {
                 ) {
                     Text(text = "${item.name}", style = MaterialTheme.typography.titleLarge)
 
-                    Text(text = "${item.description}", style = MaterialTheme.typography.bodyLarge)
+                    Text(text = "${item.detail}", style = MaterialTheme.typography.bodyLarge)
 
                 }
             }
@@ -76,13 +72,15 @@ fun ListItemComponent(item: Routine) {
                     verticalArrangement = Arrangement.Center
                 ){
 
+                    /*
                     Text(
-                        text = "${item.rating}", style = MaterialTheme.typography.bodyLarge,
+                        text = "${item.r}", style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
+                    */
 
                     Text(
-                        text = "${item.duration} ${item.dUnit}", style = MaterialTheme.typography.bodyLarge,
+                        text = "${item.metadata?.duration} min", style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 }

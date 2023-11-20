@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Scaffold(
                         snackbarHost = {appState.snackbarHostState},
-                        /*bottomBar = {
+                        bottomBar = {
                             BottomBar(
                                 currentRoute = currentRoute
                             ) { route ->
@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
                                     restoreState = true
                                 }
                             }
-                        }*/
+                        }
                     ) {
                         MainScreen(appState = appState, navController = navController)
                     }
