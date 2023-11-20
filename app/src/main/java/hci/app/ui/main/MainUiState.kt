@@ -3,6 +3,9 @@ package hci.app.ui.main
 import hci.app.data.model.Sport
 import hci.app.data.model.User
 import hci.app.data.model.Error
+import hci.app.data.network.model.NetworkCycleExercises
+import hci.app.data.network.model.NetworkCycleExercisesContent
+import hci.app.data.network.model.NetworkExercise
 import hci.app.data.network.model.NetworkRoutineContent
 import hci.app.data.network.model.NetworkRoutineCycleContent
 import hci.app.data.network.model.NetworkRoutineCycles
@@ -22,6 +25,9 @@ data class MainUiState(
     val cycles : NetworkRoutineCycles? = null,
     val oneRoutine : NetworkRoutineContent? = null,
     val oneCycle : NetworkRoutineCycleContent? = null,
+    val exercises : NetworkCycleExercises? = null,
+    val exercisesContent: NetworkCycleExercisesContent? = null,
+    val oneExercise : NetworkExercise? = null,
 )
 
 val MainUiState.hasError: Boolean get() = error != null
@@ -38,3 +44,6 @@ val oneRoutine : NetworkRoutineContent? = null
 
 val cycles : NetworkRoutineCycles? = null
 val oneCycle : NetworkRoutineCycleContent? = null
+val exercises : NetworkCycleExercises? = null
+val exercisesContent: NetworkCycleExercisesContent? = null
+val oneExercise : NetworkExercise? = null

@@ -1,6 +1,9 @@
 package hci.app.data.network.api
 
 import hci.app.data.network.model.NetworkCredentials
+import hci.app.data.network.model.NetworkCycleExercises
+import hci.app.data.network.model.NetworkCycleExercisesContent
+import hci.app.data.network.model.NetworkExercise
 import hci.app.data.network.model.NetworkRoutineContent
 import hci.app.data.network.model.NetworkRoutineCycleContent
 import hci.app.data.network.model.NetworkRoutineCycles
@@ -35,10 +38,14 @@ interface ApiUserService {
     @GET("routines/{routineId}/cycles/{cycleId}")
     suspend fun getOneCycle(@Path("routineId")routineId : Int, @Path("cycleId")cycleId : Int) : Response<NetworkRoutineCycleContent>
 
-   /* @GET("cycles/{cycleId}/exercises")
-    suspend fun getExercises(@Path("cycleId")cycleId : Int) : Response<NetworkRoutineCycleContent>
-    @GET("routines/{routineId}/cycles/{cycleId}")
-    suspend fun getOneCycle(@Path("routineId")routineId : Int, @Path("cycleId")cycleId : Int) : Response<NetworkRoutineCycleContent>*/
+   @GET("cycles/{cycleId}/exercises")
+    suspend fun getCycleExercises(@Path("cycleId")cycleId : Int) : Response<NetworkCycleExercises>
 
+    @GET("cycles/{cycleId}/exercises/{exerciseId}")
+    suspend fun getOneCycleExercise(@Path("cycleId")cycleId : Int, @Path("exerciseId")exerciseId : Int) : Response<NetworkCycleExercisesContent>
 
+    @GET("exercises")
+    suspend fun getExercises(@Query("size")size : Int? = 90) : Response<NetworkCycleExercisesContent>
+    @GET("exercises/{exerciseId}")
+    suspend fun getOneExercise(@Path("exerciseId")exerciseId : Int) : Response<NetworkExercise>
 }

@@ -116,41 +116,66 @@ class MainViewModel(private val sessionManager: SessionManager,private val userR
         }
     }
 
+    fun getCycleExercises(cycleId : Int){
 
-    fun getSports() = runOnViewModelScope(
-        { sportRepository.getSports(true) },
-        { state, response -> state.copy(sports = response) }
-    )
-
-    fun getSport(sportId: Int) = runOnViewModelScope(
-        { sportRepository.getSport(sportId) },
-        { state, response -> state.copy(currentSport = response) }
-    )
-
-    fun addOrModifySport(sport: Sport) = runOnViewModelScope(
-        {
-            if (sport.id == null)
-                sportRepository.addSport(sport)
-            else
-                sportRepository.modifySport(sport)
-        },
-        { state, response ->
-            state.copy(
-                currentSport = response,
-                sports = null
-            )
+        viewModelScope.launch{
+            uiState = uiState.copy(isLoading = true)
+            runCatching {
+                userRemoteDataSource.getCycleExercises(cycleId)
+            }.onSuccess { response ->
+                uiState = uiState.copy(isLoading = false, exercises = response)
+            }.onFailure { e ->
+                uiState = uiState.copy(isLoading = false, error = handleError(e), message = e.message?:"")
+            }
         }
-    )
-
-    fun deleteSport(sportId: Int) = runOnViewModelScope(
-        { sportRepository.deleteSport(sportId) },
-        { state, response ->
-            state.copy(
-                currentSport = null,
-                sports = null
-            )
+    }
+    /*
+    * DEVUELVE NetworkCycleExercisesContent
+    * exercisesContent
+    * */
+    fun getOneCycleExercise(cycleId : Int, exerciseId : Int){
+        viewModelScope.launch{
+            uiState = uiState.copy(isLoading = true)
+            runCatching {
+                userRemoteDataSource.getOneCycleExercise(cycleId, exerciseId)
+            }.onSuccess { response ->
+                uiState = uiState.copy(isLoading = false, exercisesContent = response)
+            }.onFailure { e ->
+                uiState = uiState.copy(isLoading = false, error = handleError(e), message = e.message?:"")
+            }
         }
-    )
+    }
+
+    /*
+    * DEVUELVE NetworkCycleExercisesContent
+    * asignar a exercisesContent
+    * */
+    fun getExercises(){
+        viewModelScope.launch{
+            uiState = uiState.copy(isLoading = true)
+            runCatching {
+                userRemoteDataSource.getExercises()
+            }.onSuccess { response ->
+                uiState = uiState.copy(isLoading = false, exercisesContent = response)
+            }.onFailure { e ->
+                uiState = uiState.copy(isLoading = false, error = handleError(e), message = e.message?:"")
+            }
+        }
+    }
+    fun getOneExercise(exerciseId : Int){
+
+        viewModelScope.launch{
+            uiState = uiState.copy(isLoading = true)
+            runCatching {
+                userRemoteDataSource.getOneExercise(exerciseId)
+            }.onSuccess { response ->
+                uiState = uiState.copy(isLoading = false, oneExercise = response)
+            }.onFailure { e ->
+                uiState = uiState.copy(isLoading = false, error = handleError(e), message = e.message?:"")
+            }
+        }
+    }
+
 
     private fun <R> runOnViewModelScope(
         block: suspend () -> R,

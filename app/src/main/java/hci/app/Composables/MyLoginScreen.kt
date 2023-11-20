@@ -106,9 +106,11 @@ fun MyLoginScreen(viewModel : MainViewModel) {
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp),
             colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
             fontWeight = FontWeight.Bold,
-            resId = R.string.unCiclo,
+            resId = R.string.ejercicios,
             onClick = {
-                viewModel.getOneCycle(4, 10)
+                //viewModel.getOneCycle(4, 10)
+                //viewModel.getCycleExercises(10)
+                viewModel.getExercises()
             }
         )
         ActionButton(
@@ -117,9 +119,10 @@ fun MyLoginScreen(viewModel : MainViewModel) {
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp),
             colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
             fontWeight = FontWeight.Bold,
-            resId = R.string.unaRutina,
+            resId = R.string.unEjercicio,
             onClick = {
-                viewModel.getOneRoutine(4)
+                //viewModel.getOneCycleExercise(10, 20)
+                viewModel.getOneExercise(20)
             }
         )
     }
