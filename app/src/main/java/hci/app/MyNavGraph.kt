@@ -18,7 +18,7 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
             HomeScreen(viewModel = viewModel)
         }
         composable(Screen.RoutinesScreen.route) {
-            RoutinesScreen(viewModel = viewModel)
+            RoutineDetailScreen(viewModel = viewModel, routineId = 14)
         }
         composable(Screen.SettingsScreen.route) {
             SettingsScreen(viewModel = viewModel)

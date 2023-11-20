@@ -12,7 +12,7 @@ data class NetworkRoutineContent (
     @SerializedName("date")         var date       : Long?      = 0,
     @SerializedName("score")        var score      : Int?      = 0,
     @SerializedName("isPublic")     var isPublic   : Boolean?  = false,
-    @SerializedName("difficulty")   var difficulty : Int?   = "",
+    @SerializedName("difficulty")   var difficulty : Int?   = 0,
     @SerializedName("user")         var user       : NetworkShortUser?,
     @SerializedName("category")     var category   : Category? = Category(),
     @SerializedName("metadata")     var metadata   : NetworkRoutineContentMetadata? = NetworkRoutineContentMetadata()

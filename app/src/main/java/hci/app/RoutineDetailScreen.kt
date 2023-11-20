@@ -10,18 +10,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.*
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import hci.app.Composables.ArmFlexIcon
 import hci.app.Composables.ArmFlexOutlineIcon
-import hci.app.data.model.Cycle
-import hci.app.data.model.Exercise
-import hci.app.data.model.Routine
+import hci.app.data.network.model.NetworkCycleExercises
+import hci.app.data.network.model.NetworkCycleExercisesContent
+import hci.app.data.network.model.NetworkRoutineContent
+import hci.app.data.network.model.NetworkRoutineCycleContent
 import hci.app.ui.main.MainViewModel
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -29,18 +31,56 @@ fun RoutineDetailScreen(viewModel: MainViewModel, routineId: Int) {
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
 
+    /*
     if (isTablet) {
         TabletRutineDetailLayout(viewModel, routineId)
     } else {
-        PhoneRutineDetailLayout(viewModel, routineId)
+     */
+        PhoneRoutineDetailLayout(viewModel, routineId)
+    /*
     }
+     */
 }
 
 @Composable
-fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
+fun PhoneRoutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
 
-    viewModel.getOneRoutine(routineId)
-    val routine = viewModel.uiState.oneRoutine
+    var routine: NetworkRoutineContent? = null
+    var cycles: ArrayList<NetworkRoutineCycleContent>? = null
+    var firstCycle: NetworkRoutineCycleContent? = null
+    var firstExercises: ArrayList<NetworkCycleExercisesContent>? = null
+    var lastCycle: NetworkRoutineCycleContent? = null
+    var lastExercises: ArrayList<NetworkCycleExercisesContent>? = null
+    var middleCycles: List<NetworkRoutineCycleContent>? = null
+    var cycleExercises: MutableMap<NetworkRoutineCycleContent, ArrayList<NetworkCycleExercisesContent>?> = mutableMapOf()
+
+
+    LaunchedEffect(key1 = Unit){
+        launch {
+            viewModel.getCycles(routineId)
+            cycles = viewModel.uiState.cycles?.content
+            cycles?.first()?.id?.let { viewModel.getOneCycle(routineId, it) }
+            firstCycle = viewModel.uiState.oneCycle
+            firstCycle?.id?.let { viewModel.getExercises() }
+            firstExercises = viewModel.uiState.exercises?.content
+            cycles?.last()?.id?.let { viewModel.getOneCycle(routineId, it) }
+            lastCycle = viewModel.uiState.oneCycle
+            lastCycle?.id?.let { viewModel.getExercises() }
+            lastExercises = viewModel.uiState.exercises?.content
+
+            middleCycles = cycles?.drop(1)?.dropLast(1)
+            cycleExercises = mutableMapOf<NetworkRoutineCycleContent, ArrayList<NetworkCycleExercisesContent>?>()
+
+            middleCycles?.forEach { cycle ->
+                cycle.id?.let { viewModel.getCycleExercises(it) }
+                cycleExercises[cycle] = viewModel.uiState.exercises?.content
+            }
+
+            viewModel.getOneRoutine(routineId)
+            val routine = viewModel.uiState.oneRoutine
+        }
+    }
+
 
     LazyColumn(
         modifier = Modifier
@@ -55,11 +95,13 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = routine?.name!!,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
+                routine?.name?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
                 Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
             }
@@ -113,7 +155,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
         }
 
         item{
-            Text(text = "${routine?.date!!}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "${routine?.date}", style = MaterialTheme.typography.bodyLarge)
         }
 
         item{
@@ -208,14 +250,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
             }
         }
 
-        viewModel.getCycles(routineId)
-        val cycles = viewModel.uiState.cycles?.content
-        cycles?.first()?.id?.let { viewModel.getOneCycle(routineId, it) }
-        val cycle = viewModel.uiState.oneCycle
-        cycle?.id?.let { viewModel.get }
-        val exercises = cycle.
-
-        cycles?.first().ejs.forEach{ ejercicio ->
+        firstExercises?.forEach{ exercise ->
             item{
                 Box(
                     modifier = Modifier
@@ -235,9 +270,9 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                                     .padding(2.dp),
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text(text = "${ejercicio.name}", style = MaterialTheme.typography.titleLarge)
+                                Text(text = "${exercise.exercise?.name}", style = MaterialTheme.typography.titleLarge)
 
-                                Text(text = "${ejercicio.description}", style = MaterialTheme.typography.bodyLarge)
+                                Text(text = "${exercise.exercise?.detail}", style = MaterialTheme.typography.bodyLarge)
 
                             }
                         }
@@ -258,7 +293,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                                     )
 
                                     Text(
-                                        text = "${ejercicio.series}", style = MaterialTheme.typography.bodyLarge,
+                                        text = "${exercise.repetitions}", style = MaterialTheme.typography.bodyLarge,
                                         modifier = Modifier.align(Alignment.CenterHorizontally)
                                     )
                                 }
@@ -268,11 +303,11 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                                         .padding(2.dp)
                                 ){
                                     Text(
-                                        text = "Duración (${ejercicio.dUnit})", style = MaterialTheme.typography.bodyLarge
+                                        text = "Duración (min)", style = MaterialTheme.typography.bodyLarge
                                     )
 
                                     Text(
-                                        text = "${ejercicio.duration}", style = MaterialTheme.typography.bodyLarge,
+                                        text = "${exercise.duration}", style = MaterialTheme.typography.bodyLarge,
                                         modifier = Modifier.align(Alignment.CenterHorizontally)
                                     )
                                 }
@@ -297,28 +332,31 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                 .background(Color.Gray))
         }
 
+        middleCycles?.forEach { oneCycle ->
 
-        routine.cicles.drop(1).dropLast(1).forEach { cicle ->
             item{
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = "Ciclo de Ejercitación ${cicle.number}: ",
-                        style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
-                    )
+                    oneCycle.name?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
+                        )
+                    }
 
                     Text(
-                        text = "Repeticiones: ${cicle.rep}",
+                        text = "${oneCycle.repetitions}",
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
             }
 
+            val exercises = cycleExercises[oneCycle]
 
-            cicle.ejs.forEach{ ejercicio ->
+            exercises?.forEach{ exercise ->
                 item{
                     Box(
                         modifier = Modifier
@@ -338,9 +376,9 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                                         .padding(2.dp),
                                     verticalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text(text = "${ejercicio.name}", style = MaterialTheme.typography.titleLarge)
+                                    Text(text = "${exercise.exercise?.name}", style = MaterialTheme.typography.titleLarge)
 
-                                    Text(text = "${ejercicio.description}", style = MaterialTheme.typography.bodyLarge)
+                                    Text(text = "${exercise.exercise?.detail}", style = MaterialTheme.typography.bodyLarge)
 
                                 }
                             }
@@ -361,7 +399,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                                         )
 
                                         Text(
-                                            text = "${ejercicio.series}", style = MaterialTheme.typography.bodyLarge,
+                                            text = "${exercise.repetitions}", style = MaterialTheme.typography.bodyLarge,
                                             modifier = Modifier.align(Alignment.CenterHorizontally)
                                         )
                                     }
@@ -371,11 +409,11 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                                             .padding(2.dp)
                                     ){
                                         Text(
-                                            text = "Duración (${ejercicio.dUnit})", style = MaterialTheme.typography.bodyLarge
+                                            text = "Duración (min)", style = MaterialTheme.typography.bodyLarge
                                         )
 
                                         Text(
-                                            text = "${ejercicio.duration}", style = MaterialTheme.typography.bodyLarge,
+                                            text = "${exercise.duration}", style = MaterialTheme.typography.bodyLarge,
                                             modifier = Modifier.align(Alignment.CenterHorizontally)
                                         )
                                     }
@@ -404,11 +442,11 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
             ){
                 Text(text = "Ciclo de Enfriamiento: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
 
-                Text(text = "Repeticiones: ${routine.cicles.last().rep}", style = MaterialTheme.typography.bodyLarge)
+                Text(text = "Repeticiones: ${lastCycle?.repetitions}", style = MaterialTheme.typography.bodyLarge)
             }
         }
 
-        routine.cicles.last().ejs.forEach{ ejercicio ->
+        lastExercises?.forEach{ exercise ->
             item{
                 Box(
                     modifier = Modifier
@@ -428,9 +466,9 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                                     .padding(2.dp),
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text(text = "${ejercicio.name}", style = MaterialTheme.typography.titleLarge)
+                                Text(text = "${exercise.exercise?.name}", style = MaterialTheme.typography.titleLarge)
 
-                                Text(text = "${ejercicio.description}", style = MaterialTheme.typography.bodyLarge)
+                                Text(text = "${exercise.exercise?.detail}", style = MaterialTheme.typography.bodyLarge)
 
                             }
                         }
@@ -451,7 +489,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                                     )
 
                                     Text(
-                                        text = "${ejercicio.series}", style = MaterialTheme.typography.bodyLarge,
+                                        text = "${exercise.repetitions}", style = MaterialTheme.typography.bodyLarge,
                                         modifier = Modifier.align(Alignment.CenterHorizontally)
                                     )
                                 }
@@ -461,11 +499,11 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                                         .padding(2.dp)
                                 ){
                                     Text(
-                                        text = "Duración (${ejercicio.dUnit})", style = MaterialTheme.typography.bodyLarge
+                                        text = "Duración (min)", style = MaterialTheme.typography.bodyLarge
                                     )
 
                                     Text(
-                                        text = "${ejercicio.duration}", style = MaterialTheme.typography.bodyLarge,
+                                        text = "${exercise.duration}", style = MaterialTheme.typography.bodyLarge,
                                         modifier = Modifier.align(Alignment.CenterHorizontally)
                                     )
                                 }
@@ -479,6 +517,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
     }
 }
 
+/*
 @Composable
 fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
     val cicle = Cicle(
@@ -924,23 +963,5 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun RutinaDetailScreenPreview() {
-    val cicle = Cicle(
-        name = "Ejercitación",
-        number = 1,
-        rep = 3,
-        ejs = listOf(
-            Ejercicio("Squats", "Leg workout", 3, 30, "s"),
-            Ejercicio("Push-ups", "Upper body workout", 3, 20, "s"),
-        )
-    )
-
-    val excicle= listOf(cicle,cicle,cicle)
-
-    val rutina = Rutina("Rutina 1", "Description for Rutina 1", 2, 30, "min",excicle,7.5, "13/11/2023", "Cardio")
-    RoutineDetailScreen(routine = rutina)
-}
+ */
 
