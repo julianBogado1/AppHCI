@@ -8,31 +8,31 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.*
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavHostController
 import hci.app.data.model.Routine
+import hci.app.ui.main.MainViewModel
 
 @Composable
-fun RoutinesScreen() {
-    val routineList = remember {
-        listOf(
-            Routine("Rutina 1", "Desc 1", 2, 12, "min"),
-            Routine("Rutina 2", "Desc 2", 3, 9, "min"),
-            Routine("Rutina 3", "Desc 3", 2, 15, "min"),
-            Routine("Rutina 1", "Desc 1", 2, 12, "min"),
-            Routine("Rutina 2", "Desc 2", 3, 9, "min"),
-            Routine("Rutina 3", "Desc 3", 2, 15, "min"),
-            Routine("Rutina 1", "Desc 1", 2, 12, "min"),
-            Routine("Rutina 2", "Desc 2", 3, 9, "min"),
-            Routine("Rutina 3", "Desc 3", 2, 15, "min"),
-            Routine("Rutina 1", "Desc 1", 2, 12, "min"),
-            Routine("Rutina 2", "Desc 2", 3, 9, "min"),
-            Routine("Rutina 3", "Desc 3", 2, 15, "min")
-        )
-    }
+fun RoutinesScreen(viewModel: MainViewModel) {
 
-    LazyColumn(
-    ) {
+    viewModel.getRoutines() // Trigger fetching routines
+
+    val uiState = viewModel.uiState
+
+    val routineList = uiState.routines?.content?.map { networkRoutine ->
+        Routine(
+            name = networkRoutine.name ?: "",
+            description = networkRoutine.detail ?: "",
+            rating = networkRoutine.score ?: 0,
+            duration = networkRoutine.date ?: 0,
+            dUnit = "min"
+        )
+    } ?: emptyList()
+
+    LazyColumn {
         items(routineList.size) { index ->
             val item = routineList[index]
             ListItemComponent(item = item)

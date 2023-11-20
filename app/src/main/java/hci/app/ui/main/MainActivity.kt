@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import hci.app.BottomBar
@@ -71,8 +72,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }*/
                     ) {
-                        MainScreen(appState = appState)
-                        //MyNavGraph(navController = navController)
+                        MainScreen(appState = appState, navController = navController)
                     }
                 }
             }
@@ -106,7 +106,8 @@ fun ActionButton(
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = viewModel(factory = getViewModelFactory()),
-    appState: MyAppState
+    appState: MyAppState,
+    navController: NavHostController
 ) {
 
     val uiState = viewModel.uiState
@@ -117,6 +118,7 @@ fun MainScreen(
         Text(
             text = "${uiState.currentUser?.firstName} ${uiState.currentUser?.lastName}"
         )
+        MyNavGraph(navController = navController, viewModel = viewModel)
     }
 }
 
