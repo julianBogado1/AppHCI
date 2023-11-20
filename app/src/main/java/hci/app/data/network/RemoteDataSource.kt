@@ -1,6 +1,7 @@
 package hci.app.data.network
 
 
+import android.util.Log
 import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import hci.app.data.DataSourceException
@@ -37,6 +38,7 @@ abstract class RemoteDataSource {
                 getDetailsFromException(e)
             )
         } catch (e: Exception) {
+            Log.e("handleApiResponse Exception", e.toString())
             throw DataSourceException(
                 UNEXPECTED_ERROR_CODE,
                 "Unexpected error",

@@ -15,4 +15,9 @@
     <string name="dismiss">Dismiss</string>
     <string name="username">Nombre de usuario</string>
     <string name="password">Contraseña</string>
+    <string name="rutinas">rutinas?</string>
+    <string name="ciclos">ciclos?</string>
+    <string name="unaRutina">unaRutina?</string>
+    <string name="unCiclo">unCiclo?</string>
+    <string name="ejercicios">ejercicios</string>
 </resources>

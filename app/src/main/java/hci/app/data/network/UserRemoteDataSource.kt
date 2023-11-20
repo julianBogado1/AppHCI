@@ -2,6 +2,9 @@ package hci.app.data.network
 
 import hci.app.data.network.api.ApiUserService
 import hci.app.data.network.model.NetworkCredentials
+import hci.app.data.network.model.NetworkRoutineContent
+import hci.app.data.network.model.NetworkRoutineCycleContent
+import hci.app.data.network.model.NetworkRoutineCycles
 import hci.app.data.network.model.NetworkRoutines
 import hci.app.data.network.model.NetworkUser
 import hci.app.util.SessionManager
@@ -31,5 +34,14 @@ class UserRemoteDataSource(
     //todo chequear estos parametros
     suspend fun getRoutines() : NetworkRoutines{
         return handleApiResponse { apiUserService.getRoutines() }
+    }
+    suspend fun getOneRoutine(routineId : Int) : NetworkRoutineContent{
+        return handleApiResponse { apiUserService.getOneRoutine(routineId) }
+    }
+    suspend fun getCycles(routineId : Int) : NetworkRoutineCycles{
+        return handleApiResponse { apiUserService.getCycles(routineId) }
+    }
+    suspend fun getOneCycle(routineId : Int, cycleId : Int) : NetworkRoutineCycleContent{
+        return handleApiResponse { apiUserService.getOneCycle(routineId, cycleId) }
     }
 }

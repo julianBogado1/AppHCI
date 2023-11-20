@@ -28,8 +28,6 @@ import hci.app.R
 @Composable
 fun MyLoginScreen(viewModel : MainViewModel) {
 
-
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -86,18 +84,42 @@ fun MyLoginScreen(viewModel : MainViewModel) {
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp),
             colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
             fontWeight = FontWeight.Bold,
-            resId = R.string.logout,
+            resId = R.string.rutinas,
             onClick = {
                 viewModel.getRoutines()
-                if (viewModel.uiState.routines != null) {
-                    var text = ""
-                    Log.d("routines????idk man", viewModel.uiState.routines.toString())
-                    for (routineContentIt in viewModel.uiState.routines!!.content) {
-                        Log.d("routineContentIt", routineContentIt.toString())
-                        text += (routineContentIt.name + " ")
-                    }
-                    Log.d("SARACATUNGA-TEXT", text)
-                }
+            }
+        )
+        ActionButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+            colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
+            fontWeight = FontWeight.Bold,
+            resId = R.string.ciclos,
+            onClick = {
+                viewModel.getCycles(4)
+            }
+        )
+        ActionButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+            colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
+            fontWeight = FontWeight.Bold,
+            resId = R.string.unCiclo,
+            onClick = {
+                viewModel.getOneCycle(4, 10)
+            }
+        )
+        ActionButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+            colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
+            fontWeight = FontWeight.Bold,
+            resId = R.string.unaRutina,
+            onClick = {
+                viewModel.getOneRoutine(4)
             }
         )
     }
