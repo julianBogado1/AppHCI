@@ -137,7 +137,8 @@ class MainViewModel(private val sessionManager: SessionManager,private val userR
             runCatching {
                 userRemoteDataSource.getCycleExercises(cycleId)
             }.onSuccess { response ->
-                uiState = uiState.copy(isLoading = false, cycleExercises = response)
+                uiState.cycleExercises?.set(cycleId, response)
+                uiState = uiState.copy(isLoading = false)
             }.onFailure { e ->
                 uiState = uiState.copy(isLoading = false, error = handleError(e), message = e.message?:"")
             }

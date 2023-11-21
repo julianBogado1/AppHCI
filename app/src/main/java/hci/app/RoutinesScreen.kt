@@ -14,20 +14,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import hci.app.data.model.Routine
 import hci.app.data.network.model.NetworkRoutineContent
+import hci.app.ui.main.MainUiState
 import hci.app.ui.main.MainViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun RoutinesScreen(viewModel: MainViewModel) {
-    viewModel.getRoutines() // Trigger fetching routines
 
-    val uiState = viewModel.uiState
-
-    val routineList = uiState.routines?.content
+    LaunchedEffect(key1 = Unit) {
+        launch {
+            viewModel.getRoutines() // Trigger fetching routines
+        }
+    }
 
     LazyColumn {
-        if (routineList != null) {
-            items(routineList.size) { index ->
-                val item = routineList?.get(index)
+        if (viewModel.uiState.routines?.content != null) {
+            items(viewModel.uiState.routines?.content!!.size) { index ->
+                val item = viewModel.uiState.routines?.content?.get(index)
                 if (item != null) {
                     ListItemComponent(item = item)
                 }

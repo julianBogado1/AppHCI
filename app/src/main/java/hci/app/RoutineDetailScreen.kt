@@ -11,7 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.*
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -45,41 +49,15 @@ fun RoutineDetailScreen(viewModel: MainViewModel, routineId: Int) {
 @Composable
 fun PhoneRoutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
 
-    var routine: NetworkRoutineContent? = null
-    var cycles: ArrayList<NetworkRoutineCycleContent>? = null
-    var firstCycle: NetworkRoutineCycleContent? = null
-    var firstExercises: ArrayList<NetworkCycleExercisesContent>? = null
-    var lastCycle: NetworkRoutineCycleContent? = null
-    var lastExercises: ArrayList<NetworkCycleExercisesContent>? = null
-    var middleCycles: List<NetworkRoutineCycleContent>? = null
-    var cycleExercises: MutableMap<NetworkRoutineCycleContent, ArrayList<NetworkCycleExercisesContent>?> = mutableMapOf()
-
-
-    LaunchedEffect(key1 = Unit){
+    LaunchedEffect(key1 = Unit) {
         launch {
             viewModel.getOneRoutine(routineId)
-            routine = viewModel.uiState.oneRoutine
             viewModel.getCycles(routineId)
-            cycles = viewModel.uiState.cycles?.content
-            cycles?.first()?.id?.let { viewModel.getOneCycle(routineId, it) }
-            firstCycle = viewModel.uiState.oneCycle
-            firstCycle?.id?.let { viewModel.getCycleExercises(firstCycle?.id!!) }
-            firstExercises = viewModel.uiState.cycleExercises?.content
-            cycles?.last()?.id?.let { viewModel.getOneCycle(routineId, it) }
-            lastCycle = viewModel.uiState.oneCycle
-            lastCycle?.id?.let { viewModel.getCycleExercises(lastCycle?.id!!) }
-            lastExercises = viewModel.uiState.cycleExercises?.content
-
-            middleCycles = cycles?.drop(1)?.dropLast(1)
-            cycleExercises = mutableMapOf<NetworkRoutineCycleContent, ArrayList<NetworkCycleExercisesContent>?>()
-
-            middleCycles?.forEach { cycle ->
+            viewModel.uiState.cycles?.content?.forEach { cycle ->
                 cycle.id?.let { viewModel.getCycleExercises(it) }
-                cycleExercises[cycle] = viewModel.uiState.cycleExercises?.content
             }
         }
     }
-
 
     LazyColumn(
         modifier = Modifier
@@ -94,7 +72,7 @@ fun PhoneRoutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                routine?.name?.let {
+                viewModel.uiState.oneRoutine?.name?.let {
                     Text(
                         text = it,
                         style = MaterialTheme.typography.titleLarge,
@@ -106,105 +84,124 @@ fun PhoneRoutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
             }
         }
 
-        item{
+        item {
             Spacer(modifier = Modifier.height(8.dp))
 
-            Divider(modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray))
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.Gray)
+            )
         }
 
-        item{
-            Text(text = "Descripción: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+        item {
+            Text(
+                text = "Descripción: ",
+                style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
+            )
         }
 
-        item{
-            Text(text = "${routine?.detail}", style = MaterialTheme.typography.bodyLarge)
+        item {
+            Text(text = "${viewModel.uiState.oneRoutine?.detail}", style = MaterialTheme.typography.bodyLarge)
         }
 
-        item{
+        item {
             Spacer(modifier = Modifier.height(8.dp))
 
-            Divider(modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray))
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.Gray)
+            )
         }
 
-        item{
-            Text(text = "Categoría: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
-        }
-
-        item{
-            Text(text = "${routine?.category}", style = MaterialTheme.typography.bodyLarge)
-        }
-
-        item{
+        item {
             Spacer(modifier = Modifier.height(8.dp))
 
-            Divider(modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray))
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.Gray)
+            )
         }
 
-        item{
-            Text(text = "Fecha de Creación: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+        item {
+            Text(
+                text = "Fecha de Creación: ",
+                style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
+            )
         }
 
-        item{
-            Text(text = "${routine?.date}", style = MaterialTheme.typography.bodyLarge)
+        item {
+            Text(text = "${viewModel.uiState.oneRoutine?.date}", style = MaterialTheme.typography.bodyLarge)
         }
 
-        item{
+        item {
             Spacer(modifier = Modifier.height(8.dp))
 
-            Divider(modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray))
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.Gray)
+            )
         }
 
-        item{
-            Text(text = "Duración: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+        item {
+            Text(
+                text = "Duración: ",
+                style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
+            )
         }
 
-        item{
-            Text(text = "${routine?.metadata?.duration} min", style = MaterialTheme.typography.bodyLarge)
+        item {
+            Text(
+                text = "${viewModel.uiState.oneRoutine?.metadata?.duration} min",
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
 
-        item{
+        item {
             Spacer(modifier = Modifier.height(8.dp))
 
-            Divider(modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray))
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.Gray)
+            )
         }
 
-        item{
-            Text(text = "Dificultad: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+        item {
+            Text(
+                text = "Dificultad: ",
+                style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
+            )
         }
 
 
-        when (routine?.difficulty) {
-            "beginner" -> item{
-                Row(){
+        when (viewModel.uiState.oneRoutine?.difficulty) {
+            "beginner" -> item {
+                Row() {
                     ArmFlexIcon()
                     ArmFlexOutlineIcon()
                     ArmFlexOutlineIcon()
                 }
             }
-            "intermediate" -> item{
-                Row(){
+
+            "intermediate" -> item {
+                Row() {
                     ArmFlexIcon()
                     ArmFlexIcon()
                     ArmFlexOutlineIcon()
                 }
             }
-            "advanced" -> item{
-                Row(){
+
+            "advanced" -> item {
+                Row() {
                     ArmFlexIcon()
                     ArmFlexIcon()
                     ArmFlexIcon()
@@ -212,128 +209,54 @@ fun PhoneRoutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
             }
         }
 
-        item{
+        item {
             Spacer(modifier = Modifier.height(8.dp))
 
-            Divider(modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray))
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.Gray)
+            )
         }
 
-        item{
-            Text(text = "Puntuación: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+        item {
+            Text(
+                text = "Puntuación: ",
+                style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
+            )
         }
 
-        item{
-            Text(text = "${routine?.score}", style = MaterialTheme.typography.bodyLarge)
+        item {
+            Text(text = "${viewModel.uiState.oneRoutine?.score}", style = MaterialTheme.typography.bodyLarge)
         }
 
-        item{
+        item {
             Spacer(modifier = Modifier.height(8.dp))
 
-            Divider(modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray))
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.Gray)
+            )
         }
 
-        item{
-            Row(modifier = Modifier
-                .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ){
-                Text(text = "Ciclo de Calentamiento: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
 
-                Text(text = "Repeticiones: ", style = MaterialTheme.typography.bodyLarge)
-            }
-        }
-
-        firstExercises?.forEach{ exercise ->
-            item{
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .background(Color(0xFFD9D9D9))
-                ){
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(IntrinsicSize.Min),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ){
-                        Box{
-                            Column(
-                                modifier = Modifier
-                                    .padding(2.dp),
-                                verticalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(text = "${exercise.exercise?.name}", style = MaterialTheme.typography.titleLarge)
-
-                                Text(text = "${exercise.exercise?.detail}", style = MaterialTheme.typography.bodyLarge)
-
-                            }
-                        }
-
-                        Box{
-                            Row(
-                                modifier = Modifier
-                                    .width(160.dp)
-                                    .fillMaxHeight()
-                                    .background(Color(0xFFBEBEBE))
-                            ){
-                                Column(
-                                    modifier = Modifier
-                                        .padding(2.dp)
-                                ) {
-                                    Text(
-                                        text = "Series ", style = MaterialTheme.typography.bodyLarge
-                                    )
-
-                                    Text(
-                                        text = "${exercise.repetitions}", style = MaterialTheme.typography.bodyLarge,
-                                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                                    )
-                                }
-
-                                Column(
-                                    modifier = Modifier
-                                        .padding(2.dp)
-                                ){
-                                    Text(
-                                        text = "Duración (min)", style = MaterialTheme.typography.bodyLarge
-                                    )
-
-                                    Text(
-                                        text = "${exercise.duration}", style = MaterialTheme.typography.bodyLarge,
-                                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                                    )
-                                }
-
-                            }
-                        }
-
-
-
-                    }
-
-                }
-            }
-        }
-
-        item{
+        item {
             Spacer(modifier = Modifier.height(8.dp))
 
-            Divider(modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray))
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.Gray)
+            )
         }
 
-        middleCycles?.forEach { oneCycle ->
+        viewModel.uiState.cycles?.content?.forEach { oneCycle ->
 
-            item{
+            item {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -353,52 +276,60 @@ fun PhoneRoutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                 }
             }
 
-            val exercises = cycleExercises[oneCycle]
+            val exercises = viewModel.uiState.cycleExercises?.get(oneCycle.id)
 
-            exercises?.forEach{ exercise ->
-                item{
+            exercises?.content?.forEach { exercise ->
+                item {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(10.dp)
                             .background(Color(0xFFD9D9D9))
-                    ){
+                    ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(IntrinsicSize.Min),
                             horizontalArrangement = Arrangement.SpaceBetween
-                        ){
-                            Box{
+                        ) {
+                            Box {
                                 Column(
                                     modifier = Modifier
                                         .padding(2.dp),
                                     verticalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text(text = "${exercise.exercise?.name}", style = MaterialTheme.typography.titleLarge)
+                                    Text(
+                                        text = "${exercise.exercise?.name}",
+                                        style = MaterialTheme.typography.titleLarge
+                                    )
 
-                                    Text(text = "${exercise.exercise?.detail}", style = MaterialTheme.typography.bodyLarge)
+                                    Text(
+                                        text = "${exercise.exercise?.detail}",
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
 
                                 }
                             }
 
-                            Box{
+                            Box {
                                 Row(
                                     modifier = Modifier
                                         .width(160.dp)
                                         .fillMaxHeight()
                                         .background(Color(0xFFBEBEBE))
-                                ){
+                                ) {
                                     Column(
                                         modifier = Modifier
                                             .padding(2.dp)
                                     ) {
                                         Text(
-                                            text = "Series ", style = MaterialTheme.typography.bodyLarge
+                                            text = "Series ",
+                                            style = MaterialTheme.typography.bodyLarge
                                         )
 
                                         Text(
-                                            text = "${exercise.repetitions}", style = MaterialTheme.typography.bodyLarge,
+                                            text = "${exercise.repetitions}",
+                                            style = MaterialTheme.typography.bodyLarge,
                                             modifier = Modifier.align(Alignment.CenterHorizontally)
                                         )
                                     }
@@ -406,13 +337,15 @@ fun PhoneRoutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                                     Column(
                                         modifier = Modifier
                                             .padding(2.dp)
-                                    ){
+                                    ) {
                                         Text(
-                                            text = "Duración (min)", style = MaterialTheme.typography.bodyLarge
+                                            text = "Duración (min)",
+                                            style = MaterialTheme.typography.bodyLarge
                                         )
 
                                         Text(
-                                            text = "${exercise.duration}", style = MaterialTheme.typography.bodyLarge,
+                                            text = "${exercise.duration}",
+                                            style = MaterialTheme.typography.bodyLarge,
                                             modifier = Modifier.align(Alignment.CenterHorizontally)
                                         )
                                     }
@@ -424,93 +357,15 @@ fun PhoneRoutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                 }
             }
 
-            item{
+            item {
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Divider(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.Gray))
-            }
-        }
-
-        item{
-            Row(modifier = Modifier
-                .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ){
-                Text(text = "Ciclo de Enfriamiento: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
-
-                Text(text = "Repeticiones: ${lastCycle?.repetitions}", style = MaterialTheme.typography.bodyLarge)
-            }
-        }
-
-        lastExercises?.forEach{ exercise ->
-            item{
-                Box(
+                Divider(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
-                        .background(Color(0xFFD9D9D9))
-                ){
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(IntrinsicSize.Min),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ){
-                        Box{
-                            Column(
-                                modifier = Modifier
-                                    .padding(2.dp),
-                                verticalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(text = "${exercise.exercise?.name}", style = MaterialTheme.typography.titleLarge)
-
-                                Text(text = "${exercise.exercise?.detail}", style = MaterialTheme.typography.bodyLarge)
-
-                            }
-                        }
-
-                        Box{
-                            Row(
-                                modifier = Modifier
-                                    .width(160.dp)
-                                    .fillMaxHeight()
-                                    .background(Color(0xFFBEBEBE))
-                            ){
-                                Column(
-                                    modifier = Modifier
-                                        .padding(2.dp)
-                                ) {
-                                    Text(
-                                        text = "Series ", style = MaterialTheme.typography.bodyLarge
-                                    )
-
-                                    Text(
-                                        text = "${exercise.repetitions}", style = MaterialTheme.typography.bodyLarge,
-                                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                                    )
-                                }
-
-                                Column(
-                                    modifier = Modifier
-                                        .padding(2.dp)
-                                ){
-                                    Text(
-                                        text = "Duración (min)", style = MaterialTheme.typography.bodyLarge
-                                    )
-
-                                    Text(
-                                        text = "${exercise.duration}", style = MaterialTheme.typography.bodyLarge,
-                                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                                    )
-                                }
-
-                            }
-                        }
-                    }
-                }
+                        .height(1.dp)
+                        .background(Color.Gray)
+                )
             }
         }
     }
