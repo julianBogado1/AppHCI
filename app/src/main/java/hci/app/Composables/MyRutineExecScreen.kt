@@ -38,13 +38,17 @@ fun MyRutineExecScreen1(rutina: Rutina, viewModel: MainViewModel) {
     val ejIndexState by viewModel.ejIndexState
     val cicleIndexState by viewModel.cicleIndexState
 
+    val inBreak by viewModel.inBreak
+    val inStop by viewModel.inStop
+    val timerRemainingSec by viewModel.timerRemainingSec
+
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
 
     if (isTablet) {
         TabletRutineExec1Layout(rutina,ejIndexState,{ newValue -> viewModel.setEjIndex(newValue)},cicleIndexState,{newValue -> viewModel.setCicleIndex(newValue)})
     } else {
-        PhoneRutineExec1Layout(rutina,ejIndexState,{ newValue -> viewModel.setEjIndex(newValue)},cicleIndexState,{newValue -> viewModel.setCicleIndex(newValue)})
+        PhoneRutineExec1Layout(rutina,ejIndexState,{ newValue -> viewModel.setEjIndex(newValue)},cicleIndexState,{newValue -> viewModel.setCicleIndex(newValue)},inBreak,{newValue -> viewModel.setInBreak(newValue)},timerRemainingSec,{newValue->viewModel.setTimerRemainingSec(newValue)},inBreak,{newValue -> viewModel.setInStop(newValue)})
     }
 }
 
@@ -64,7 +68,7 @@ fun MyRutineExecScreen2(rutina: Rutina, viewModel: MainViewModel) {
 }
 
 @Composable
-fun PhoneRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -> Unit, cicleIndex: Int,onCicleIndexChange: (Int) -> Unit) {
+fun PhoneRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -> Unit, cicleIndex: Int,onCicleIndexChange: (Int) -> Unit, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -125,6 +129,8 @@ fun PhoneRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
                 val duration = rutina.cicles[cicleIndex].ejs[ejIndex].duration
                 val series = rutina.cicles[cicleIndex].ejs[ejIndex].series
 
+
+
                 val displayText = if (duration == 0 || series == 0) {
                     if(duration==0){ "${series} series"}
                     else { "${duration} ${rutina.cicles[cicleIndex].ejs[ejIndex].dUnit}"}
@@ -147,11 +153,30 @@ fun PhoneRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
                     style = MaterialTheme.typography.headlineSmall)
             }
 
+            timeRemainingSecChange(rutina.cicles[cicleIndex].ejs[ejIndex].duration*60)
+
+            if(rutina.cicles[cicleIndex].ejs[ejIndex].duration!=0){
             Box(modifier = Modifier
                 .height(100.dp)
                 .fillMaxWidth()
             ){
-                Text(text="timer")
+
+
+                    MyTimer(
+                        seconds = timeRemainingSec,
+                        onTimerFinish = {
+                            onEjIndexChange((ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size)
+                            if (ejIndex == 0) onCicleIndexChange((cicleIndex + 1) % rutina.cicles.size)
+                            stopChange(false)
+                        },
+                        onTimerTick = {
+
+                        },
+                        inBreak = inBreak,
+                        inStop = inStop,
+                        stopChange = stopChange
+                    )
+                }
             }
 
             Column(modifier = Modifier
@@ -165,8 +190,9 @@ fun PhoneRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
                         modifier = Modifier
                             .padding(top = 16.dp, start = 16.dp, end = 16.dp),
                         onClick = {
+                            stopChange(true)
                             onEjIndexChange((ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size)
-                            if(ejIndex==0) onCicleIndexChange((cicleIndex + 1) % rutina.cicles.size)
+                            if (ejIndex == 0) onCicleIndexChange((cicleIndex + 1) % rutina.cicles.size)
                         },
                         colors = ButtonDefaults.buttonColors(Color(0xFF000000))
                     ) {
@@ -185,7 +211,9 @@ fun PhoneRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
                     Button(
                         modifier = Modifier
                             .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                        onClick = {},
+                        onClick = {
+                                  breakChange(!inBreak)
+                        },
                         colors = ButtonDefaults.buttonColors(Color(0xFF49454F))
                     ) {
                         Text(

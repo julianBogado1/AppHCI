@@ -29,10 +29,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import hci.app.BottomBar
-import hci.app.Composables.MyLoginScreen
+import hci.app.Composables.*
 import hci.app.MyNavGraph
 import hci.app.R
-import hci.app.composables.MyTextField
 import hci.app.data.model.Sport
 import hci.app.data.model.User
 import hci.app.data.network.model.NetworkRoutineContent
@@ -136,13 +135,28 @@ fun MainScreen(
     val uiState = viewModel.uiState
     var text : String?
 
-    MyLoginScreen(viewModel)
+    val cicle = Cicle(
+        name = "Ejercitación",
+        number = 1,
+        rep = 3,
+        ejs = listOf(
+            Ejercicio("Squats", "Leg workout", 2, 1, "s"),
+            Ejercicio("Push-ups", "Upper body workout", 3, 2, "s"),
+            Ejercicio("Core", "Body workout", 5, 0, "s")
+        )
+    )
+
+    val excicle= listOf(cicle,cicle,cicle)
+
+    val rutina = Rutina("Rutina 1", "Description for Rutina 1", 2, 30, "min",excicle,7.5, "13/11/2023", "Cardio")
+    MyRutineExecScreen1(rutina = rutina, viewModel = viewModel)
+    /*MyLoginScreen(viewModel)
     if(viewModel.uiState.isAuthenticated) {
         Text(
             text = "${uiState.currentUser?.firstName} ${uiState.currentUser?.lastName}"
         )
         //MyNavGraph(navController = navController, viewModel = viewModel)
-    }
+    }*/
 }
 
 

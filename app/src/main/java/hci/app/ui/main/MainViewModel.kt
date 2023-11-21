@@ -37,6 +37,28 @@ class MainViewModel(private val sessionManager: SessionManager,private val userR
     fun setCicleIndex(index: Int) {
         _cicleIndexState.value = index
     }
+
+    private val _timerRemainingSec = mutableStateOf(0)
+    val timerRemainingSec: State<Int> = _timerRemainingSec
+
+    fun setTimerRemainingSec(sec: Int) {
+        _timerRemainingSec.value = sec
+    }
+
+    private val _inBreak = mutableStateOf(false)
+    val inBreak: State<Boolean> = _inBreak
+
+    fun setInBreak(value: Boolean) {
+        _inBreak.value = value
+    }
+
+    private val _inStop = mutableStateOf(false)
+    val inStop: State<Boolean> = _inStop
+
+    fun setInStop(value: Boolean) {
+        _inStop.value = value
+    }
+
     fun printAuth() : Unit{
         Log.d("SARACATUNGA", sessionManager.loadAuthToken().toString())
     }
