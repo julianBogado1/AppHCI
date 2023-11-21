@@ -6,6 +6,7 @@ import hci.app.data.model.Error
 import hci.app.data.network.model.NetworkCycleExercises
 import hci.app.data.network.model.NetworkCycleExercisesContent
 import hci.app.data.network.model.NetworkExercise
+import hci.app.data.network.model.NetworkExercisesIsolated
 import hci.app.data.network.model.NetworkRoutineContent
 import hci.app.data.network.model.NetworkRoutineCycleContent
 import hci.app.data.network.model.NetworkRoutineCycles
@@ -25,7 +26,8 @@ data class MainUiState(
     val cycles : NetworkRoutineCycles? = null,
     val oneRoutine : NetworkRoutineContent? = null,
     val oneCycle : NetworkRoutineCycleContent? = null,
-    val exercises : NetworkCycleExercises? = null,
+    val cycleExercises : NetworkCycleExercises? = null,
+    val exercises : NetworkExercisesIsolated? = null,
     val exercisesContent: NetworkCycleExercisesContent? = null,
     val oneExercise : NetworkExercise? = null,
 )
@@ -44,6 +46,6 @@ val oneRoutine : NetworkRoutineContent? = null
 
 val cycles : NetworkRoutineCycles? = null
 val oneCycle : NetworkRoutineCycleContent? = null
-val exercises : NetworkCycleExercises? = null
+val exercises : NetworkExercisesIsolated? = null
 val exercisesContent: NetworkCycleExercisesContent? = null
 val oneExercise : NetworkExercise? = null

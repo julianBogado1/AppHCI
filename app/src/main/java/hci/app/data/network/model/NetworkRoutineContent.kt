@@ -9,7 +9,7 @@ data class NetworkRoutineContent (
     @SerializedName("id")           var id         : Int?      = null,
     @SerializedName("name")         var name       : String?   = null,
     @SerializedName("detail")       var detail     : String?   = null,
-    @SerializedName("date")         var date       : Int?      = null,
+    @SerializedName("date")         var date       : Long?      = null,
     @SerializedName("score")        var score      : Int?      = null,
     @SerializedName("isPublic")     var isPublic   : Boolean?  = null,
     @SerializedName("difficulty")   var difficulty : String?   = null,

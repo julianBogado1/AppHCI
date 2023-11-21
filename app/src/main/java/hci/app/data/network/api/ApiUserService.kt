@@ -4,6 +4,7 @@ import hci.app.data.network.model.NetworkCredentials
 import hci.app.data.network.model.NetworkCycleExercises
 import hci.app.data.network.model.NetworkCycleExercisesContent
 import hci.app.data.network.model.NetworkExercise
+import hci.app.data.network.model.NetworkExercisesIsolated
 import hci.app.data.network.model.NetworkRoutineContent
 import hci.app.data.network.model.NetworkRoutineCycleContent
 import hci.app.data.network.model.NetworkRoutineCycles
@@ -45,7 +46,7 @@ interface ApiUserService {
     suspend fun getOneCycleExercise(@Path("cycleId")cycleId : Int, @Path("exerciseId")exerciseId : Int) : Response<NetworkCycleExercisesContent>
 
     @GET("exercises")
-    suspend fun getExercises(@Query("size")size : Int? = 90) : Response<NetworkCycleExercisesContent>
+    suspend fun getExercises(@Query("size")size : Int? = 90) : Response<NetworkExercisesIsolated>
     @GET("exercises/{exerciseId}")
     suspend fun getOneExercise(@Path("exerciseId")exerciseId : Int) : Response<NetworkExercise>
 }

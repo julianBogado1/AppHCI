@@ -43,7 +43,8 @@ fun MyLoginScreen(viewModel : MainViewModel) {
             DisplayImage()
         }
 
-        Spacer(modifier = Modifier.height(60.dp))
+        var testText =""
+       /* Spacer(modifier = Modifier.height(60.dp))
 
         val username = remember { mutableStateOf(TextFieldValue()) }
         OutlinedTextField(
@@ -77,7 +78,7 @@ fun MyLoginScreen(viewModel : MainViewModel) {
             colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
             fontWeight = FontWeight.Bold,
             onClick = {viewModel.login(username.value.text, password.value.text)},
-        )
+        )*/
         ActionButton(
             modifier = Modifier
                 .fillMaxWidth()
@@ -87,6 +88,8 @@ fun MyLoginScreen(viewModel : MainViewModel) {
             resId = R.string.rutinas,
             onClick = {
                 viewModel.getRoutines()
+                Log.d("getRoutines", viewModel.uiState.routines.toString())
+                testText = viewModel.uiState.routines.toString()
             }
         )
         ActionButton(
@@ -98,6 +101,7 @@ fun MyLoginScreen(viewModel : MainViewModel) {
             resId = R.string.ciclos,
             onClick = {
                 viewModel.getCycles(4)
+                testText = viewModel.uiState.cycles.toString()
             }
         )
         ActionButton(
@@ -111,6 +115,7 @@ fun MyLoginScreen(viewModel : MainViewModel) {
                 //viewModel.getOneCycle(4, 10)
                 //viewModel.getCycleExercises(10)
                 viewModel.getExercises()
+                testText = viewModel.uiState.exercises.toString()
             }
         )
         ActionButton(
@@ -123,7 +128,9 @@ fun MyLoginScreen(viewModel : MainViewModel) {
             onClick = {
                 //viewModel.getOneCycleExercise(10, 20)
                 viewModel.getOneExercise(20)
+                testText = viewModel.uiState.oneExercise.toString()
             }
         )
+        Text(testText)
     }
 }

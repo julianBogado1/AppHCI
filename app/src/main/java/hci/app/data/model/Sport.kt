@@ -21,7 +21,7 @@ data class Routine(
     val name: String,
     val description: String,
     val rating: Int,
-    val duration: Int,
+    val duration: Long,
     val dUnit: String
 )
 
