@@ -40,6 +40,7 @@ import hci.app.data.network.model.NetworkRoutines
 import hci.app.ui.theme.TPETheme
 import hci.app.util.VerticalBar
 import hci.app.util.getViewModelFactory
+import java.util.Locale
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
@@ -139,7 +140,7 @@ fun MainScreen(
     MyLoginScreen(viewModel)
     if(viewModel.uiState.isAuthenticated) {
         Text(
-            text = "${uiState.currentUser?.firstName} ${uiState.currentUser?.lastName}"
+            text = "${Locale.getDefault().getLanguage()}"
         )
         //MyNavGraph(navController = navController, viewModel = viewModel)
     }

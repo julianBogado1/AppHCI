@@ -27,7 +27,6 @@ import hci.app.ui.main.ActionButton
 import hci.app.ui.main.MainViewModel
 import hci.app.R
 
-
 @Composable
 fun MyLoginScreen(viewModel: MainViewModel) {
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
