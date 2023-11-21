@@ -57,27 +57,26 @@ fun PhoneRoutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
 
     LaunchedEffect(key1 = Unit){
         launch {
+            viewModel.getOneRoutine(routineId)
+            routine = viewModel.uiState.oneRoutine
             viewModel.getCycles(routineId)
             cycles = viewModel.uiState.cycles?.content
             cycles?.first()?.id?.let { viewModel.getOneCycle(routineId, it) }
             firstCycle = viewModel.uiState.oneCycle
-            firstCycle?.id?.let { viewModel.getExercises() }
-            firstExercises = viewModel.uiState.exercises?.content
+            firstCycle?.id?.let { viewModel.getCycleExercises(firstCycle?.id!!) }
+            firstExercises = viewModel.uiState.cycleExercises?.content
             cycles?.last()?.id?.let { viewModel.getOneCycle(routineId, it) }
             lastCycle = viewModel.uiState.oneCycle
-            lastCycle?.id?.let { viewModel.getExercises() }
-            lastExercises = viewModel.uiState.exercises?.content
+            lastCycle?.id?.let { viewModel.getCycleExercises(lastCycle?.id!!) }
+            lastExercises = viewModel.uiState.cycleExercises?.content
 
             middleCycles = cycles?.drop(1)?.dropLast(1)
             cycleExercises = mutableMapOf<NetworkRoutineCycleContent, ArrayList<NetworkCycleExercisesContent>?>()
 
             middleCycles?.forEach { cycle ->
                 cycle.id?.let { viewModel.getCycleExercises(it) }
-                cycleExercises[cycle] = viewModel.uiState.exercises?.content
+                cycleExercises[cycle] = viewModel.uiState.cycleExercises?.content
             }
-
-            viewModel.getOneRoutine(routineId)
-            val routine = viewModel.uiState.oneRoutine
         }
     }
 
@@ -190,21 +189,21 @@ fun PhoneRoutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
 
 
         when (routine?.difficulty) {
-            1 -> item{
+            "beginner" -> item{
                 Row(){
                     ArmFlexIcon()
                     ArmFlexOutlineIcon()
                     ArmFlexOutlineIcon()
                 }
             }
-            2 -> item{
+            "intermediate" -> item{
                 Row(){
                     ArmFlexIcon()
                     ArmFlexIcon()
                     ArmFlexOutlineIcon()
                 }
             }
-            3 -> item{
+            "advanced" -> item{
                 Row(){
                     ArmFlexIcon()
                     ArmFlexIcon()

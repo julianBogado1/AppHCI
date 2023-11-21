@@ -118,7 +118,7 @@ fun MainScreen(
         Text(
             text = "${uiState.currentUser?.firstName} ${uiState.currentUser?.lastName}"
         )
-        //MyNavGraph(navController = navController, viewModel = viewModel)
+        MyNavGraph(navController = navController, viewModel = viewModel)
     }
 }
 
