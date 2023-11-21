@@ -1,5 +1,6 @@
 package hci.app.Composables
 
+import android.provider.ContactsContract.CommonDataKinds.Phone
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,11 +17,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material3.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.toSize
@@ -53,10 +56,20 @@ data class Ejercicio(
     val dUnit: String
 )
 
-
-
 @Composable
 fun MyListScreen() {
+    val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
+    val isTablet = isTabletState.value
+
+    if (isTablet) {
+        TabletListLayout()
+    } else {
+        PhoneListLayout()
+    }
+}
+
+@Composable
+fun PhoneListLayout() {
     var sortCriteria by remember { mutableStateOf("rate") }
     var sortCriteriaName by remember { mutableStateOf("Dificultad") }
 
@@ -164,7 +177,132 @@ fun MyListScreen() {
         }
 
 
-        LazyColumn {
+        LazyColumn(
+            modifier=Modifier
+                .padding(bottom=80.dp)
+        ) {
+            items(sortedRutineList.size) { index ->
+                val item = sortedRutineList[index]
+                ListItemComponent(item = item)
+            }
+        }
+
+    }
+}
+
+@Composable
+fun TabletListLayout() {
+    var sortCriteria by remember { mutableStateOf("rate") }
+    var sortCriteriaName by remember { mutableStateOf("Dificultad") }
+
+    val excicle =listOf(
+        Cicle(
+            name = "Ejercitación",
+            number = 1,
+            rep = 3,
+            ejs = listOf(
+                Ejercicio("Squats", "Leg workout", 3, 30, "s"),
+                Ejercicio("Push-ups", "Upper body workout", 3, 20, "s"),
+            )
+        ))
+
+    val rutineList = remember {
+        listOf(
+            Rutina("Rutina 1", "Desc 1", 2, 12, "min",excicle,5.0, "13/11/2023", "Piernas"),
+            Rutina("Rutina 2", "Desc 2", 3, 9, "min",excicle,3.0, "13/11/2023", "Piernas"),
+            Rutina("Rutina 3", "Desc 3", 2, 15, "min",excicle,3.0, "13/11/2023", "Brazos"),
+            Rutina("Rutina 4", "Desc 1", 1, 12, "min",excicle,3.0, "09/11/2023", "Brazos"),
+            Rutina("Rutina 5", "Desc 2", 1, 9, "min",excicle,5.0, "09/11/2023", "Brazos"),
+            Rutina("Rutina 6", "Desc 3", 2, 15, "min",excicle,7.0, "09/11/2023", "Cardio"),
+            Rutina("Rutina 7", "Desc 1", 2, 12, "min",excicle,2.5, "12/11/2023", "Cardio"),
+            Rutina("Rutina 8", "Desc 2", 3, 9, "min",excicle,7.6, "12/11/2023", "Cardio"),
+            Rutina("Rutina 9", "Desc 3", 2, 15, "min",excicle,9.0, "12/11/2023", "Yoga"),
+            Rutina("Rutina 10", "Desc 1", 2, 12, "min",excicle,10.0, "11/11/2023", "Yoga"),
+            Rutina("Rutina 11", "Desc 2", 3, 9, "min",excicle,5.0, "11/11/2023", "Yoga"),
+            Rutina("Rutina 12", "Desc 3", 2, 15, "min",excicle,7.0, "12/11/2023", "Piernas")
+        )
+    }
+
+    val sortedRutineList = remember(rutineList, sortCriteria) {
+        when (sortCriteria.lowercase()) {
+            "rate" -> rutineList.sortedBy { it.rating }
+            "category" -> rutineList.sortedBy {it.category}
+            "date" -> rutineList.sortedByDescending {it.date}
+            "points" -> rutineList.sortedByDescending {it.points}
+            else -> rutineList
+        }
+    }
+
+    var isDropdownVisible by remember { mutableStateOf(false) }
+
+    val icon = if (isDropdownVisible)
+        Icons.Filled.KeyboardArrowUp
+    else
+        Icons.Filled.KeyboardArrowDown
+
+    var TextFieldSize by remember { mutableStateOf(Size.Zero)}
+
+
+
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(start=80.dp, end=16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Column(Modifier.padding(20.dp)) {
+            OutlinedTextField(
+                value = sortCriteriaName,
+                onValueChange = {},
+                readOnly = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onGloballyPositioned { coordinates ->
+                        TextFieldSize = coordinates.size.toSize()
+                    },
+                label = {Text("Ordenar por")},
+                trailingIcon = {
+                    Icon(icon,"contentDescription",
+                        Modifier.clickable { isDropdownVisible = !isDropdownVisible })
+                }
+            )
+
+
+            DropdownMenu(
+                expanded = isDropdownVisible,
+                onDismissRequest = { isDropdownVisible = false },
+                modifier = Modifier
+                    .width(with(LocalDensity.current){TextFieldSize.width.dp})
+            ) {
+                DropdownMenuItem("Dificultad") {
+                    sortCriteria = "rate"
+                    sortCriteriaName = "Dificultad"
+                    isDropdownVisible = false
+                }
+                DropdownMenuItem("Categoría") {
+                    sortCriteria = "category"
+                    sortCriteriaName = "Categoría"
+                    isDropdownVisible = false
+                }
+                DropdownMenuItem("Fecha") {
+                    sortCriteria = "date"
+                    sortCriteriaName = "Fecha"
+                    isDropdownVisible = false
+                }
+                DropdownMenuItem("Puntaje") {
+                    sortCriteria = "points"
+                    sortCriteriaName = "Puntaje"
+                    isDropdownVisible = false
+                }
+            }
+        }
+
+
+        LazyColumn(
+            modifier=Modifier
+                .padding(bottom=20.dp)
+        ) {
             items(sortedRutineList.size) { index ->
                 val item = sortedRutineList[index]
                 ListItemComponent(item = item)

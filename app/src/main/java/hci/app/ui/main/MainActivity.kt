@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,7 +38,9 @@ import hci.app.data.model.User
 import hci.app.data.network.model.NetworkRoutineContent
 import hci.app.data.network.model.NetworkRoutines
 import hci.app.ui.theme.TPETheme
+import hci.app.util.VerticalBar
 import hci.app.util.getViewModelFactory
+import java.util.Locale
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
@@ -59,15 +62,36 @@ class MainActivity : ComponentActivity() {
                     Scaffold(
                         snackbarHost = {appState.snackbarHostState},
                         bottomBar = {
-                            BottomBar(
-                                currentRoute = currentRoute
-                            ) { route ->
-                                navController.navigate(route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
+                            if (LocalConfiguration.current.screenWidthDp >= 600) {
+                                // Display bottom navigation as a column on the left
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .width(80.dp) // Set the desired width for the left navigation bar
+                                ) {
+                                    VerticalBar(
+                                        currentRoute = currentRoute
+                                    ) { route ->
+                                        navController.navigate(route) {
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
                                     }
-                                    launchSingleTop = true
-                                    restoreState = true
+                                }
+                            } else {
+                                BottomBar(
+                                    currentRoute = currentRoute
+                                ) { route ->
+                                    navController.navigate(route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
                                 }
                             }
                         }
@@ -116,9 +140,9 @@ fun MainScreen(
     MyLoginScreen(viewModel)
     if(viewModel.uiState.isAuthenticated) {
         Text(
-            text = "${uiState.currentUser?.firstName} ${uiState.currentUser?.lastName}"
+            text = "${Locale.getDefault().getLanguage()}"
         )
-        MyNavGraph(navController = navController, viewModel = viewModel)
+        //MyNavGraph(navController = navController, viewModel = viewModel)
     }
 }
 
