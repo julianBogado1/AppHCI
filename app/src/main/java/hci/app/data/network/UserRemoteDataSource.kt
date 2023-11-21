@@ -5,6 +5,7 @@ import hci.app.data.network.model.NetworkCredentials
 import hci.app.data.network.model.NetworkCycleExercises
 import hci.app.data.network.model.NetworkCycleExercisesContent
 import hci.app.data.network.model.NetworkExercise
+import hci.app.data.network.model.NetworkExercisesIsolated
 import hci.app.data.network.model.NetworkRoutineContent
 import hci.app.data.network.model.NetworkRoutineCycleContent
 import hci.app.data.network.model.NetworkRoutineCycles
@@ -53,7 +54,7 @@ class UserRemoteDataSource(
     suspend fun getOneCycleExercise(routineId : Int, cycleId : Int) : NetworkCycleExercisesContent {
         return handleApiResponse { apiUserService.getOneCycleExercise(routineId, cycleId) }
     }
-    suspend fun getExercises() : NetworkCycleExercisesContent {
+    suspend fun getExercises() : NetworkExercisesIsolated {
         return handleApiResponse { apiUserService.getExercises() }
     }
     suspend fun getOneExercise(exerciseId : Int) : NetworkExercise {
