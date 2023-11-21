@@ -9,7 +9,7 @@ import hci.app.R
 fun ArmFlexIcon() {
     Image(
         painter = painterResource(id = R.drawable.ic_arm_flex),
-        contentDescription = null // Provide a meaningful description if needed
+        contentDescription = null
     )
 }
 
@@ -17,6 +17,6 @@ fun ArmFlexIcon() {
 fun ArmFlexOutlineIcon() {
     Image(
         painter = painterResource(id = R.drawable.ic_arm_flex_outline),
-        contentDescription = null // Provide a meaningful description if needed
+        contentDescription = null
     )
 }

@@ -1,6 +1,7 @@
 package hci.app.ui.main
 
 import android.util.Log
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,6 +24,19 @@ class MainViewModel(private val sessionManager: SessionManager,private val userR
     var uiState by mutableStateOf(MainUiState(isAuthenticated = sessionManager.loadAuthToken() != null))
         private set
 
+    private val _ejIndexState = mutableStateOf(0)
+    val ejIndexState: State<Int> = _ejIndexState
+
+    private val _cicleIndexState = mutableStateOf(0)
+    val cicleIndexState: State<Int> = _cicleIndexState
+
+    fun setEjIndex(index: Int) {
+        _ejIndexState.value = index
+    }
+
+    fun setCicleIndex(index: Int) {
+        _cicleIndexState.value = index
+    }
     fun printAuth() : Unit{
         Log.d("SARACATUNGA", sessionManager.loadAuthToken().toString())
     }
