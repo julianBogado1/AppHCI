@@ -42,14 +42,18 @@ fun RoutinesScreen(viewModel: MainViewModel, onNavigateToRoutine: (String) -> Un
 }
 
 @Composable
-fun ListItemComponent(item: NetworkRoutineContent, onNavigateToRoutine: (String) -> Unit) {
-    Box(
+fun ListItemComponent(item: NetworkRoutineContent, onNavigateToRoutine: (routineId:String) -> Unit) {
+    val itemId = remember { item.id }
+
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
             .background(Color(0xFFD9D9D9))
             .clickable {
-                item.id?.let { onNavigateToRoutine("routine-details/${it}") }
+                itemId?.let { routineId ->
+                    onNavigateToRoutine("routine-details/$routineId")
+                }
             }
     ){
         Row(

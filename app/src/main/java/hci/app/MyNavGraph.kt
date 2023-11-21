@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import hci.app.ui.main.MainViewModel
@@ -26,10 +27,8 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
             RoutinesScreen(viewModel = viewModel) { route ->
                 navController.navigate(route) {
                     popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = true
+                        inclusive = true
                     }
-                    launchSingleTop = true
-                    restoreState = true
                 }
             }
         }
@@ -47,7 +46,10 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
                 defaultValue = -1
             }
         )) {
-            RoutineDetailScreen(routineId = navController.currentBackStackEntry?.arguments?.getInt("routineId") ?: -1, viewModel = viewModel)
+            RoutineDetailScreen(
+                routineId = navController.currentBackStackEntry?.arguments?.getInt("routineId") ?: -1,
+                viewModel = viewModel
+            )
         }
 
     }

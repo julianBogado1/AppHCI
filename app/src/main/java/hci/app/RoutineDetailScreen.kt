@@ -22,10 +22,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import hci.app.Composables.ArmFlexIcon
 import hci.app.Composables.ArmFlexOutlineIcon
-import hci.app.data.network.model.NetworkCycleExercises
-import hci.app.data.network.model.NetworkCycleExercisesContent
-import hci.app.data.network.model.NetworkRoutineContent
-import hci.app.data.network.model.NetworkRoutineCycleContent
 import hci.app.ui.main.MainViewModel
 import kotlinx.coroutines.launch
 
@@ -35,226 +31,57 @@ fun RoutineDetailScreen(viewModel: MainViewModel, routineId: Int) {
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
 
+    val itemId = remember(routineId) { routineId }
     /*
     if (isTablet) {
         TabletRutineDetailLayout(viewModel, routineId)
     } else {
      */
-        PhoneRoutineDetailLayout(viewModel, routineId)
+        PhoneRoutineDetailLayout(viewModel, itemId)
     /*
     }
      */
 }
 
 @Composable
-fun PhoneRoutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
+fun RetrieveData(
+    viewModel: MainViewModel,
+    routineId: Int,
+    onDataFetched: () -> Unit
+) {
+    // State to track if data fetching is complete
+    var dataFetched by remember { mutableStateOf(false) }
 
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(routineId) {
         launch {
             viewModel.getOneRoutine(routineId)
             viewModel.getCycles(routineId)
             viewModel.uiState.cycles?.content?.forEach { cycle ->
                 cycle.id?.let { viewModel.getCycleExercises(it) }
             }
+
+            dataFetched = true
+            onDataFetched()
         }
     }
+}
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .padding(bottom = 40.dp)
-    ) {
-
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                viewModel.uiState.oneRoutine?.name?.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
-            }
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.Gray)
-            )
-        }
-
-        item {
-            Text(
-                text = "Descripción: ",
-                style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
-            )
-        }
-
-        item {
-            Text(text = "${viewModel.uiState.oneRoutine?.detail}", style = MaterialTheme.typography.bodyLarge)
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.Gray)
-            )
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.Gray)
-            )
-        }
-
-        item {
-            Text(
-                text = "Fecha de Creación: ",
-                style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
-            )
-        }
-
-        item {
-            Text(text = "${viewModel.uiState.oneRoutine?.date}", style = MaterialTheme.typography.bodyLarge)
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.Gray)
-            )
-        }
-
-        item {
-            Text(
-                text = "Duración: ",
-                style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
-            )
-        }
-
-        item {
-            Text(
-                text = "${viewModel.uiState.oneRoutine?.metadata?.duration} min",
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.Gray)
-            )
-        }
-
-        item {
-            Text(
-                text = "Dificultad: ",
-                style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
-            )
-        }
+@Composable
+fun PhoneRoutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
+    var dataFetched by remember { mutableStateOf(false) }
 
 
-        when (viewModel.uiState.oneRoutine?.difficulty) {
-            "beginner" -> item {
-                Row() {
-                    ArmFlexIcon()
-                    ArmFlexOutlineIcon()
-                    ArmFlexOutlineIcon()
-                }
-            }
+    RetrieveData(viewModel = viewModel, routineId = routineId) {
+        dataFetched = true
+    }
 
-            "intermediate" -> item {
-                Row() {
-                    ArmFlexIcon()
-                    ArmFlexIcon()
-                    ArmFlexOutlineIcon()
-                }
-            }
-
-            "advanced" -> item {
-                Row() {
-                    ArmFlexIcon()
-                    ArmFlexIcon()
-                    ArmFlexIcon()
-                }
-            }
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.Gray)
-            )
-        }
-
-        item {
-            Text(
-                text = "Puntuación: ",
-                style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
-            )
-        }
-
-        item {
-            Text(text = "${viewModel.uiState.oneRoutine?.score}", style = MaterialTheme.typography.bodyLarge)
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.Gray)
-            )
-        }
-
-
-        item {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.Gray)
-            )
-        }
-
-        viewModel.uiState.cycles?.content?.forEach { oneCycle ->
+    if(dataFetched) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .padding(bottom = 40.dp)
+        ) {
 
             item {
                 Row(
@@ -262,97 +89,134 @@ fun PhoneRoutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    oneCycle.name?.let {
+                    viewModel.uiState.oneRoutine?.name?.let {
                         Text(
                             text = it,
-                            style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
                         )
                     }
 
-                    Text(
-                        text = "${oneCycle.repetitions}",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                    Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
                 }
             }
 
-            val exercises = viewModel.uiState.cycleExercises?.get(oneCycle.id)
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
 
-            exercises?.content?.forEach { exercise ->
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                            .background(Color(0xFFD9D9D9))
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(IntrinsicSize.Min),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Box {
-                                Column(
-                                    modifier = Modifier
-                                        .padding(2.dp),
-                                    verticalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(
-                                        text = "${exercise.exercise?.name}",
-                                        style = MaterialTheme.typography.titleLarge
-                                    )
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color.Gray)
+                )
+            }
 
-                                    Text(
-                                        text = "${exercise.exercise?.detail}",
-                                        style = MaterialTheme.typography.bodyLarge
-                                    )
+            item {
+                Text(
+                    text = "Descripción: ",
+                    style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
+                )
+            }
 
-                                }
-                            }
+            item {
+                Text(
+                    text = "${viewModel.uiState.oneRoutine?.detail}",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
 
-                            Box {
-                                Row(
-                                    modifier = Modifier
-                                        .width(160.dp)
-                                        .fillMaxHeight()
-                                        .background(Color(0xFFBEBEBE))
-                                ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .padding(2.dp)
-                                    ) {
-                                        Text(
-                                            text = "Series ",
-                                            style = MaterialTheme.typography.bodyLarge
-                                        )
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
 
-                                        Text(
-                                            text = "${exercise.repetitions}",
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                                        )
-                                    }
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color.Gray)
+                )
+            }
 
-                                    Column(
-                                        modifier = Modifier
-                                            .padding(2.dp)
-                                    ) {
-                                        Text(
-                                            text = "Duración (min)",
-                                            style = MaterialTheme.typography.bodyLarge
-                                        )
+            item {
+                Text(
+                    text = "Fecha de Creación: ",
+                    style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
+                )
+            }
 
-                                        Text(
-                                            text = "${exercise.duration}",
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                                        )
-                                    }
+            item {
+                Text(
+                    text = "${viewModel.uiState.oneRoutine?.date}",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
 
-                                }
-                            }
-                        }
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color.Gray)
+                )
+            }
+
+            item {
+                Text(
+                    text = "Duración: ",
+                    style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
+                )
+            }
+
+            item {
+                Text(
+                    text = "${viewModel.uiState.oneRoutine?.metadata?.duration} min",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color.Gray)
+                )
+            }
+
+            item {
+                Text(
+                    text = "Dificultad: ",
+                    style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
+                )
+            }
+
+
+            when (viewModel.uiState.oneRoutine?.difficulty) {
+                "beginner" -> item {
+                    Row() {
+                        ArmFlexIcon()
+                        ArmFlexOutlineIcon()
+                        ArmFlexOutlineIcon()
+                    }
+                }
+
+                "intermediate" -> item {
+                    Row() {
+                        ArmFlexIcon()
+                        ArmFlexIcon()
+                        ArmFlexOutlineIcon()
+                    }
+                }
+
+                "advanced" -> item {
+                    Row() {
+                        ArmFlexIcon()
+                        ArmFlexIcon()
+                        ArmFlexIcon()
                     }
                 }
             }
@@ -366,6 +230,162 @@ fun PhoneRoutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                         .height(1.dp)
                         .background(Color.Gray)
                 )
+            }
+
+            item {
+                Text(
+                    text = "Puntuación: ",
+                    style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
+                )
+            }
+
+            item {
+                Text(
+                    text = "${viewModel.uiState.oneRoutine?.score}",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color.Gray)
+                )
+            }
+
+
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color.Gray)
+                )
+            }
+
+            viewModel.uiState.cycles?.content?.forEach { oneCycle ->
+
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        oneCycle.name?.let {
+                            Text(
+                                text = it,
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    color = Color(
+                                        0xFF4C4C4C
+                                    )
+                                )
+                            )
+                        }
+
+                        Text(
+                            text = "${oneCycle.repetitions}",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+
+                val exercises = viewModel.uiState.cycleExercises?.get(oneCycle.id)
+
+                exercises?.content?.forEach { exercise ->
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp)
+                                .background(Color(0xFFD9D9D9))
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(IntrinsicSize.Min),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Box {
+                                    Column(
+                                        modifier = Modifier
+                                            .padding(2.dp),
+                                        verticalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = "${exercise.exercise?.name}",
+                                            style = MaterialTheme.typography.titleLarge
+                                        )
+
+                                        Text(
+                                            text = "${exercise.exercise?.detail}",
+                                            style = MaterialTheme.typography.bodyLarge
+                                        )
+
+                                    }
+                                }
+
+                                Box {
+                                    Row(
+                                        modifier = Modifier
+                                            .width(160.dp)
+                                            .fillMaxHeight()
+                                            .background(Color(0xFFBEBEBE))
+                                    ) {
+                                        Column(
+                                            modifier = Modifier
+                                                .padding(2.dp)
+                                        ) {
+                                            Text(
+                                                text = "Series ",
+                                                style = MaterialTheme.typography.bodyLarge
+                                            )
+
+                                            Text(
+                                                text = "${exercise.repetitions}",
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                                            )
+                                        }
+
+                                        Column(
+                                            modifier = Modifier
+                                                .padding(2.dp)
+                                        ) {
+                                            Text(
+                                                text = "Duración (min)",
+                                                style = MaterialTheme.typography.bodyLarge
+                                            )
+
+                                            Text(
+                                                text = "${exercise.duration}",
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                                            )
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Divider(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .background(Color.Gray)
+                    )
+                }
             }
         }
     }
