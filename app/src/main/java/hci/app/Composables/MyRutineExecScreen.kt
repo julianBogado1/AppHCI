@@ -32,6 +32,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
+import hci.app.R
 import hci.app.ui.main.MainViewModel
 import hci.app.ui.main.Rutina
 
@@ -237,7 +239,7 @@ fun PhoneRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
                             colors = ButtonDefaults.buttonColors(Color(0xFF000000))
                         ) {
                             Text(
-                                text = "Siguiente",
+                                text = stringResource(id = R.string.next),
                                 style = MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold
                             )
@@ -259,7 +261,7 @@ fun PhoneRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
                                 colors = ButtonDefaults.buttonColors(Color(0xFF49454F))
                             ) {
                                 Text(
-                                    text = "Descanso",
+                                    text = stringResource(id = R.string.rest),
                                     style = MaterialTheme.typography.headlineSmall,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -451,7 +453,7 @@ fun TabletRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) 
                                 colors = ButtonDefaults.buttonColors(Color(0xFF000000))
                             ) {
                                 Text(
-                                    text = "Siguiente",
+                                    text = stringResource(id =R.string.next),
                                     style = MaterialTheme.typography.headlineSmall,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -472,7 +474,7 @@ fun TabletRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) 
                                     colors = ButtonDefaults.buttonColors(Color(0xFF49454F))
                                 ) {
                                     Text(
-                                        text = "Descanso",  //todo traducir al espanolo
+                                        text = stringResource(R.string.rest),  //todo traducir al espanolo
                                         style = MaterialTheme.typography.headlineSmall,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -637,7 +639,7 @@ fun PhoneRutineExec2Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
                             colors = ButtonDefaults.buttonColors(Color(0xFF000000))
                         ) {
                             Text(
-                                text = "Siguiente",
+                                text = stringResource(R.string.next),
                                 style = MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold
                             )
@@ -655,7 +657,7 @@ fun PhoneRutineExec2Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
                             colors = ButtonDefaults.buttonColors(Color(0xFF49454F))
                         ) {
                             Text(
-                                text = "Descanso",
+                                text = stringResource(R.string.rest),
                                 style = MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold
                             )
@@ -668,7 +670,7 @@ fun PhoneRutineExec2Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
                         .fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ){
-                        Text(text="A continuación en este ciclo",
+                        Text(text= stringResource(id =R.string.nextInCycle),
                             style = MaterialTheme.typography.titleMedium)
                     }
 
@@ -893,7 +895,7 @@ fun TabletRutineExec2Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) 
                                 colors = ButtonDefaults.buttonColors(Color(0xFF000000))
                             ) {
                                 Text(
-                                    text = "Siguiente",
+                                    text = stringResource(R.string.next),
                                     style = MaterialTheme.typography.headlineSmall,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -911,7 +913,7 @@ fun TabletRutineExec2Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) 
                                 colors = ButtonDefaults.buttonColors(Color(0xFF49454F))
                             ) {
                                 Text(
-                                    text = "Descanso",
+                                    text = stringResource(R.string.rest),
                                     style = MaterialTheme.typography.headlineSmall,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -924,7 +926,7 @@ fun TabletRutineExec2Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) 
                             .fillMaxWidth(),
                             horizontalArrangement = Arrangement.Center
                         ){
-                            Text(text="A continuación en este ciclo",
+                            Text(text= stringResource(id = R.string.nextInCycle),
                                 style = MaterialTheme.typography.titleMedium)
                         }
 
@@ -978,23 +980,3 @@ fun TabletRutineExec2Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) 
         }
     }
 }
-
-/*
-@Preview(showBackground = true)
-@Composable
-fun MyRutineExecScreenPreview() {
-    val cicle = Cicle(
-        name = "Ejercitación",
-        number = 1,
-        rep = 3,
-        ejs = listOf(
-            Ejercicio("Squats", "Leg workout", 2, 30, "s"),
-            Ejercicio("Push-ups", "Upper body workout", 3, 2, "s"),
-        )
-    )
-
-    val excicle= listOf(cicle,cicle,cicle)
-
-    val rutina = Rutina("Rutina 1", "Description for Rutina 1", 2, 30, "min",excicle,7.5, "13/11/2023", "Cardio")
-    MyRutineExecScreen1(rutina)
-}*/

@@ -25,6 +25,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import hci.app.data.network.model.NetworkCycleExercises
+import hci.app.data.network.model.NetworkRoutineCycleContent
+import hci.app.data.network.model.NetworkRoutineCycles
 import hci.app.ui.main.MainViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -40,7 +42,7 @@ fun MyRoutineDetailScreen(viewModel: MainViewModel, routineId: Int) {
         launch {
             viewModel.getOneRoutine(routineId)
             viewModel.getCycles(routineId)
-            
+
             val cycles = viewModel.uiState.cycles
             cycles?.content?.forEach { cycle ->
                 cycle.id?.let { cycleId ->
@@ -264,7 +266,9 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
                                 }
                             }
 
-                            Box(modifier = Modifier.weight(0.4f).background(Color(0xFFBEBEBE))){
+                            Box(modifier = Modifier
+                                .weight(0.4f)
+                                .background(Color(0xFFBEBEBE))){
                                 Row(
                                     modifier = Modifier
                                         .fillMaxHeight()
@@ -326,12 +330,12 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding(start=80.dp)
+            .padding(start = 80.dp)
     ) {
         LazyColumn( modifier = Modifier
             .width(300.dp)
             .fillMaxHeight()
-            .padding(top=40.dp,bottom=40.dp)
+            .padding(top = 40.dp, bottom = 40.dp)
         ){
             item{
                 Row(modifier = Modifier
@@ -536,7 +540,9 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
                                     }
                                 }
 
-                                Box(modifier = Modifier.weight(0.4f).background(Color(0xFFBEBEBE))){
+                                Box(modifier = Modifier
+                                    .weight(0.4f)
+                                    .background(Color(0xFFBEBEBE))){
                                     Row(
                                         modifier = Modifier.fillMaxSize()
                                     ){
