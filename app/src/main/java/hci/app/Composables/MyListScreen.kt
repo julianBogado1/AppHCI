@@ -61,53 +61,24 @@ data class Ejercicio(
 )*/
 
 @Composable
-fun MyListScreen(viewModel : MainViewModel) {
+fun MyListScreen(viewModel : MainViewModel, onNavigateToRoutine: (String) -> Unit) {
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
 
     if (isTablet) {
-        TabletListLayout(viewModel)
+        TabletListLayout(viewModel, onNavigateToRoutine = onNavigateToRoutine)
     } else {
-        PhoneListLayout(viewModel)
+        PhoneListLayout(viewModel, onNavigateToRoutine = onNavigateToRoutine)
     }
 }
 
 @Composable
-fun PhoneListLayout(viewModel: MainViewModel) {
+fun PhoneListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> Unit) {
     var sortCriteria by remember { mutableStateOf("rate") }
     var sortCriteriaName by remember { mutableStateOf("Dificultad") }
 
     viewModel.getRoutines()
     var rutineList = remember { viewModel.uiState.routines?.content?: arrayListOf<NetworkRoutineContent>() }
-
-
-    /*val excicle =listOf(
-        Cicle(
-            name = "Ejercitación",
-            number = 1,
-            rep = 3,
-            ejs = listOf(
-                Ejercicio("Squats", "Leg workout", 3, 30, "s"),
-                Ejercicio("Push-ups", "Upper body workout", 3, 20, "s"),
-            )
-        ))*/
-
-    /*val rutineList = remember {
-        listOf(
-            Rutina("Rutina 1", "Desc 1", 2, 12, "min",excicle,5.0, "13/11/2023", "Piernas"),
-            Rutina("Rutina 2", "Desc 2", 3, 9, "min",excicle,3.0, "13/11/2023", "Piernas"),
-            Rutina("Rutina 3", "Desc 3", 2, 15, "min",excicle,3.0, "13/11/2023", "Brazos"),
-            Rutina("Rutina 4", "Desc 1", 1, 12, "min",excicle,3.0, "09/11/2023", "Brazos"),
-            Rutina("Rutina 5", "Desc 2", 1, 9, "min",excicle,5.0, "09/11/2023", "Brazos"),
-            Rutina("Rutina 6", "Desc 3", 2, 15, "min",excicle,7.0, "09/11/2023", "Cardio"),
-            Rutina("Rutina 7", "Desc 1", 2, 12, "min",excicle,2.5, "12/11/2023", "Cardio"),
-            Rutina("Rutina 8", "Desc 2", 3, 9, "min",excicle,7.6, "12/11/2023", "Cardio"),
-            Rutina("Rutina 9", "Desc 3", 2, 15, "min",excicle,9.0, "12/11/2023", "Yoga"),
-            Rutina("Rutina 10", "Desc 1", 2, 12, "min",excicle,10.0, "11/11/2023", "Yoga"),
-            Rutina("Rutina 11", "Desc 2", 3, 9, "min",excicle,5.0, "11/11/2023", "Yoga"),
-            Rutina("Rutina 12", "Desc 3", 2, 15, "min",excicle,7.0, "12/11/2023", "Piernas")
-        )
-    }*/
 
     val sortedRutineList = remember(rutineList, sortCriteria) {
         when (sortCriteria.lowercase()) {
@@ -199,7 +170,7 @@ fun PhoneListLayout(viewModel: MainViewModel) {
 }
 
 @Composable
-fun TabletListLayout(viewModel: MainViewModel) {
+fun TabletListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> Unit) {
     var sortCriteria by remember { mutableStateOf("rate") }
     var sortCriteriaName by remember { mutableStateOf("Dificultad") }
     viewModel.getRoutines()

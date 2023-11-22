@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import hci.app.ui.main.MainViewModel
 
-
+/*
 @Composable
 fun MyRutineDetailScreen(rutina: Rutina) {
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
@@ -940,3 +940,4 @@ fun RutinaDetailScreenPreview() {
     MyRutineDetailScreen(rutina = rutina)
 }
 
+*/

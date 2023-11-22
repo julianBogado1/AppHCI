@@ -24,7 +24,7 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
             HomeScreen(viewModel = viewModel)
         }
         composable(Screen.RoutinesScreen.route) {
-            RoutinesScreen(viewModel = viewModel) { route ->
+            MyListScreen(viewModel = viewModel) { route ->
                 navController.navigate(route) {
                     popUpTo(navController.graph.findStartDestination().id) {
                         inclusive = true
