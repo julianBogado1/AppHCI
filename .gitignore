@@ -15,3 +15,4 @@
 local.properties
 app/src/main/AndroidManifest.xml
 app/build.gradle.kts
+build.gradle.kts
