@@ -41,7 +41,7 @@ import hci.app.util.VerticalBar
 import hci.app.util.getViewModelFactory
 import java.util.Locale
 import kotlin.random.Random
-//import hci.app.Composables.MyRutineExecScreen1
+import hci.app.Composables.*
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -92,7 +92,7 @@ fun MainScreen(
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val appState = rememberMyAppState()
+    val appState = rememberMyAppState() //todo TIRAR ERRORES AWEONAO
 
     if(viewModel.uiState.isAuthenticated) {
         Scaffold(
@@ -133,30 +133,6 @@ fun MainScreen(
             }
         ) {
             MyNavGraph(navController = navController, viewModel = viewModel)
-            /*val cicle = Cicle(
-                name = "Ejercitación",
-                number = 1,
-                rep = 3,
-                ejs = listOf(
-                    Ejercicio("Squats", "Leg workout", 2, 2, "s"),
-                    Ejercicio("Push-ups", "Upper body workout", 3, 1, "s"),
-                    Ejercicio("Squats", "Leg workout", 2, 3, "s"),
-                    Ejercicio("Nope", "Upper body workout", 3, 0, "s"),
-                    Ejercicio("doo", "Leg workout", 2, 1, "s"),
-                    Ejercicio("Push-ups", "Upper body workout", 3, 2, "s"),
-                    Ejercicio("Squats", "Leg workout", 2, 2, "s"),
-                    Ejercicio("Push-ups", "Upper body workout", 3, 1, "s"),
-                    Ejercicio("Squats", "Leg workout", 2, 3, "s"),
-                    Ejercicio("Nope", "Upper body workout", 3, 0, "s"),
-                    Ejercicio("Nope", "Leg workout", 2, 1, "s"),
-                    Ejercicio("Push-ups", "Upper body workout", 3, 2, "s"),
-                )
-            )
-
-            val excicle= listOf(cicle,cicle,cicle)
-
-            val rutina = Rutina("Rutina 1", "Description for Rutina 1", 2, 30, "min",excicle,7.5, "13/11/2023", "Cardio")
-            MyRutineExecScreen1(rutina, viewModel)*/
         }
     }
     else{
@@ -164,7 +140,31 @@ fun MainScreen(
     }
 }
 
+data class Rutina(
+    val name: String,
+    val description: String,
+    val rating: Int,
+    val duration: Int,
+    val dUnit: String,
+    val cicles: List<Cicle>,
+    val points: Double,
+    val date: String,
+    val category: String
+)
 
+data class Cicle(
+    val name: String,
+    val number: Int,
+    val rep: Int,
+    val ejs: List<Ejercicio>
+)
+
+data class Ejercicio(
+    val name: String,
+    val description: String,
+    val series: Int,
+    val duration: Int,
+    val dUnit: String)
 
 /*if(!viewModel.uiState.isLoading && viewModel.uiState.isAuthenticated) {
         var routines = viewModel.getRoutines()

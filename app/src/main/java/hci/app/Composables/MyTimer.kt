@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Alignment
 
 @Composable
-fun MyTimer(seconds: Int, onTimerTick: (Long) -> Unit, onTimerFinish:() ->Unit, inBreak:Boolean, inStop:Boolean, stopChange: (Boolean)->Unit, nextRemainingTime: Int) {
+fun MyTimer(seconds: Int, onTimerTick: (Int) -> Unit, onTimerFinish:() ->Unit, inBreak:Boolean, inStop:Boolean, stopChange: (Boolean)->Unit, nextRemainingTime: Int) {
     if(seconds==0) {
         return
     }
@@ -33,7 +33,7 @@ fun MyTimer(seconds: Int, onTimerTick: (Long) -> Unit, onTimerFinish:() ->Unit, 
             delay(1000)
             remainingTime -= 1000
             progress = remainingTime.toFloat() / (seconds*1000L).toFloat()
-            //onTimerTick(remainingTime)
+            onTimerTick((remainingTime/1000).toInt())
         }
 
         if(!inBreak || (inStop && inBreak)) {
