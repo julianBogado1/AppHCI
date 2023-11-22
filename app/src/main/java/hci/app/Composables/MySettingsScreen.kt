@@ -1,6 +1,7 @@
 package hci.app.Composables
 
 import androidx.compose.foundation.clickable
+import hci.app.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.*
@@ -32,95 +33,46 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import hci.app.ui.main.MainViewModel
 
 @Composable
-fun MySettingsScreen() {
+fun MySettingsScreen(viewModel: MainViewModel) {
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
 
     if (isTablet) {
-        TabletSettingsLayout()
+        TabletSettingsLayout(viewModel)
     } else {
-        PhoneSettingsLayout()
+        PhoneSettingsLayout(viewModel)
     }
 }
 
 @Composable
-fun PhoneSettingsLayout() {
+fun PhoneSettingsLayout(viewModel : MainViewModel){
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(16.dp)
-            .padding(bottom=80.dp)
+            .padding(bottom = 80.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ){
 
-        var Language by remember { mutableStateOf("Español") }
-        var isDropdownVisible by remember { mutableStateOf(false) }
-
-        val icon = if (isDropdownVisible)
-            Icons.Filled.KeyboardArrowUp
-        else
-            Icons.Filled.KeyboardArrowDown
-
-        var TextFieldSize by remember { mutableStateOf(Size.Zero) }
-
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Column(Modifier.padding(20.dp)) {
-                OutlinedTextField(
-                    value = Language,
-                    onValueChange = {},
-                    readOnly = true,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .onGloballyPositioned { coordinates ->
-                            TextFieldSize = coordinates.size.toSize()
-                        },
-                    label = { Text("Idioma") },
-                    trailingIcon = {
-                        Icon(icon, "contentDescription",
-                            Modifier.clickable { isDropdownVisible = !isDropdownVisible })
-                    }
-                )
-
-                DropdownMenu(
-                    expanded = isDropdownVisible,
-                    onDismissRequest = { isDropdownVisible = false },
-                    modifier = Modifier
-                        .width(with(LocalDensity.current) { TextFieldSize.width.dp })
-                ) {
-                    DropdownMenuItem("Español") {
-                        Language = "Español"
-                        isDropdownVisible = false
-                    }
-                    DropdownMenuItem("Inglés") {
-                        Language = "Inglés"
-                        isDropdownVisible = false
-                    }
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(40.dp))
 
         Button(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-            onClick = {},
+            onClick = {viewModel.logout()},
             colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4))
         ) {
             Text(
-                text = "Cerrar Sesión",
+                text = stringResource(R.string.logout),
                 fontWeight = FontWeight.Bold
             )
         }
@@ -129,77 +81,25 @@ fun PhoneSettingsLayout() {
 }
 
 @Composable
-fun TabletSettingsLayout() {
+fun TabletSettingsLayout(viewModel: MainViewModel) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(16.dp)
-            .padding(start=80.dp)
+            .padding(start=80.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ){
-
-        var Language by remember { mutableStateOf("Español") }
-        var isDropdownVisible by remember { mutableStateOf(false) }
-
-        val icon = if (isDropdownVisible)
-            Icons.Filled.KeyboardArrowUp
-        else
-            Icons.Filled.KeyboardArrowDown
-
-        var TextFieldSize by remember { mutableStateOf(Size.Zero) }
-
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Column(Modifier.padding(20.dp)) {
-                OutlinedTextField(
-                    value = Language,
-                    onValueChange = {},
-                    readOnly = true,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .onGloballyPositioned { coordinates ->
-                            TextFieldSize = coordinates.size.toSize()
-                        },
-                    label = { Text("Idioma") },
-                    trailingIcon = {
-                        Icon(icon, "contentDescription",
-                            Modifier.clickable { isDropdownVisible = !isDropdownVisible })
-                    }
-                )
-
-                DropdownMenu(
-                    expanded = isDropdownVisible,
-                    onDismissRequest = { isDropdownVisible = false },
-                    modifier = Modifier
-                        .width(with(LocalDensity.current) { TextFieldSize.width.dp })
-                ) {
-                    DropdownMenuItem("Español") {
-                        Language = "Español"
-                        isDropdownVisible = false
-                    }
-                    DropdownMenuItem("Inglés") {
-                        Language = "Inglés"
-                        isDropdownVisible = false
-                    }
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(40.dp))
 
         Button(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-            onClick = {},
+            onClick = {viewModel.logout()},
             colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4))
         ) {
             Text(
-                text = "Cerrar Sesión",
+                text = stringResource(R.string.logout),
                 fontWeight = FontWeight.Bold
             )
         }
@@ -207,21 +107,3 @@ fun TabletSettingsLayout() {
     }
 }
 
-@Composable
-private fun DropdownMenuItem(text: String, onItemClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onItemClick)
-            .padding(8.dp)
-    ) {
-        Text(text = text,
-            modifier = Modifier.align(Alignment.Center))
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MySettingsScreenPreview() {
-    MySettingsScreen()
-}
