@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import hci.app.Composables.MyListScreen
 import hci.app.ui.main.MainViewModel
 
 @Composable

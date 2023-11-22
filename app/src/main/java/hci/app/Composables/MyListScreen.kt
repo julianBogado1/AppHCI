@@ -153,7 +153,6 @@ fun PhoneListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> U
                     isDropdownVisible = false
                 }*/
             }
-
     }
 
         LazyColumn(
