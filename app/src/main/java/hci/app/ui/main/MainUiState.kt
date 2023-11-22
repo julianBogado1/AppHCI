@@ -1,5 +1,6 @@
 package hci.app.ui.main
 
+import android.net.Network
 import hci.app.data.model.Sport
 import hci.app.data.model.User
 import hci.app.data.model.Error
@@ -26,11 +27,12 @@ data class MainUiState(
     val cycles : NetworkRoutineCycles? = null,
     val oneRoutine : NetworkRoutineContent? = null,
     val oneCycle : NetworkRoutineCycleContent? = null,
-    val cycleExercises : NetworkCycleExercises? = null,
+    val cycleExercises : MutableMap<Int, NetworkCycleExercises>? = mutableMapOf(),
     val exercises : NetworkExercisesIsolated? = null,
     val exercisesContent: NetworkCycleExercisesContent? = null,
     val oneExercise : NetworkExercise? = null,
-)
+
+    )
 
 val MainUiState.hasError: Boolean get() = error != null
 val MainUiState.canGetCurrentUser: Boolean get() = isAuthenticated

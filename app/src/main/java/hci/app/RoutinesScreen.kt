@@ -2,6 +2,7 @@ package hci.app
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,42 +12,49 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import hci.app.data.model.Routine
+import hci.app.data.network.model.NetworkRoutineContent
+import hci.app.ui.main.MainUiState
 import hci.app.ui.main.MainViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun RoutinesScreen(viewModel: MainViewModel) {
+fun RoutinesScreen(viewModel: MainViewModel, onNavigateToRoutine: (String) -> Unit) {
 
-    viewModel.getRoutines() // Trigger fetching routines
-
-    val uiState = viewModel.uiState
-
-    val routineList = uiState.routines?.content?.map { networkRoutine ->
-        Routine(
-            name = networkRoutine.name ?: "",
-            description = networkRoutine.detail ?: "",
-            rating = networkRoutine.score ?: 0,
-            duration = networkRoutine.date ?: 0,
-            dUnit = "min"
-        )
-    } ?: emptyList()
+    LaunchedEffect(key1 = Unit) {
+        launch {
+            viewModel.getRoutines() // Trigger fetching routines
+        }
+    }
 
     LazyColumn {
-        items(routineList.size) { index ->
-            val item = routineList[index]
-            ListItemComponent(item = item)
+        if (viewModel.uiState.routines?.content != null) {
+            items(viewModel.uiState.routines?.content!!.size) { index ->
+                val item = viewModel.uiState.routines?.content?.get(index)
+                if (item != null) {
+                    ListItemComponent(item = item, onNavigateToRoutine = onNavigateToRoutine)
+                }
+            }
         }
     }
 }
 
 @Composable
-fun ListItemComponent(item: Routine) {
-    Box(
+fun ListItemComponent(item: NetworkRoutineContent, onNavigateToRoutine: (routineId:String) -> Unit) {
+    val itemId = remember { item.id }
+
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
             .background(Color(0xFFD9D9D9))
+            .clickable {
+                itemId?.let { routineId ->
+                    onNavigateToRoutine("routine-details/$routineId")
+                }
+            }
     ){
         Row(
             modifier = Modifier
@@ -62,7 +70,7 @@ fun ListItemComponent(item: Routine) {
                 ) {
                     Text(text = "${item.name}", style = MaterialTheme.typography.titleLarge)
 
-                    Text(text = "${item.description}", style = MaterialTheme.typography.bodyLarge)
+                    Text(text = "${item.detail}", style = MaterialTheme.typography.bodyLarge)
 
                 }
             }
@@ -76,13 +84,15 @@ fun ListItemComponent(item: Routine) {
                     verticalArrangement = Arrangement.Center
                 ){
 
+                    /*
                     Text(
-                        text = "${item.rating}", style = MaterialTheme.typography.bodyLarge,
+                        text = "${item.r}", style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
+                    */
 
                     Text(
-                        text = "${item.duration} ${item.dUnit}", style = MaterialTheme.typography.bodyLarge,
+                        text = "${item.metadata?.duration} min", style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 }

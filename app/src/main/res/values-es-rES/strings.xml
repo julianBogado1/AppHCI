@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TPE</string>
+    <!-- Nombres de los botones y el mensaje que muestran !-->
+    <string name="login">Iniciar sesion</string>
+    <string name="logout">Cerrar sesion</string>
+    <string name="get_current_user">Obtener usuario actual</string>
+    <string name="home">Inicio</string>
+    <string name="routines">Rutinas</string>
+    <string name="settings">Configuracion</string>
+    <string name="dismiss">Descartar</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="password">Contraseña</string>
+    <string name="rutinas">rutinas?</string>
+    <string name="ciclos">ciclos?</string>
+    <string name="unaRutina">unaRutina?</string>
+    <string name="unCiclo">unCiclo?</string>
+    <string name="ejercicios">ejercicios</string>
+    <string name="unEjercicio">ejercicios???</string>
+</resources>

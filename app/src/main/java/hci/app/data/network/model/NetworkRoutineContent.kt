@@ -6,15 +6,15 @@ data class NetworkRoutineContent (
 
     //todo fijarse si el user puede ser null
 
-    @SerializedName("id")           var id         : Int?      = null,
-    @SerializedName("name")         var name       : String?   = null,
-    @SerializedName("detail")       var detail     : String?   = null,
-    @SerializedName("date")         var date       : Long?      = null,
-    @SerializedName("score")        var score      : Int?      = null,
-    @SerializedName("isPublic")     var isPublic   : Boolean?  = null,
-    @SerializedName("difficulty")   var difficulty : String?   = null,
+    @SerializedName("id")           var id         : Int?      = 0,
+    @SerializedName("name")         var name       : String?   = "",
+    @SerializedName("detail")       var detail     : String?   = "",
+    @SerializedName("date")         var date       : Long?      = 0,
+    @SerializedName("score")        var score      : Int?      = 0,
+    @SerializedName("isPublic")     var isPublic   : Boolean?  = false,
+    @SerializedName("difficulty")   var difficulty : String?   = "",
     @SerializedName("user")         var user       : NetworkShortUser?,
     @SerializedName("category")     var category   : Category? = Category(),
-    @SerializedName("metadata")     var metadata   : String?   = null
+    @SerializedName("metadata")     var metadata   : NetworkRoutineContentMetadata? = NetworkRoutineContentMetadata()
 
 )

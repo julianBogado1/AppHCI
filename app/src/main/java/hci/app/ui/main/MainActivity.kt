@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,15 +28,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import hci.app.BottomBar
-import hci.app.Composables.*
+import hci.app.Composables.MyLoginScreen
 import hci.app.MyNavGraph
 import hci.app.R
+import hci.app.composables.MyTextField
 import hci.app.data.model.Sport
 import hci.app.data.model.User
 import hci.app.data.network.model.NetworkRoutineContent
 import hci.app.data.network.model.NetworkRoutines
 import hci.app.ui.theme.TPETheme
-import hci.app.util.VerticalBar
 import hci.app.util.getViewModelFactory
 import kotlin.random.Random
 
@@ -60,36 +59,15 @@ class MainActivity : ComponentActivity() {
                     Scaffold(
                         snackbarHost = {appState.snackbarHostState},
                         bottomBar = {
-                            if (LocalConfiguration.current.screenWidthDp >= 600) {
-                                // Display bottom navigation as a column on the left
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .width(80.dp) // Set the desired width for the left navigation bar
-                                ) {
-                                    VerticalBar(
-                                        currentRoute = currentRoute
-                                    ) { route ->
-                                        navController.navigate(route) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
+                            BottomBar(
+                                currentRoute = currentRoute
+                            ) { route ->
+                                navController.navigate(route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
                                     }
-                                }
-                            } else {
-                                BottomBar(
-                                    currentRoute = currentRoute
-                                ) { route ->
-                                    navController.navigate(route) {
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
                             }
                         }
@@ -135,28 +113,13 @@ fun MainScreen(
     val uiState = viewModel.uiState
     var text : String?
 
-    val cicle = Cicle(
-        name = "Ejercitación",
-        number = 1,
-        rep = 3,
-        ejs = listOf(
-            Ejercicio("Squats", "Leg workout", 2, 1, "s"),
-            Ejercicio("Push-ups", "Upper body workout", 3, 2, "s"),
-            Ejercicio("Core", "Body workout", 5, 0, "s")
-        )
-    )
-
-    val excicle= listOf(cicle,cicle,cicle)
-
-    val rutina = Rutina("Rutina 1", "Description for Rutina 1", 2, 30, "min",excicle,7.5, "13/11/2023", "Cardio")
-    MyRutineExecScreen1(rutina = rutina, viewModel = viewModel)
-    /*MyLoginScreen(viewModel)
+    MyLoginScreen(viewModel)
     if(viewModel.uiState.isAuthenticated) {
         Text(
             text = "${uiState.currentUser?.firstName} ${uiState.currentUser?.lastName}"
         )
-        //MyNavGraph(navController = navController, viewModel = viewModel)
-    }*/
+        MyNavGraph(navController = navController, viewModel = viewModel)
+    }
 }
 
 
