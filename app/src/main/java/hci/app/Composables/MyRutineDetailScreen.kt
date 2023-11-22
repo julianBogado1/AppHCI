@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.*
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
@@ -17,32 +18,33 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import hci.app.ui.main.MainViewModel
+import kotlinx.coroutines.launch
 
-/*
+
 @Composable
-fun MyRutineDetailScreen(rutina: Rutina) {
+fun MyRoutineDetailScreen(viewModel: MainViewModel, routineId: Int) {
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
 
+    LaunchedEffect(routineId) {
+        launch {
+            viewModel.getOneRoutine(routineId)
+            viewModel.getCycles(routineId)
+            viewModel.uiState.cycles?.content?.forEach { cycle ->
+                cycle.id?.let { viewModel.getCycleExercises(it) }
+            }
+        }
+    }
+
     if (isTablet) {
-        TabletRutineDetailLayout(rutina)
+        TabletRutineDetailLayout(viewModel = viewModel, routineId = routineId)
     } else {
-        PhoneRutineDetailLayout(rutina)
+        PhoneRutineDetailLayout(viewModel = viewModel, routineId = routineId)
     }
 }
 
 @Composable
-fun PhoneRutineDetailLayout(rutina: Rutina) {
-    val cicle = Cicle(
-        name = "Ejercitación",
-        number = 1,
-        rep = 3,
-        ejs = listOf(
-            Ejercicio("Squats", "Leg workout", 3, 30, "s"),
-            Ejercicio("Push-ups", "Upper body workout", 3, 20, "s"),
-        )
-    )
-
+fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
 
     LazyColumn(
         modifier = Modifier
@@ -57,11 +59,13 @@ fun PhoneRutineDetailLayout(rutina: Rutina) {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = rutina.name,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
+                viewModel.uiState.oneRoutine?.name?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
                 Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
             }
@@ -81,24 +85,7 @@ fun PhoneRutineDetailLayout(rutina: Rutina) {
         }
 
         item{
-            Text(text = "${rutina.description}", style = MaterialTheme.typography.bodyLarge)
-        }
-
-        item{
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Divider(modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray))
-        }
-
-        item{
-            Text(text = "Categoría: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
-        }
-
-        item{
-            Text(text = "${rutina.category}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "${viewModel.uiState.oneRoutine?.detail}", style = MaterialTheme.typography.bodyLarge)
         }
 
         item{
@@ -115,7 +102,7 @@ fun PhoneRutineDetailLayout(rutina: Rutina) {
         }
 
         item{
-            Text(text = "${rutina.date}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "${viewModel.uiState.oneRoutine?.date}", style = MaterialTheme.typography.bodyLarge)
         }
 
         item{
@@ -132,7 +119,7 @@ fun PhoneRutineDetailLayout(rutina: Rutina) {
         }
 
         item{
-            Text(text = "${rutina.duration} ${rutina.dUnit}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "${viewModel.uiState.oneRoutine?.metadata?.duration} min", style = MaterialTheme.typography.bodyLarge)
         }
 
         item{
@@ -149,22 +136,22 @@ fun PhoneRutineDetailLayout(rutina: Rutina) {
         }
 
 
-        when (rutina.rating) {
-            1 -> item{
+        when (viewModel.uiState.oneRoutine?.difficulty) {
+            "beginner" -> item{
                 Row(){
                     ArmFlexIcon()
                     ArmFlexOutlineIcon()
                     ArmFlexOutlineIcon()
                 }
             }
-            2 -> item{
+            "intermediate" -> item{
                 Row(){
                     ArmFlexIcon()
                     ArmFlexIcon()
                     ArmFlexOutlineIcon()
                 }
             }
-            3 -> item{
+            "expert" -> item{
                 Row(){
                     ArmFlexIcon()
                     ArmFlexIcon()
@@ -187,7 +174,7 @@ fun PhoneRutineDetailLayout(rutina: Rutina) {
         }
 
         item{
-            Text(text = "${rutina.points}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "${viewModel.uiState.oneRoutine?.score}", style = MaterialTheme.typography.bodyLarge)
         }
 
         item{
@@ -199,122 +186,30 @@ fun PhoneRutineDetailLayout(rutina: Rutina) {
                 .background(Color.Gray))
         }
 
-        item{
-            Row(modifier = Modifier
-                .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ){
-                Text(text = "Ciclo de Calentamiento: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
-
-                Text(text = "Repeticiones: ${rutina.cicles.first().rep}", style = MaterialTheme.typography.bodyLarge)
-            }
-        }
-
-
-        rutina.cicles.first().ejs.forEach{ ejercicio ->
-            item{
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .background(Color(0xFFD9D9D9))
-                ){
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(IntrinsicSize.Min),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ){
-                        Box{
-                            Column(
-                                modifier = Modifier
-                                    .padding(2.dp),
-                                verticalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(text = "${ejercicio.name}", style = MaterialTheme.typography.titleLarge)
-
-                                Text(text = "${ejercicio.description}", style = MaterialTheme.typography.bodyLarge)
-
-                            }
-                        }
-
-                        Box{
-                            Row(
-                                modifier = Modifier
-                                    .width(160.dp)
-                                    .fillMaxHeight()
-                                    .background(Color(0xFFBEBEBE))
-                            ){
-                                Column(
-                                    modifier = Modifier
-                                        .padding(2.dp)
-                                ) {
-                                    Text(
-                                        text = "Series ", style = MaterialTheme.typography.bodyLarge
-                                    )
-
-                                    Text(
-                                        text = "${ejercicio.series}", style = MaterialTheme.typography.bodyLarge,
-                                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                                    )
-                                }
-
-                                Column(
-                                    modifier = Modifier
-                                        .padding(2.dp)
-                                ){
-                                    Text(
-                                        text = "Duración (${ejercicio.dUnit})", style = MaterialTheme.typography.bodyLarge
-                                    )
-
-                                    Text(
-                                        text = "${ejercicio.duration}", style = MaterialTheme.typography.bodyLarge,
-                                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                                    )
-                                }
-
-                            }
-                        }
-
-
-
-                    }
-
-                }
-            }
-        }
-
-        item{
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Divider(modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray))
-        }
-
-
-        rutina.cicles.drop(1).dropLast(1).forEach { cicle ->
+        viewModel.uiState.cycles?.content?.forEach { oneCycle ->
             item{
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = "Ciclo de Ejercitación ${cicle.number}: ",
-                        style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
-                    )
+                    oneCycle.name?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
+                        )
+                    }
 
                     Text(
-                        text = "Repeticiones: ${cicle.rep}",
+                        text = "Repeticiones: ${oneCycle.repetitions}",
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
             }
 
+            val exercises = viewModel.uiState.cycleExercises?.get(oneCycle.id)
 
-            cicle.ejs.forEach{ ejercicio ->
+            exercises?.content?.forEach{ exercise ->
                 item{
                     Box(
                         modifier = Modifier
@@ -334,9 +229,9 @@ fun PhoneRutineDetailLayout(rutina: Rutina) {
                                         .padding(2.dp),
                                     verticalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text(text = "${ejercicio.name}", style = MaterialTheme.typography.titleLarge)
+                                    Text(text = "${exercise.exercise?.name}", style = MaterialTheme.typography.titleLarge)
 
-                                    Text(text = "${ejercicio.description}", style = MaterialTheme.typography.bodyLarge)
+                                    Text(text = "${exercise.exercise?.detail}", style = MaterialTheme.typography.bodyLarge)
 
                                 }
                             }
@@ -357,7 +252,7 @@ fun PhoneRutineDetailLayout(rutina: Rutina) {
                                         )
 
                                         Text(
-                                            text = "${ejercicio.series}", style = MaterialTheme.typography.bodyLarge,
+                                            text = "${exercise.repetitions}", style = MaterialTheme.typography.bodyLarge,
                                             modifier = Modifier.align(Alignment.CenterHorizontally)
                                         )
                                     }
@@ -367,11 +262,11 @@ fun PhoneRutineDetailLayout(rutina: Rutina) {
                                             .padding(2.dp)
                                     ){
                                         Text(
-                                            text = "Duración (${ejercicio.dUnit})", style = MaterialTheme.typography.bodyLarge
+                                            text = "Duración (min)", style = MaterialTheme.typography.bodyLarge
                                         )
 
                                         Text(
-                                            text = "${ejercicio.duration}", style = MaterialTheme.typography.bodyLarge,
+                                            text = "${exercise.duration}", style = MaterialTheme.typography.bodyLarge,
                                             modifier = Modifier.align(Alignment.CenterHorizontally)
                                         )
                                     }
@@ -392,100 +287,11 @@ fun PhoneRutineDetailLayout(rutina: Rutina) {
                     .background(Color.Gray))
             }
         }
-
-        item{
-            Row(modifier = Modifier
-                .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ){
-                Text(text = "Ciclo de Enfriamiento: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
-
-                Text(text = "Repeticiones: ${rutina.cicles.last().rep}", style = MaterialTheme.typography.bodyLarge)
-            }
-        }
-
-        rutina.cicles.last().ejs.forEach{ ejercicio ->
-            item{
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .background(Color(0xFFD9D9D9))
-                ){
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(IntrinsicSize.Min),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ){
-                        Box{
-                            Column(
-                                modifier = Modifier
-                                    .padding(2.dp),
-                                verticalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(text = "${ejercicio.name}", style = MaterialTheme.typography.titleLarge)
-
-                                Text(text = "${ejercicio.description}", style = MaterialTheme.typography.bodyLarge)
-
-                            }
-                        }
-
-                        Box{
-                            Row(
-                                modifier = Modifier
-                                    .width(160.dp)
-                                    .fillMaxHeight()
-                                    .background(Color(0xFFBEBEBE))
-                            ){
-                                Column(
-                                    modifier = Modifier
-                                        .padding(2.dp)
-                                ) {
-                                    Text(
-                                        text = "Series ", style = MaterialTheme.typography.bodyLarge
-                                    )
-
-                                    Text(
-                                        text = "${ejercicio.series}", style = MaterialTheme.typography.bodyLarge,
-                                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                                    )
-                                }
-
-                                Column(
-                                    modifier = Modifier
-                                        .padding(2.dp)
-                                ){
-                                    Text(
-                                        text = "Duración (${ejercicio.dUnit})", style = MaterialTheme.typography.bodyLarge
-                                    )
-
-                                    Text(
-                                        text = "${ejercicio.duration}", style = MaterialTheme.typography.bodyLarge,
-                                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                                    )
-                                }
-
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 }
 
 @Composable
-fun TabletRutineDetailLayout(rutina: Rutina) {
-    val cicle = Cicle(
-        name = "Ejercitación",
-        number = 1,
-        rep = 3,
-        ejs = listOf(
-            Ejercicio("Squats", "Leg workout", 3, 30, "s"),
-            Ejercicio("Push-ups", "Upper body workout", 3, 20, "s"),
-        )
-    )
+fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
 
     Row(
         modifier = Modifier
@@ -503,7 +309,7 @@ fun TabletRutineDetailLayout(rutina: Rutina) {
                     .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
-                    Text(text = rutina.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    viewModel.uiState.oneRoutine?.name?.let { Text(text = it, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold) }
 
                     Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
                 }
@@ -523,7 +329,7 @@ fun TabletRutineDetailLayout(rutina: Rutina) {
             }
 
             item{
-                Text(text = "${rutina.description}", style = MaterialTheme.typography.bodyLarge)
+                Text(text = "${viewModel.uiState.oneRoutine?.detail}", style = MaterialTheme.typography.bodyLarge)
             }
 
             item{
@@ -535,29 +341,13 @@ fun TabletRutineDetailLayout(rutina: Rutina) {
                     .background(Color.Gray))
             }
 
-            item{
-                Text(text = "Categoría: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
-            }
-
-            item{
-                Text(text = "${rutina.category}", style = MaterialTheme.typography.bodyLarge)
-            }
-
-            item{
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Divider(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.Gray))
-            }
 
             item{
                 Text(text = "Fecha de Creación: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
             }
 
             item{
-                Text(text = "${rutina.date}", style = MaterialTheme.typography.bodyLarge)
+                Text(text = "${viewModel.uiState.oneRoutine?.date}", style = MaterialTheme.typography.bodyLarge)
             }
 
             item{
@@ -574,7 +364,7 @@ fun TabletRutineDetailLayout(rutina: Rutina) {
             }
 
             item{
-                Text(text = "${rutina.duration} ${rutina.dUnit}", style = MaterialTheme.typography.bodyLarge)
+                Text(text = "${viewModel.uiState.oneRoutine?.metadata?.duration} min", style = MaterialTheme.typography.bodyLarge)
             }
 
             item{
@@ -590,22 +380,22 @@ fun TabletRutineDetailLayout(rutina: Rutina) {
                 Text(text = "Dificultad: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
             }
 
-            when (rutina.rating) {
-                1 -> item{
+            when (viewModel.uiState.oneRoutine?.difficulty) {
+                "beginner" -> item{
                     Row(){
                         ArmFlexIcon()
                         ArmFlexOutlineIcon()
                         ArmFlexOutlineIcon()
                     }
                 }
-                2 -> item{
+                "intermediate" -> item{
                     Row(){
                         ArmFlexIcon()
                         ArmFlexIcon()
                         ArmFlexOutlineIcon()
                     }
                 }
-                3 -> item{
+                "expert" -> item{
                     Row(){
                         ArmFlexIcon()
                         ArmFlexIcon()
@@ -628,7 +418,7 @@ fun TabletRutineDetailLayout(rutina: Rutina) {
             }
 
             item{
-                Text(text = "${rutina.points}", style = MaterialTheme.typography.bodyLarge)
+                Text(text = "${viewModel.uiState.oneRoutine?.score}", style = MaterialTheme.typography.bodyLarge)
             }
 
         }
@@ -648,90 +438,6 @@ fun TabletRutineDetailLayout(rutina: Rutina) {
             .padding(40.dp)
         ){
             item{
-                Row(modifier = Modifier
-                    .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ){
-                    Text(text = "Ciclo de Calentamiento: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
-
-                    Text(text = "Repeticiones: ${rutina.cicles.first().rep}", style = MaterialTheme.typography.bodyLarge)
-                }
-            }
-
-            rutina.cicles.first().ejs.forEach{ ejercicio ->
-                item{
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                            .background(Color(0xFFD9D9D9))
-                    ){
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(IntrinsicSize.Min),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ){
-                            Box{
-                                Column(
-                                    modifier = Modifier
-                                        .padding(2.dp),
-                                    verticalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(text = "${ejercicio.name}", style = MaterialTheme.typography.titleLarge)
-
-                                    Text(text = "${ejercicio.description}", style = MaterialTheme.typography.bodyLarge)
-
-                                }
-                            }
-
-                            Box{
-                                Row(
-                                    modifier = Modifier
-                                        .width(160.dp)
-                                        .fillMaxHeight()
-                                        .background(Color(0xFFBEBEBE))
-                                ){
-                                    Column(
-                                        modifier = Modifier
-                                            .padding(2.dp)
-                                    ) {
-                                        Text(
-                                            text = "Series ", style = MaterialTheme.typography.bodyLarge
-                                        )
-
-                                        Text(
-                                            text = "${ejercicio.series}", style = MaterialTheme.typography.bodyLarge,
-                                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                                        )
-                                    }
-
-                                    Column(
-                                        modifier = Modifier
-                                            .padding(2.dp)
-                                    ){
-                                        Text(
-                                            text = "Duración (${ejercicio.dUnit})", style = MaterialTheme.typography.bodyLarge
-                                        )
-
-                                        Text(
-                                            text = "${ejercicio.duration}", style = MaterialTheme.typography.bodyLarge,
-                                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                                        )
-                                    }
-
-                                }
-                            }
-
-
-
-                        }
-
-                    }
-                }
-            }
-
-            item{
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Divider(modifier = Modifier
@@ -740,26 +446,30 @@ fun TabletRutineDetailLayout(rutina: Rutina) {
                     .background(Color.Gray))
             }
 
-            rutina.cicles.drop(1).dropLast(1).forEach { cicle ->
+            viewModel.uiState.cycles?.content?.forEach { cycle ->
                 item{
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            text = "Ciclo de Ejercitación ${cicle.number}: ",
-                            style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
-                        )
+                        cycle.name?.let {
+                            Text(
+                                text = it,
+                                style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C))
+                            )
+                        }
 
                         Text(
-                            text = "Repeticiones: ${cicle.rep}",
+                            text = "Repeticiones: ${cycle.repetitions}",
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
                 }
 
-                cicle.ejs.forEach{ ejercicio ->
+                val exercises = viewModel.uiState.cycleExercises?.get(cycle.id)
+
+                exercises?.content?.forEach { exercise ->
                     item{
                         Box(
                             modifier = Modifier
@@ -779,9 +489,9 @@ fun TabletRutineDetailLayout(rutina: Rutina) {
                                             .padding(2.dp),
                                         verticalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        Text(text = "${ejercicio.name}", style = MaterialTheme.typography.titleLarge)
+                                        Text(text = "${exercise.exercise?.name}", style = MaterialTheme.typography.titleLarge)
 
-                                        Text(text = "${ejercicio.description}", style = MaterialTheme.typography.bodyLarge)
+                                        Text(text = "${exercise.exercise?.detail}", style = MaterialTheme.typography.bodyLarge)
 
                                     }
                                 }
@@ -802,7 +512,7 @@ fun TabletRutineDetailLayout(rutina: Rutina) {
                                             )
 
                                             Text(
-                                                text = "${ejercicio.series}", style = MaterialTheme.typography.bodyLarge,
+                                                text = "${exercise.repetitions}", style = MaterialTheme.typography.bodyLarge,
                                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                                             )
                                         }
@@ -812,11 +522,11 @@ fun TabletRutineDetailLayout(rutina: Rutina) {
                                                 .padding(2.dp)
                                         ){
                                             Text(
-                                                text = "Duración (${ejercicio.dUnit})", style = MaterialTheme.typography.bodyLarge
+                                                text = "Duración (min)", style = MaterialTheme.typography.bodyLarge
                                             )
 
                                             Text(
-                                                text = "${ejercicio.duration}", style = MaterialTheme.typography.bodyLarge,
+                                                text = "${exercise.duration}", style = MaterialTheme.typography.bodyLarge,
                                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                                             )
                                         }
@@ -827,117 +537,7 @@ fun TabletRutineDetailLayout(rutina: Rutina) {
                         }
                     }
                 }
-
-                item{
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Divider(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(Color.Gray))
-                }
-            }
-
-            item{
-                Row(modifier = Modifier
-                    .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ){
-                    Text(text = "Ciclo de Enfriamiento: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
-
-                    Text(text = "Repeticiones: ${rutina.cicles.last().rep}", style = MaterialTheme.typography.bodyLarge)
-                }
-            }
-
-            rutina.cicles.last().ejs.forEach{ ejercicio ->
-                item{
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                            .background(Color(0xFFD9D9D9))
-                    ){
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(IntrinsicSize.Min),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ){
-                            Box{
-                                Column(
-                                    modifier = Modifier
-                                        .padding(2.dp),
-                                    verticalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(text = "${ejercicio.name}", style = MaterialTheme.typography.titleLarge)
-
-                                    Text(text = "${ejercicio.description}", style = MaterialTheme.typography.bodyLarge)
-
-                                }
-                            }
-
-                            Box{
-                                Row(
-                                    modifier = Modifier
-                                        .width(160.dp)
-                                        .fillMaxHeight()
-                                        .background(Color(0xFFBEBEBE))
-                                ){
-                                    Column(
-                                        modifier = Modifier
-                                            .padding(2.dp)
-                                    ) {
-                                        Text(
-                                            text = "Series ", style = MaterialTheme.typography.bodyLarge
-                                        )
-
-                                        Text(
-                                            text = "${ejercicio.series}", style = MaterialTheme.typography.bodyLarge,
-                                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                                        )
-                                    }
-
-                                    Column(
-                                        modifier = Modifier
-                                            .padding(2.dp)
-                                    ){
-                                        Text(
-                                            text = "Duración (${ejercicio.dUnit})", style = MaterialTheme.typography.bodyLarge
-                                        )
-
-                                        Text(
-                                            text = "${ejercicio.duration}", style = MaterialTheme.typography.bodyLarge,
-                                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                                        )
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                }
             }
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun RutinaDetailScreenPreview() {
-    val cicle = Cicle(
-        name = "Ejercitación",
-        number = 1,
-        rep = 3,
-        ejs = listOf(
-            Ejercicio("Squats", "Leg workout", 3, 30, "s"),
-            Ejercicio("Push-ups", "Upper body workout", 3, 20, "s"),
-        )
-    )
-
-    val excicle= listOf(cicle,cicle,cicle)
-
-    val rutina = Rutina("Rutina 1", "Description for Rutina 1", 2, 30, "min",excicle,7.5, "13/11/2023", "Cardio")
-    MyRutineDetailScreen(rutina = rutina)
-}
-
-*/
