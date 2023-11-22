@@ -32,7 +32,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalConfiguration
 import hci.app.ui.main.MainViewModel
-
+/*
 @Composable
 fun MyRutineExecScreen1(rutina: Rutina, viewModel: MainViewModel) {
     val ejIndexState by viewModel.ejIndexState
@@ -862,3 +862,6 @@ fun MyRutineExecScreenPreview() {
     val rutina = Rutina("Rutina 1", "Description for Rutina 1", 2, 30, "min",excicle,7.5, "13/11/2023", "Cardio")
     MyRutineExecScreen1(rutina)
 }*/
+
+
+ */

@@ -12,4 +12,5 @@ data class NetworkRoutines (
     @SerializedName("page")         var page       : Int?               = null,
     @SerializedName("isLastPage")   var isLastPage : Boolean?           = null
 
+
 )

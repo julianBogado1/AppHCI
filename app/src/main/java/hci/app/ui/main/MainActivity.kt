@@ -29,10 +29,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import hci.app.BottomBar
-import hci.app.Composables.Cicle
-import hci.app.Composables.Ejercicio
 import hci.app.Composables.MyLoginScreen
-import hci.app.Composables.Rutina
 import hci.app.MyNavGraph
 import hci.app.R
 import hci.app.composables.MyTextField
@@ -45,7 +42,7 @@ import hci.app.util.VerticalBar
 import hci.app.util.getViewModelFactory
 import java.util.Locale
 import kotlin.random.Random
-import hci.app.Composables.MyRutineExecScreen1
+//import hci.app.Composables.MyRutineExecScreen1
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -136,8 +133,8 @@ fun MainScreen(
                 }
             }
         ) {
-            //MyNavGraph(navController = navController, viewModel = viewModel)
-            val cicle = Cicle(
+            MyNavGraph(navController = navController, viewModel = viewModel)
+            /*val cicle = Cicle(
                 name = "Ejercitación",
                 number = 1,
                 rep = 3,
@@ -150,7 +147,7 @@ fun MainScreen(
             val excicle= listOf(cicle,cicle,cicle)
 
             val rutina = Rutina("Rutina 1", "Description for Rutina 1", 2, 30, "min",excicle,7.5, "13/11/2023", "Cardio")
-            MyRutineExecScreen1(rutina, viewModel)
+            MyRutineExecScreen1(rutina, viewModel)*/
         }
     }
     else{

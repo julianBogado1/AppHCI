@@ -11,6 +11,11 @@
     <string name="dismiss">Descartar</string>
     <string name="username">Nombre de usuario</string>
     <string name="password">Contraseña</string>
+    <string name="orderBy">Ordenar Por</string>
+    <string name="difficulty">Difficultad</string>
+    <string name="date">Fecha</string>
+
+
     <string name="rutinas">rutinas?</string>
     <string name="ciclos">ciclos?</string>
     <string name="unaRutina">unaRutina?</string>

@@ -22,6 +22,7 @@ import hci.app.ui.main.MainViewModel
 
 @Composable
 fun SettingsScreen(viewModel: MainViewModel) {
+    
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -34,7 +35,7 @@ fun SettingsScreen(viewModel: MainViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-            resId = R.string.logout,                                         //todo cambio de idioma
+            resId = R.string.logout,
             colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
             fontWeight = FontWeight.Bold,
             onClick = {viewModel.logout()},

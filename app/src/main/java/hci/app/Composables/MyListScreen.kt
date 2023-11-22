@@ -25,11 +25,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.zIndex
+import hci.app.R
+import hci.app.data.network.model.NetworkRoutineContent
+import hci.app.ui.main.MainViewModel
 
-data class Rutina(
+/*data class Rutina(
     val name: String,
     val description: String,
     val rating: Int,
@@ -54,26 +58,30 @@ data class Ejercicio(
     val series: Int,
     val duration: Int,
     val dUnit: String
-)
+)*/
 
 @Composable
-fun MyListScreen() {
+fun MyListScreen(viewModel : MainViewModel) {
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
 
     if (isTablet) {
-        TabletListLayout()
+        TabletListLayout(viewModel)
     } else {
-        PhoneListLayout()
+        PhoneListLayout(viewModel)
     }
 }
 
 @Composable
-fun PhoneListLayout() {
+fun PhoneListLayout(viewModel: MainViewModel) {
     var sortCriteria by remember { mutableStateOf("rate") }
     var sortCriteriaName by remember { mutableStateOf("Dificultad") }
 
-    val excicle =listOf(
+    viewModel.getRoutines()
+    var rutineList = remember { viewModel.uiState.routines?.content?: arrayListOf<NetworkRoutineContent>() }
+
+
+    /*val excicle =listOf(
         Cicle(
             name = "Ejercitación",
             number = 1,
@@ -82,9 +90,9 @@ fun PhoneListLayout() {
                 Ejercicio("Squats", "Leg workout", 3, 30, "s"),
                 Ejercicio("Push-ups", "Upper body workout", 3, 20, "s"),
             )
-        ))
+        ))*/
 
-    val rutineList = remember {
+    /*val rutineList = remember {
         listOf(
             Rutina("Rutina 1", "Desc 1", 2, 12, "min",excicle,5.0, "13/11/2023", "Piernas"),
             Rutina("Rutina 2", "Desc 2", 3, 9, "min",excicle,3.0, "13/11/2023", "Piernas"),
@@ -99,136 +107,14 @@ fun PhoneListLayout() {
             Rutina("Rutina 11", "Desc 2", 3, 9, "min",excicle,5.0, "11/11/2023", "Yoga"),
             Rutina("Rutina 12", "Desc 3", 2, 15, "min",excicle,7.0, "12/11/2023", "Piernas")
         )
-    }
+    }*/
 
     val sortedRutineList = remember(rutineList, sortCriteria) {
         when (sortCriteria.lowercase()) {
-            "rate" -> rutineList.sortedBy { it.rating }
-            "category" -> rutineList.sortedBy {it.category}
+            //"rate" -> rutineList.sortedBy { it.rating }   //todo creeeeeeo que no tenemos rating xq somos grupo d 3
+            //"category" -> rutineList.sortedBy {it.category}   //todo tnemos categorias?
             "date" -> rutineList.sortedByDescending {it.date}
-            "points" -> rutineList.sortedByDescending {it.points}
-            else -> rutineList
-        }
-    }
-
-    var isDropdownVisible by remember { mutableStateOf(false) }
-
-    val icon = if (isDropdownVisible)
-        Icons.Filled.KeyboardArrowUp
-    else
-        Icons.Filled.KeyboardArrowDown
-
-    var TextFieldSize by remember { mutableStateOf(Size.Zero)}
-
-
-
-    Column(modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Column(Modifier.padding(20.dp)) {
-            OutlinedTextField(
-                value = sortCriteriaName,
-                onValueChange = {},
-                readOnly = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .onGloballyPositioned { coordinates ->
-                        TextFieldSize = coordinates.size.toSize()
-                    },
-                label = {Text("Ordenar por")},
-                trailingIcon = {
-                    Icon(icon,"contentDescription",
-                        Modifier.clickable { isDropdownVisible = !isDropdownVisible })
-                }
-            )
-
-
-            DropdownMenu(
-                expanded = isDropdownVisible,
-                onDismissRequest = { isDropdownVisible = false },
-                modifier = Modifier
-                    .width(with(LocalDensity.current){TextFieldSize.width.dp})
-            ) {
-                DropdownMenuItem("Dificultad") {
-                    sortCriteria = "rate"
-                    sortCriteriaName = "Dificultad"
-                    isDropdownVisible = false
-                }
-                DropdownMenuItem("Categoría") {
-                    sortCriteria = "category"
-                    sortCriteriaName = "Categoría"
-                    isDropdownVisible = false
-                }
-                DropdownMenuItem("Fecha") {
-                    sortCriteria = "date"
-                    sortCriteriaName = "Fecha"
-                    isDropdownVisible = false
-                }
-                DropdownMenuItem("Puntaje") {
-                    sortCriteria = "points"
-                    sortCriteriaName = "Puntaje"
-                    isDropdownVisible = false
-                }
-            }
-        }
-
-
-        LazyColumn(
-            modifier=Modifier
-                .padding(bottom=80.dp)
-        ) {
-            items(sortedRutineList.size) { index ->
-                val item = sortedRutineList[index]
-                ListItemComponent(item = item)
-            }
-        }
-
-    }
-}
-
-@Composable
-fun TabletListLayout() {
-    var sortCriteria by remember { mutableStateOf("rate") }
-    var sortCriteriaName by remember { mutableStateOf("Dificultad") }
-
-    val excicle =listOf(
-        Cicle(
-            name = "Ejercitación",
-            number = 1,
-            rep = 3,
-            ejs = listOf(
-                Ejercicio("Squats", "Leg workout", 3, 30, "s"),
-                Ejercicio("Push-ups", "Upper body workout", 3, 20, "s"),
-            )
-        ))
-
-    val rutineList = remember {
-        listOf(
-            Rutina("Rutina 1", "Desc 1", 2, 12, "min",excicle,5.0, "13/11/2023", "Piernas"),
-            Rutina("Rutina 2", "Desc 2", 3, 9, "min",excicle,3.0, "13/11/2023", "Piernas"),
-            Rutina("Rutina 3", "Desc 3", 2, 15, "min",excicle,3.0, "13/11/2023", "Brazos"),
-            Rutina("Rutina 4", "Desc 1", 1, 12, "min",excicle,3.0, "09/11/2023", "Brazos"),
-            Rutina("Rutina 5", "Desc 2", 1, 9, "min",excicle,5.0, "09/11/2023", "Brazos"),
-            Rutina("Rutina 6", "Desc 3", 2, 15, "min",excicle,7.0, "09/11/2023", "Cardio"),
-            Rutina("Rutina 7", "Desc 1", 2, 12, "min",excicle,2.5, "12/11/2023", "Cardio"),
-            Rutina("Rutina 8", "Desc 2", 3, 9, "min",excicle,7.6, "12/11/2023", "Cardio"),
-            Rutina("Rutina 9", "Desc 3", 2, 15, "min",excicle,9.0, "12/11/2023", "Yoga"),
-            Rutina("Rutina 10", "Desc 1", 2, 12, "min",excicle,10.0, "11/11/2023", "Yoga"),
-            Rutina("Rutina 11", "Desc 2", 3, 9, "min",excicle,5.0, "11/11/2023", "Yoga"),
-            Rutina("Rutina 12", "Desc 3", 2, 15, "min",excicle,7.0, "12/11/2023", "Piernas")
-        )
-    }
-
-    val sortedRutineList = remember(rutineList, sortCriteria) {
-        when (sortCriteria.lowercase()) {
-            "rate" -> rutineList.sortedBy { it.rating }
-            "category" -> rutineList.sortedBy {it.category}
-            "date" -> rutineList.sortedByDescending {it.date}
-            "points" -> rutineList.sortedByDescending {it.points}
+            //"points" -> rutineList.sortedByDescending {it.points} //todo TENEMOS PUNTOS?? ASJDAJDAD
             else -> rutineList
         }
     }
@@ -246,7 +132,131 @@ fun TabletListLayout() {
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .padding(start=80.dp, end=16.dp),
+        .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Column(Modifier.padding(20.dp)) {
+            OutlinedTextField(
+                value = sortCriteriaName,
+                onValueChange = {},
+                readOnly = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onGloballyPositioned { coordinates ->
+                        TextFieldSize = coordinates.size.toSize()
+                    },
+                label = {Text(stringResource(id =  R.string.orderBy))},
+                trailingIcon = {
+                    Icon(icon,"contentDescription",     //todo esto hay que traducirlo??
+                        Modifier.clickable { isDropdownVisible = !isDropdownVisible })
+                }
+            )
+
+
+            DropdownMenu(
+                expanded = isDropdownVisible,
+                onDismissRequest = { isDropdownVisible = false },
+                modifier = Modifier
+                    .width(with(LocalDensity.current){TextFieldSize.width.dp})
+            ) {
+                DropdownMenuItem(stringResource(id = R.string.difficulty)) {    //todo nosotros no tenemos dificultad, no?
+                    sortCriteria = "rate"
+                    sortCriteriaName = "Dificultad"
+                    isDropdownVisible = false
+                }
+                /*DropdownMenuItem("Categoría") {
+                    sortCriteria = "category"
+                    sortCriteriaName = "Categoría"
+                    isDropdownVisible = false
+                }*/
+                DropdownMenuItem(stringResource(id = R.string.date)) {
+                    sortCriteria = "date"
+                    sortCriteriaName = "Fecha"
+                    isDropdownVisible = false
+                }
+                /*DropdownMenuItem("Puntaje") {
+                    sortCriteria = "points"
+                    sortCriteriaName = "Puntaje"
+                    isDropdownVisible = false
+                }*/
+            }
+
+    }
+
+        LazyColumn(
+            modifier=Modifier
+                .padding(bottom=80.dp)
+        ) {
+            items(sortedRutineList.size) { index ->
+                val item = sortedRutineList[index]
+                ListItemComponent(item = item)
+            }
+        }
+
+    }
+}
+
+@Composable
+fun TabletListLayout(viewModel: MainViewModel) {
+    var sortCriteria by remember { mutableStateOf("rate") }
+    var sortCriteriaName by remember { mutableStateOf("Dificultad") }
+    viewModel.getRoutines()
+    var rutineList = remember { viewModel.uiState.routines?.content?: arrayListOf<NetworkRoutineContent>() }
+
+    /*val excicle =listOf(
+        Cicle(
+            name = "Ejercitación",
+            number = 1,
+            rep = 3,
+            ejs = listOf(
+                Ejercicio("Squats", "Leg workout", 3, 30, "s"),
+                Ejercicio("Push-ups", "Upper body workout", 3, 20, "s"),
+            )
+        ))*/
+
+    /*val rutineList = remember {
+        listOf(
+            Rutina("Rutina 1", "Desc 1", 2, 12, "min",excicle,5.0, "13/11/2023", "Piernas"),
+            Rutina("Rutina 2", "Desc 2", 3, 9, "min",excicle,3.0, "13/11/2023", "Piernas"),
+            Rutina("Rutina 3", "Desc 3", 2, 15, "min",excicle,3.0, "13/11/2023", "Brazos"),
+            Rutina("Rutina 4", "Desc 1", 1, 12, "min",excicle,3.0, "09/11/2023", "Brazos"),
+            Rutina("Rutina 5", "Desc 2", 1, 9, "min",excicle,5.0, "09/11/2023", "Brazos"),
+            Rutina("Rutina 6", "Desc 3", 2, 15, "min",excicle,7.0, "09/11/2023", "Cardio"),
+            Rutina("Rutina 7", "Desc 1", 2, 12, "min",excicle,2.5, "12/11/2023", "Cardio"),
+            Rutina("Rutina 8", "Desc 2", 3, 9, "min",excicle,7.6, "12/11/2023", "Cardio"),
+            Rutina("Rutina 9", "Desc 3", 2, 15, "min",excicle,9.0, "12/11/2023", "Yoga"),
+            Rutina("Rutina 10", "Desc 1", 2, 12, "min",excicle,10.0, "11/11/2023", "Yoga"),
+            Rutina("Rutina 11", "Desc 2", 3, 9, "min",excicle,5.0, "11/11/2023", "Yoga"),
+            Rutina("Rutina 12", "Desc 3", 2, 15, "min",excicle,7.0, "12/11/2023", "Piernas")
+        )
+    }*/
+
+    val sortedRutineList = remember(rutineList, sortCriteria) {
+        when (sortCriteria.lowercase()) {
+            //"rate" -> rutineList.sortedBy { it.rating }   //todo creeeeeeo que no tenemos rating xq somos grupo d 3
+            //"category" -> rutineList.sortedBy {it.category}   //todo tnemos categorias?
+            "date" -> rutineList.sortedByDescending {it.date}
+            //"points" -> rutineList.sortedByDescending {it.points} //todo TENEMOS PUNTOS?? ASJDAJDAD
+            else -> rutineList
+        }
+    }
+
+    var isDropdownVisible by remember { mutableStateOf(false) }
+
+    val icon = if (isDropdownVisible)
+        Icons.Filled.KeyboardArrowUp
+    else
+        Icons.Filled.KeyboardArrowDown
+
+    var TextFieldSize by remember { mutableStateOf(Size.Zero)}
+
+
+
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(start = 80.dp, end = 16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -326,7 +336,7 @@ private fun DropdownMenuItem(text: String, onItemClick: () -> Unit) {
 }
 
 @Composable
-fun ListItemComponent(item: Rutina) {
+fun ListItemComponent(item: NetworkRoutineContent) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -348,7 +358,7 @@ fun ListItemComponent(item: Rutina) {
                 ) {
                     Text(text = "${item.name}", style = MaterialTheme.typography.titleLarge)
 
-                    Text(text = "${item.description}", style = MaterialTheme.typography.bodyLarge)
+                    Text(text = "${item.detail}", style = MaterialTheme.typography.bodyLarge)
 
                     Text(text = "${item.category}", style = MaterialTheme.typography.bodyMedium)
 
@@ -366,18 +376,28 @@ fun ListItemComponent(item: Rutina) {
                     verticalArrangement = Arrangement.Center
                 ){
 
-                    when (item.rating) {
-                        1 -> Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
+                    when (item.difficulty) {          //todo creo q no tenemos rating _merequetengue_
+                        "rookie" -> Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
                             ArmFlexIcon()
                             ArmFlexOutlineIcon()
                             ArmFlexOutlineIcon()
                         }
-                        2 -> Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
+                        "beginner" -> Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
                             ArmFlexIcon()
                             ArmFlexIcon()
                             ArmFlexOutlineIcon()
                         }
-                        3 -> Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
+                        "intermediate" -> Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
+                            ArmFlexIcon()
+                            ArmFlexIcon()
+                            ArmFlexIcon()
+                        }
+                        "advanced" -> Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
+                            ArmFlexIcon()
+                            ArmFlexIcon()
+                            ArmFlexIcon()
+                        }
+                        "expert" -> Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
                             ArmFlexIcon()
                             ArmFlexIcon()
                             ArmFlexIcon()
@@ -385,7 +405,7 @@ fun ListItemComponent(item: Rutina) {
                     }
 
                     Text(
-                        text = "${item.duration} ${item.dUnit}", style = MaterialTheme.typography.bodyLarge,
+                        text = "${item.metadata?.duration?:0} s", style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
 
@@ -396,7 +416,7 @@ fun ListItemComponent(item: Rutina) {
                             modifier = Modifier.size(24.dp)
                         )
 
-                        Text(text = "${item.points}", style = MaterialTheme.typography.bodyLarge)
+                        Text(text = "s", style = MaterialTheme.typography.bodyLarge)    //todo asumo que los tiempos de la api estan todos en S
                     }
                 }
             }
@@ -409,9 +429,3 @@ fun ListItemComponent(item: Rutina) {
 
 }
 
-@Preview(showBackground = true)
-@Composable
-fun RutinaListScreenPreview() {
-
-    MyListScreen()
-}

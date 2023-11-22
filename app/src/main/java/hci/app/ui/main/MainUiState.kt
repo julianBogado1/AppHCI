@@ -42,12 +42,20 @@ val MainUiState.canAddSport: Boolean get() = isAuthenticated && currentSport == 
 val MainUiState.canModifySport: Boolean get() = isAuthenticated && currentSport != null
 val MainUiState.canDeleteSport: Boolean get() = canModifySport
 
+
 val routines : NetworkRoutines? = null
-
+    get() = field
 val oneRoutine : NetworkRoutineContent? = null
-
+    get() = field
 val cycles : NetworkRoutineCycles? = null
+    get() = field
 val oneCycle : NetworkRoutineCycleContent? = null
+    get() = field
+
+val cycleExercises : MutableMap<Int, NetworkCycleExercises>? = mutableMapOf()
+    get() = field
 val exercises : NetworkExercisesIsolated? = null
+    get() = field
 val exercisesContent: NetworkCycleExercisesContent? = null
+    get() = field
 val oneExercise : NetworkExercise? = null
