@@ -35,7 +35,6 @@ import hci.app.Composables.MyLoginScreen
 import hci.app.Composables.Rutina
 import hci.app.MyNavGraph
 import hci.app.R
-import hci.app.composables.MyTextField
 import hci.app.data.model.Sport
 import hci.app.data.model.User
 import hci.app.data.network.model.NetworkRoutineContent
@@ -98,7 +97,7 @@ fun MainScreen(
     val currentRoute = navBackStackEntry?.destination?.route
     val appState = rememberMyAppState()
 
-    if(viewModel.uiState.isAuthenticated) {
+    //if(viewModel.uiState.isAuthenticated) {
         Scaffold(
             snackbarHost = {appState.snackbarHostState},
             bottomBar = {
@@ -142,7 +141,17 @@ fun MainScreen(
                 number = 1,
                 rep = 3,
                 ejs = listOf(
-                    Ejercicio("Squats", "Leg workout", 2, 1, "s"),
+                    Ejercicio("Squats", "Leg workout", 2, 2, "s"),
+                    Ejercicio("Push-ups", "Upper body workout", 3, 1, "s"),
+                    Ejercicio("Squats", "Leg workout", 2, 3, "s"),
+                    Ejercicio("Nope", "Upper body workout", 3, 0, "s"),
+                    Ejercicio("doo", "Leg workout", 2, 1, "s"),
+                    Ejercicio("Push-ups", "Upper body workout", 3, 2, "s"),
+                    Ejercicio("Squats", "Leg workout", 2, 2, "s"),
+                    Ejercicio("Push-ups", "Upper body workout", 3, 1, "s"),
+                    Ejercicio("Squats", "Leg workout", 2, 3, "s"),
+                    Ejercicio("Nope", "Upper body workout", 3, 0, "s"),
+                    Ejercicio("Nope", "Leg workout", 2, 1, "s"),
                     Ejercicio("Push-ups", "Upper body workout", 3, 2, "s"),
                 )
             )
@@ -152,10 +161,10 @@ fun MainScreen(
             val rutina = Rutina("Rutina 1", "Description for Rutina 1", 2, 30, "min",excicle,7.5, "13/11/2023", "Cardio")
             MyRutineExecScreen1(rutina, viewModel)
         }
-    }
-    else{
-        MyLoginScreen(viewModel)
-    }
+    //}
+    //else{
+    //    MyLoginScreen(viewModel)
+    //}
 }
 
 

@@ -1,5 +1,6 @@
 package hci.app.Composables
 
+import android.util.Log
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,22 +19,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Alignment
 
 @Composable
-fun MyTimer(seconds: Int, onTimerTick: (Long) -> Unit, onTimerFinish:() ->Unit, inBreak:Boolean, inStop:Boolean, stopChange: (Boolean)->Unit, secondsChange: (Int)->Unit) {
-    val milis = remember { mutableStateOf(seconds * 1000L) }
+fun MyTimer(seconds: Int, onTimerTick: (Long) -> Unit, onTimerFinish:() ->Unit, inBreak:Boolean, inStop:Boolean, stopChange: (Boolean)->Unit, nextRemainingTime: Int) {
+    if(seconds==0) {
+        return
+    }
+
     var progress by remember { mutableStateOf(1f) }
-    //var inStop by remember { mutableStateOf(inStop) }
-    var remainingTime by remember { mutableStateOf(milis.value) }
-    LaunchedEffect(key1 = milis.value, key2=inBreak) {
+    var remainingTime by remember {mutableStateOf(seconds*1000L)}
+
+    LaunchedEffect(key1 = remainingTime, key2=inBreak) {
 
         while (!inStop && !inBreak && remainingTime > 0) {
             delay(1000)
             remainingTime -= 1000
-            progress = remainingTime.toFloat() / milis.value.toFloat()
-            onTimerTick(remainingTime)
+            progress = remainingTime.toFloat() / (seconds*1000L).toFloat()
+            //onTimerTick(remainingTime)
         }
 
         if(!inBreak || (inStop && inBreak)) {
-            remainingTime = milis.value
+            remainingTime = nextRemainingTime.toLong()
             progress = 1f
             onTimerFinish()
         }
@@ -61,6 +65,7 @@ fun MyTimer(seconds: Int, onTimerTick: (Long) -> Unit, onTimerFinish:() ->Unit, 
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
+                //Text(text=String.format("%d",seconds))
                 Text(
                     text = (String.format("%02d:%02d", (remainingTime / 60000), (remainingTime / 1000) % 60)),
                     style = MaterialTheme.typography.headlineSmall,
