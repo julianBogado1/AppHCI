@@ -27,7 +27,7 @@ data class MainUiState(
     val cycles : NetworkRoutineCycles? = null,
     val oneRoutine : NetworkRoutineContent? = null,
     val oneCycle : NetworkRoutineCycleContent? = null,
-    val cycleExercises : MutableMap<Int, NetworkCycleExercises>? = mutableMapOf(),
+    val cycleExercises : NetworkCycleExercises? = null,
     val exercises : NetworkExercisesIsolated? = null,
     val exercisesContent: NetworkCycleExercisesContent? = null,
     val oneExercise : NetworkExercise? = null,

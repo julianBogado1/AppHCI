@@ -14,42 +14,57 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.*
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import hci.app.data.network.model.NetworkCycleExercises
 import hci.app.ui.main.MainViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 
-//todo TRADUCIR TODO ALAVERGAAAAAAAAAAAAAAAAAAAAAA
 @Composable
 fun MyRoutineDetailScreen(viewModel: MainViewModel, routineId: Int) {
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
+    val exercisesMap = remember { mutableStateMapOf<Int, NetworkCycleExercises>() }
 
     LaunchedEffect(routineId) {
         launch {
             viewModel.getOneRoutine(routineId)
             viewModel.getCycles(routineId)
-            viewModel.uiState.cycles?.content?.forEach { cycle ->
-                cycle.id?.let { viewModel.getCycleExercises(it) }
+            
+            val cycles = viewModel.uiState.cycles
+            cycles?.content?.forEach { cycle ->
+                cycle.id?.let { cycleId ->
+                    viewModel.getCycleExercises(cycleId)
+                    val cycleExercises = viewModel.uiState.cycleExercises
+                    cycleExercises?.let {
+                        exercisesMap[cycleId] = it
+                    }
+                }
             }
         }
     }
 
     if (isTablet) {
-        TabletRutineDetailLayout(viewModel = viewModel, routineId = routineId)
+        TabletRutineDetailLayout(viewModel = viewModel, routineId = routineId, exercisesMap = exercisesMap)
     } else {
-        PhoneRutineDetailLayout(viewModel = viewModel, routineId = routineId)
+        PhoneRutineDetailLayout(viewModel = viewModel, routineId = routineId, exercisesMap = exercisesMap)
     }
 }
 
 @Composable
-fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
+fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesMap: MutableMap<Int, NetworkCycleExercises>) {
+
+
 
     LazyColumn(
         modifier = Modifier
@@ -223,7 +238,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                     )
                 }
             }
-            viewModel.uiState.cycleExercises?.get(oneCycle.id)?.content?.forEach{ exercise ->
+            exercisesMap.get(oneCycle.id)?.content?.forEach{ exercise ->
                 item{
                     Box(
                         modifier = Modifier
@@ -305,7 +320,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
 
 @SuppressLint("SimpleDateFormat")
 @Composable
-fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
+fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesMap: MutableMap<Int, NetworkCycleExercises>) {
 
     Row(
         modifier = Modifier
@@ -494,9 +509,7 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                     }
                 }
 
-                val exercises = viewModel.uiState.cycleExercises?.get(cycle.id)
-
-                exercises?.content?.forEach { exercise ->
+                exercisesMap.get(cycle.id)?.content?.forEach{ exercise ->
                     item{
                         Box(
                             modifier = Modifier
