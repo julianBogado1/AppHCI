@@ -15,6 +15,14 @@
     <string name="date">Date</string>
     <string name="category">Category</string>
     <string name="score">Score</string>
+    <string name="next">Next</string>
+    <string name="rest">Rest</string>
+    <string name="nextInCycle">Next in this cycle</string>
+    <string name="share">Share</string>
+    <string name="Description">Description</string>
+    <string name="creation_date">Creation Date</string>
+    <string name="duration">Duration</string>
+    <string name="repetitions">Repetitions</string>
 
 
     <string name="rutinas">rutinas?</string>

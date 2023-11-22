@@ -265,7 +265,9 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
                                 }
                             }
 
-                            Box(modifier = Modifier.weight(0.4f).background(Color(0xFFBEBEBE))){
+                            Box(modifier = Modifier
+                                .weight(0.4f)
+                                .background(Color(0xFFBEBEBE))){
                                 Row(
                                     modifier = Modifier
                                         .fillMaxHeight()
@@ -327,12 +329,12 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding(start=80.dp)
+            .padding(start = 80.dp)
     ) {
         LazyColumn( modifier = Modifier
             .width(300.dp)
             .fillMaxHeight()
-            .padding(top=40.dp,bottom=40.dp)
+            .padding(top = 40.dp, bottom = 40.dp)
         ){
             item{
                 Row(modifier = Modifier
@@ -537,7 +539,9 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
                                     }
                                 }
 
-                                Box(modifier = Modifier.weight(0.4f).background(Color(0xFFBEBEBE))){
+                                Box(modifier = Modifier
+                                    .weight(0.4f)
+                                    .background(Color(0xFFBEBEBE))){
                                     Row(
                                         modifier = Modifier.fillMaxSize()
                                     ){

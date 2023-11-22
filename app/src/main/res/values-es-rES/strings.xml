@@ -16,6 +16,15 @@
     <string name="date">Fecha</string>
     <string name="category">Categoria</string>
     <string name="score">Puntaje</string>
+    <string name="next">Siguiente</string>
+    <string name="rest">Descanso</string>
+    <string name="nextInCycle">A continuación en este ciclo</string>
+    <string name="share">Compartir</string>
+    <string name="Description">Descripcion</string>
+    <string name="creation_date">Fecha de creacion</string>
+    <string name="duration">Duracion</string>
+    <string name="repetitions">Repetiociones</string>
+
 
 
     <string name="rutinas">rutinas?</string>
