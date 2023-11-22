@@ -34,6 +34,7 @@ import hci.app.R
 import hci.app.data.network.model.NetworkRoutineContent
 import hci.app.ui.main.MainViewModel
 import kotlinx.coroutines.launch
+import java.util.Date
 
 /*data class Rutina(
     val name: String,
@@ -83,15 +84,14 @@ fun PhoneListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> U
     var sortCriteria by remember { mutableStateOf("rate") }
     var sortCriteriaName by remember { mutableStateOf("Dificultad") }
 
-
     //var viewModel.uiState.routines?.content = remember { viewModel.uiState.routines?.content?: arrayListOf<NetworkRoutineContent>() }
 
     val sortedRutineList = remember(viewModel.uiState.routines?.content, sortCriteria) {
         when (sortCriteria.lowercase()) {
-            //"rate" -> viewModel.uiState.routines?.content.sortedBy { it.rating }   //todo creeeeeeo que no tenemos rating xq somos grupo d 3
-            //"category" -> viewModel.uiState.routines?.content.sortedBy {it.category}   //todo tnemos categorias?
+            "rate" -> viewModel.uiState.routines?.content?.sortedBy { it.difficulty }   //todo creeeeeeo que no tenemos rating xq somos grupo d 3
+            "category" -> viewModel.uiState.routines?.content?.sortedBy { it.category?.name?:"" }   //todo tnemos categorias?
             "date" -> viewModel.uiState.routines?.content?.sortedByDescending {it.date}
-            //"points" -> viewModel.uiState.routines?.content.sortedByDescending {it.points} //todo TENEMOS PUNTOS?? ASJDAJDAD
+            "points" -> viewModel.uiState.routines?.content?.sortedByDescending {it.score} //todo TENEMOS PUNTOS?? ASJDAJDAD
             else -> viewModel.uiState.routines?.content
         }
     }
@@ -213,10 +213,10 @@ fun TabletListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> 
 
     val sortedRutineList = remember(viewModel.uiState.routines?.content, sortCriteria) {
         when (sortCriteria.lowercase()) {
-            //"rate" -> viewModel.uiState.routines?.content.sortedBy { it.rating }   //todo creeeeeeo que no tenemos rating xq somos grupo d 3
-            //"category" -> viewModel.uiState.routines?.content.sortedBy {it.category}   //todo tnemos categorias?
+            "rate" -> viewModel.uiState.routines?.content?.sortedBy { it.difficulty }   //todo creeeeeeo que no tenemos rating xq somos grupo d 3
+            "category" -> viewModel.uiState.routines?.content?.sortedBy { it.category?.name?:"" }   //todo tnemos categorias?
             "date" -> viewModel.uiState.routines?.content?.sortedByDescending {it.date}
-            //"points" -> viewModel.uiState.routines?.content.sortedByDescending {it.points} //todo TENEMOS PUNTOS?? ASJDAJDAD
+            "points" -> viewModel.uiState.routines?.content?.sortedByDescending {it.score} //todo TENEMOS PUNTOS?? ASJDAJDAD
             else -> viewModel.uiState.routines?.content
         }
     }
@@ -334,7 +334,7 @@ fun ListItemComponent(item: NetworkRoutineContent, onNavigateToRoutine: (String)
                 .height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.SpaceBetween
         ){
-            Box{
+            Box(modifier = Modifier.weight(0.7f)){
                 Column(
                     modifier = Modifier
                         .padding(2.dp)
@@ -345,17 +345,17 @@ fun ListItemComponent(item: NetworkRoutineContent, onNavigateToRoutine: (String)
 
                     Text(text = "${item.detail}", style = MaterialTheme.typography.bodyLarge)
 
-                    Text(text = "${item.category}", style = MaterialTheme.typography.bodyMedium)
+                    Text(text = "${item.category?.name?:""}", style = MaterialTheme.typography.bodyMedium)
 
-                    Text(text = "${item.date}", style = MaterialTheme.typography.bodyMedium)
+                    Text(text = "${Date(item.date?:0)}", style = MaterialTheme.typography.bodyMedium)
 
                 }
             }
 
-            Box{
+            Box(modifier = Modifier.weight(0.3f)){
                 Column(
                     modifier = Modifier
-                        .width(80.dp)
+                        .width(160.dp)
                         .fillMaxHeight()
                         .background(Color(0xFFBEBEBE)),
                     verticalArrangement = Arrangement.Center
@@ -369,18 +369,18 @@ fun ListItemComponent(item: NetworkRoutineContent, onNavigateToRoutine: (String)
                         }
                         "beginner" -> Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
                             ArmFlexIcon()
-                            ArmFlexIcon()
+                            ArmFlexOutlineIcon()
                             ArmFlexOutlineIcon()
                         }
                         "intermediate" -> Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
                             ArmFlexIcon()
                             ArmFlexIcon()
-                            ArmFlexIcon()
+                            ArmFlexOutlineIcon()
                         }
                         "advanced" -> Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
                             ArmFlexIcon()
                             ArmFlexIcon()
-                            ArmFlexIcon()
+                            ArmFlexIcon()   //todo SARACA
                         }
                         "expert" -> Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
                             ArmFlexIcon()
@@ -390,7 +390,7 @@ fun ListItemComponent(item: NetworkRoutineContent, onNavigateToRoutine: (String)
                     }
 
                     Text(
-                        text = "${item.metadata?.duration?:0} s", style = MaterialTheme.typography.bodyLarge,
+                        text = "${item.metadata?.duration?:0} m", style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
 
@@ -401,7 +401,7 @@ fun ListItemComponent(item: NetworkRoutineContent, onNavigateToRoutine: (String)
                             modifier = Modifier.size(24.dp)
                         )
 
-                        Text(text = "s", style = MaterialTheme.typography.bodyLarge)    //todo asumo que los tiempos de la api estan todos en S
+                        Text(text = "${item.score}", style = MaterialTheme.typography.bodyLarge)
                     }
                 }
             }
