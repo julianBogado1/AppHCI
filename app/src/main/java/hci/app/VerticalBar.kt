@@ -29,7 +29,6 @@ fun VerticalBar(
     onNavigateToRoute: (String) -> Unit
 ) {
     val items = listOf(
-        Screen.HomeScreen,
         Screen.RoutinesScreen,
         Screen.SettingsScreen
     )

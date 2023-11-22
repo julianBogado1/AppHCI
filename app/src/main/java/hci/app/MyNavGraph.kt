@@ -20,11 +20,8 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
     val uri = "https://www.creatina.share.com"
     NavHost(
         navController = navController,
-        startDestination = Screen.HomeScreen.route,
+        startDestination = Screen.RoutinesScreen.route,
     ) {
-        composable(Screen.HomeScreen.route) {
-            HomeScreen(viewModel = viewModel)
-        }
         composable(Screen.RoutinesScreen.route) {
             MyListScreen(viewModel = viewModel) { route ->
                 navController.navigate(route) {
