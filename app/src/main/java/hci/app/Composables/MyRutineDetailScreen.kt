@@ -36,18 +36,19 @@ fun MyRoutineDetailScreen(viewModel: MainViewModel, routineId: Int) {
     val isTablet = isTabletState.value
     val exercisesMap = remember { mutableStateMapOf<Int, NetworkCycleExercises>() }
 
-    LaunchedEffect(routineId) {
+    LaunchedEffect(key1 = routineId, key2 = exercisesMap) {
         launch {
             viewModel.getOneRoutine(routineId)
-            viewModel.getCycles(routineId)
-            
-            val cycles = viewModel.uiState.cycles
-            cycles?.content?.forEach { cycle ->
-                cycle.id?.let { cycleId ->
-                    viewModel.getCycleExercises(cycleId)
-                    val cycleExercises = viewModel.uiState.cycleExercises
-                    cycleExercises?.let {
-                        exercisesMap[cycleId] = it
+            viewModel.getCycles(routineId).invokeOnCompletion {
+                val cycles = viewModel.uiState.cycles
+                cycles?.content?.forEach { cycle ->
+                    cycle.id?.let { cycleId ->
+                        viewModel.getCycleExercises(cycleId).invokeOnCompletion {
+                            val cycleExercises = viewModel.uiState.cycleExercises
+                            cycleExercises?.let {
+                                exercisesMap[cycleId] = it
+                            }
+                        }
                     }
                 }
             }

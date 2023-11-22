@@ -132,17 +132,14 @@ class MainViewModel(private val sessionManager: SessionManager,private val userR
             }
         }
     }
-    fun getCycles(routineId : Int){
-
-        viewModelScope.launch{
-            uiState = uiState.copy(isLoading = true)
-            runCatching {
-                userRemoteDataSource.getCycles(routineId)
-            }.onSuccess { response ->
-                uiState = uiState.copy(isLoading = false, cycles = response)
-            }.onFailure { e ->
-                uiState = uiState.copy(isLoading = false, error = handleError(e), message = e.message?:"")
-            }
+    fun getCycles(routineId : Int) = viewModelScope.launch{
+        uiState = uiState.copy(isLoading = true)
+        runCatching {
+            userRemoteDataSource.getCycles(routineId)
+        }.onSuccess { response ->
+            uiState = uiState.copy(isLoading = false, cycles = response)
+        }.onFailure { e ->
+            uiState = uiState.copy(isLoading = false, error = handleError(e), message = e.message?:"")
         }
     }
     fun getOneCycle(routineId : Int, cycleId : Int){
@@ -159,17 +156,14 @@ class MainViewModel(private val sessionManager: SessionManager,private val userR
         }
     }
 
-    fun getCycleExercises(cycleId : Int){
-
-        viewModelScope.launch{
-            uiState = uiState.copy(isLoading = true)
-            runCatching {
-                userRemoteDataSource.getCycleExercises(cycleId)
-            }.onSuccess { response ->
-                uiState = uiState.copy(isLoading = false, cycleExercises = response)
-            }.onFailure { e ->
-                uiState = uiState.copy(isLoading = false, error = handleError(e), message = e.message?:"")
-            }
+    fun getCycleExercises(cycleId: Int) = viewModelScope.launch {
+        uiState = uiState.copy(isLoading = true)
+        runCatching {
+            userRemoteDataSource.getCycleExercises(cycleId)
+        }.onSuccess { response ->
+            uiState = uiState.copy(isLoading = false, cycleExercises = response)
+        }.onFailure { e ->
+            uiState = uiState.copy(isLoading = false, error = handleError(e), message = e.message ?: "")
         }
     }
     /*
