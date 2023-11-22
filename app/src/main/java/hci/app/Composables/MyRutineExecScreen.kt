@@ -48,7 +48,7 @@ fun MyRutineExecScreen1(rutina: Rutina, viewModel: MainViewModel) {
     if (isTablet) {
         TabletRutineExec1Layout(rutina,ejIndexState,{ newValue -> viewModel.setEjIndex(newValue)},cicleIndexState,{newValue -> viewModel.setCicleIndex(newValue)})
     } else {
-        PhoneRutineExec1Layout(rutina,ejIndexState,{ newValue -> viewModel.setEjIndex(newValue)},cicleIndexState,{newValue -> viewModel.setCicleIndex(newValue)},inBreak,{newValue -> viewModel.setInBreak(newValue)},timerRemainingSec,{newValue->viewModel.setTimerRemainingSec(newValue)},inBreak,{newValue -> viewModel.setInStop(newValue)})
+        PhoneRutineExec1Layout(rutina,ejIndexState,{ newValue -> viewModel.setEjIndex(newValue)},cicleIndexState,{newValue -> viewModel.setCicleIndex(newValue)},inBreak,{newValue -> viewModel.setInBreak(newValue)},timerRemainingSec,{newValue->viewModel.setTimerRemainingSec(newValue)},inStop,{newValue -> viewModel.setInStop(newValue)})
     }
 }
 
@@ -153,14 +153,13 @@ fun PhoneRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
                     style = MaterialTheme.typography.headlineSmall)
             }
 
-            timeRemainingSecChange(rutina.cicles[cicleIndex].ejs[ejIndex].duration*60)
+            /*###########EMPIEZA EL TAIMER###########*/
+            if(timeRemainingSec!=0){
 
-            if(rutina.cicles[cicleIndex].ejs[ejIndex].duration!=0){
-            Box(modifier = Modifier
-                .height(100.dp)
-                .fillMaxWidth()
-            ){
-
+                Box(modifier = Modifier
+                    .height(100.dp)
+                    .fillMaxWidth()
+                ){
 
                     MyTimer(
                         seconds = timeRemainingSec,
@@ -168,16 +167,19 @@ fun PhoneRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
                             onEjIndexChange((ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size)
                             if (ejIndex == 0) onCicleIndexChange((cicleIndex + 1) % rutina.cicles.size)
                             stopChange(false)
+                            breakChange(false)
                         },
                         onTimerTick = {
 
                         },
                         inBreak = inBreak,
                         inStop = inStop,
-                        stopChange = stopChange
+                        stopChange = stopChange,
+                        secondsChange = timeRemainingSecChange
                     )
                 }
             }
+            timeRemainingSecChange(rutina.cicles[cicleIndex].ejs[ejIndex].duration*60)
 
             Column(modifier = Modifier
                 .fillMaxWidth()
@@ -191,8 +193,9 @@ fun PhoneRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
                             .padding(top = 16.dp, start = 16.dp, end = 16.dp),
                         onClick = {
                             stopChange(true)
-                            onEjIndexChange((ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size)
-                            if (ejIndex == 0) onCicleIndexChange((cicleIndex + 1) % rutina.cicles.size)
+                            breakChange(true)
+                            /*onEjIndexChange((ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size)
+                            if (ejIndex == 0) onCicleIndexChange((cicleIndex + 1) % rutina.cicles.size)*/
                         },
                         colors = ButtonDefaults.buttonColors(Color(0xFF000000))
                     ) {

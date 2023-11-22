@@ -18,20 +18,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Alignment
 
 @Composable
-fun MyTimer(seconds: Int, onTimerTick: (Long) -> Unit, onTimerFinish:() ->Unit, inBreak:Boolean, inStop:Boolean, stopChange: (Boolean)->Unit) {
+fun MyTimer(seconds: Int, onTimerTick: (Long) -> Unit, onTimerFinish:() ->Unit, inBreak:Boolean, inStop:Boolean, stopChange: (Boolean)->Unit, secondsChange: (Int)->Unit) {
     val milis = remember { mutableStateOf(seconds * 1000L) }
     var progress by remember { mutableStateOf(1f) }
-    var isTimerFinished by remember { mutableStateOf(false) }
+    //var inStop by remember { mutableStateOf(inStop) }
     var remainingTime by remember { mutableStateOf(milis.value) }
     LaunchedEffect(key1 = milis.value, key2=inBreak) {
+
         while (!inStop && !inBreak && remainingTime > 0) {
             delay(1000)
             remainingTime -= 1000
             progress = remainingTime.toFloat() / milis.value.toFloat()
             onTimerTick(remainingTime)
         }
-        if(!inBreak) {
-            isTimerFinished = true
+
+        if(!inBreak || (inStop && inBreak)) {
+            remainingTime = milis.value
+            progress = 1f
             onTimerFinish()
         }
 
@@ -43,7 +46,9 @@ fun MyTimer(seconds: Int, onTimerTick: (Long) -> Unit, onTimerFinish:() ->Unit, 
             .padding(16.dp),
         contentAlignment = Alignment.Center,
     ) {
-        if (isTimerFinished) {/*
+        if (inStop) {
+            stopChange(false)
+        /*
             Text(
                 text = "Time's up!",
                 style = MaterialTheme.typography.headlineSmall,
