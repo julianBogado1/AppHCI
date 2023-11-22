@@ -156,7 +156,7 @@ fun MainScreen(
             val excicle= listOf(cicle,cicle,cicle)
 
             val rutina = Rutina("Rutina 1", "Description for Rutina 1", 2, 30, "min",excicle,7.5, "13/11/2023", "Cardio")
-            MyRutineExecScreen1(rutina, viewModel)
+            MyRutineExecScreen2(rutina, viewModel)
         }
     }
     else{
