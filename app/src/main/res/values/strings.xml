@@ -10,9 +10,11 @@
     <string name="dismiss">Dismiss</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
-    <string name="orderBy">orderBy</string>
+    <string name="orderBy">Order By</string>
     <string name="difficulty">Difficulty</string>
     <string name="date">Date</string>
+    <string name="category">Category</string>
+    <string name="score">Score</string>
 
 
     <string name="rutinas">rutinas?</string>

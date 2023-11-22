@@ -34,6 +34,7 @@ import hci.app.R
 import hci.app.data.network.model.NetworkRoutineContent
 import hci.app.ui.main.MainViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Date
 
 /*data class Rutina(
@@ -82,7 +83,8 @@ fun MyListScreen(viewModel : MainViewModel, onNavigateToRoutine: (String) -> Uni
 @Composable
 fun PhoneListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> Unit) {
     var sortCriteria by remember { mutableStateOf("rate") }
-    var sortCriteriaName by remember { mutableStateOf("Dificultad") }
+    var criteriaResource = stringResource(R.string.difficulty)
+    var sortCriteriaName by remember { mutableStateOf(criteriaResource) }
 
     //var viewModel.uiState.routines?.content = remember { viewModel.uiState.routines?.content?: arrayListOf<NetworkRoutineContent>() }
 
@@ -138,26 +140,30 @@ fun PhoneListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> U
                 modifier = Modifier
                     .width(with(LocalDensity.current){TextFieldSize.width.dp})
             ) {
-                DropdownMenuItem(stringResource(id = R.string.difficulty)) {    //todo nosotros no tenemos dificultad, no?
+                var difficultyResource = stringResource(R.string.difficulty)
+                DropdownMenuItem(stringResource(R.string.difficulty)) {
                     sortCriteria = "rate"
-                    sortCriteriaName = "Dificultad"
+                    sortCriteriaName = difficultyResource
                     isDropdownVisible = false
                 }
-                /*DropdownMenuItem("Categoría") {
+                var categoryResource = stringResource(R.string.category)
+                DropdownMenuItem(stringResource(R.string.category)) {
                     sortCriteria = "category"
-                    sortCriteriaName = "Categoría"
-                    isDropdownVisible = false
-                }*/
-                DropdownMenuItem(stringResource(id = R.string.date)) {
-                    sortCriteria = "date"
-                    sortCriteriaName = "Fecha"
+                    sortCriteriaName = categoryResource
                     isDropdownVisible = false
                 }
-                /*DropdownMenuItem("Puntaje") {
-                    sortCriteria = "points"
-                    sortCriteriaName = "Puntaje"
+                var dateResource = stringResource(R.string.date)
+                DropdownMenuItem(stringResource(R.string.date)) {
+                    sortCriteria = "date"
+                    sortCriteriaName = dateResource
                     isDropdownVisible = false
-                }*/
+                }
+                var scoreResource = stringResource(R.string.score)
+                DropdownMenuItem(stringResource(R.string.score)) {
+                    sortCriteria = "points"
+                    sortCriteriaName = scoreResource
+                    isDropdownVisible = false
+                }
             }
     }
 
@@ -179,7 +185,8 @@ fun PhoneListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> U
 @Composable
 fun TabletListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> Unit) {
     var sortCriteria by remember { mutableStateOf("rate") }
-    var sortCriteriaName by remember { mutableStateOf("Dificultad") }
+    var criteriaResource = stringResource(R.string.difficulty)
+    var sortCriteriaName by remember { mutableStateOf(criteriaResource) }
     viewModel.getRoutines()
     //var viewModel.uiState.routines?.content = remember { viewModel.uiState.routines?.content?: arrayListOf<NetworkRoutineContent>() }
 
@@ -255,32 +262,34 @@ fun TabletListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> 
                         Modifier.clickable { isDropdownVisible = !isDropdownVisible })
                 }
             )
-
-
             DropdownMenu(
                 expanded = isDropdownVisible,
                 onDismissRequest = { isDropdownVisible = false },
                 modifier = Modifier
                     .width(with(LocalDensity.current){TextFieldSize.width.dp})
             ) {
-                DropdownMenuItem("Dificultad") {
+                var difficultyResource = stringResource(R.string.difficulty)
+                DropdownMenuItem(stringResource(R.string.difficulty)) {
                     sortCriteria = "rate"
-                    sortCriteriaName = "Dificultad"
+                    sortCriteriaName = difficultyResource
                     isDropdownVisible = false
                 }
-                DropdownMenuItem("Categoría") {
+                var categoryResource = stringResource(R.string.category)
+                DropdownMenuItem(stringResource(R.string.category)) {
                     sortCriteria = "category"
-                    sortCriteriaName = "Categoría"
+                    sortCriteriaName = categoryResource
                     isDropdownVisible = false
                 }
-                DropdownMenuItem("Fecha") {
+                var dateResource = stringResource(R.string.date)
+                DropdownMenuItem(stringResource(R.string.date)) {
                     sortCriteria = "date"
-                    sortCriteriaName = "Fecha"
+                    sortCriteriaName = dateResource
                     isDropdownVisible = false
                 }
-                DropdownMenuItem("Puntaje") {
+                var scoreResource = stringResource(R.string.score)
+                DropdownMenuItem(stringResource(R.string.score)) {
                     sortCriteria = "points"
-                    sortCriteriaName = "Puntaje"
+                    sortCriteriaName = scoreResource
                     isDropdownVisible = false
                 }
             }
@@ -321,8 +330,8 @@ fun ListItemComponent(item: NetworkRoutineContent, onNavigateToRoutine: (String)
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(Color(0xFFD9D9D9)).
-            clickable {
+            .background(Color(0xFFD9D9D9))
+            .clickable {
                 item.id?.let { routineId ->
                     onNavigateToRoutine("routine-details/$routineId")
                 }
@@ -337,6 +346,7 @@ fun ListItemComponent(item: NetworkRoutineContent, onNavigateToRoutine: (String)
             Box(modifier = Modifier.weight(0.7f)){
                 Column(
                     modifier = Modifier
+                        .fillMaxSize() // This will make the Column fill the entire Box
                         .padding(2.dp)
                         .padding(start = 6.dp),
                     verticalArrangement = Arrangement.SpaceBetween
@@ -347,7 +357,8 @@ fun ListItemComponent(item: NetworkRoutineContent, onNavigateToRoutine: (String)
 
                     Text(text = "${item.category?.name?:""}", style = MaterialTheme.typography.bodyMedium)
 
-                    Text(text = "${Date(item.date?:0)}", style = MaterialTheme.typography.bodyMedium)
+                    var simpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+                    Text(text = "${simpleDateFormat.format(Date(item.date?:0))}", style = MaterialTheme.typography.bodyMedium)
 
                 }
             }
@@ -355,8 +366,7 @@ fun ListItemComponent(item: NetworkRoutineContent, onNavigateToRoutine: (String)
             Box(modifier = Modifier.weight(0.3f)){
                 Column(
                     modifier = Modifier
-                        .width(160.dp)
-                        .fillMaxHeight()
+                        .fillMaxSize() // This will make the Column fill the entire Box
                         .background(Color(0xFFBEBEBE)),
                     verticalArrangement = Arrangement.Center
                 ){
@@ -389,11 +399,13 @@ fun ListItemComponent(item: NetworkRoutineContent, onNavigateToRoutine: (String)
                         }
                     }
 
-                    Text(
-                        text = "${item.metadata?.duration?:0} m", style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-
+                    if(item.metadata?.duration?:0 > 0) {
+                        Text(
+                            text = "${item.metadata?.duration ?: 0} m",
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                    }
                     Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
                         Icon(
                             imageVector = Icons.Default.Star,
