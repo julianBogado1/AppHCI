@@ -45,6 +45,13 @@ class MainViewModel(private val sessionManager: SessionManager,private val userR
         _timerRemainingSec.value = sec
     }
 
+    private val _timeCountdown = mutableStateOf(0)
+    val timeCountdown: State<Int> = _timeCountdown
+
+    fun setTimeCountdown(sec: Int) {
+        _timeCountdown.value = sec
+    }
+
     private val _inBreak = mutableStateOf(false)
     val inBreak: State<Boolean> = _inBreak
 
