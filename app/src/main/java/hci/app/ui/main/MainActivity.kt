@@ -160,7 +160,31 @@ fun MainScreen(
         }
     }
     else{
-        MyLoginScreen(viewModel)
+        val cicle = Cicle(
+            name = "Ejercitación",
+            number = 1,
+            rep = 3,
+            ejs = listOf(
+                Ejercicio("Squats", "Leg workout", 2, 2, "s"),
+                Ejercicio("Push-ups", "Upper body workout", 3, 1, "s"),
+                Ejercicio("Squats", "Leg workout", 2, 3, "s"),
+                Ejercicio("Nope", "Upper body workout", 3, 0, "s"),
+                Ejercicio("doo", "Leg workout", 2, 1, "s"),
+                Ejercicio("Push-ups", "Upper body workout", 3, 2, "s"),
+                Ejercicio("Squats", "Leg workout", 2, 2, "s"),
+                Ejercicio("Push-ups", "Upper body workout", 3, 1, "s"),
+                Ejercicio("Squats", "Leg workout", 2, 3, "s"),
+                Ejercicio("Nope", "Upper body workout", 3, 0, "s"),
+                Ejercicio("Nope", "Leg workout", 2, 1, "s"),
+                Ejercicio("Push-ups", "Upper body workout", 3, 2, "s"),
+            )
+        )
+
+        val excicle= listOf(cicle,cicle,cicle)
+
+        val rutina = Rutina("Rutina 1", "Description for Rutina 1", 2, 30, "min",excicle,7.5, "13/11/2023", "Cardio")
+        MyRutineExecScreen1(rutina, viewModel)
+        //MyLoginScreen(viewModel)
     }
 }
 

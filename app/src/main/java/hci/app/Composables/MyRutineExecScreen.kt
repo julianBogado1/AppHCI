@@ -49,7 +49,7 @@ fun MyRutineExecScreen1(rutina: Rutina, viewModel: MainViewModel) {
     val isTablet = isTabletState.value
 
     if (isTablet) {
-        TabletRutineExec1Layout(rutina,ejIndexState,{ newValue -> viewModel.setEjIndex(newValue)},cicleIndexState,{newValue -> viewModel.setCicleIndex(newValue)})
+        TabletRutineExec1Layout(rutina,ejIndexState,{ newValue -> viewModel.setEjIndex(newValue)},cicleIndexState,{newValue -> viewModel.setCicleIndex(newValue)},inBreak,{newValue -> viewModel.setInBreak(newValue)},timerRemainingSec,{newValue->viewModel.setTimerRemainingSec(newValue)},inStop,{newValue -> viewModel.setInStop(newValue)}, timeCountdown, {newValue -> viewModel.setTimeCountdown(newValue)})
     } else {
         PhoneRutineExec1Layout(rutina,ejIndexState,{ newValue -> viewModel.setEjIndex(newValue)},cicleIndexState,{newValue -> viewModel.setCicleIndex(newValue)},inBreak,{newValue -> viewModel.setInBreak(newValue)},timerRemainingSec,{newValue->viewModel.setTimerRemainingSec(newValue)},inStop,{newValue -> viewModel.setInStop(newValue)}, timeCountdown, {newValue -> viewModel.setTimeCountdown(newValue)})
     }
@@ -60,13 +60,18 @@ fun MyRutineExecScreen2(rutina: Rutina, viewModel: MainViewModel) {
     val ejIndexState by viewModel.ejIndexState
     val cicleIndexState by viewModel.cicleIndexState
 
+    val inBreak by viewModel.inBreak
+    val inStop by viewModel.inStop
+    val timerRemainingSec by viewModel.timerRemainingSec
+    val timeCountdown by viewModel.timeCountdown
+
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
 
     if (isTablet) {
-        TabletRutineExec2Layout(rutina,ejIndexState,{ newValue -> viewModel.setEjIndex(newValue)},cicleIndexState,{newValue -> viewModel.setCicleIndex(newValue)})
+        TabletRutineExec2Layout(rutina,ejIndexState,{ newValue -> viewModel.setEjIndex(newValue)},cicleIndexState,{newValue -> viewModel.setCicleIndex(newValue)},inBreak,{newValue -> viewModel.setInBreak(newValue)},timerRemainingSec,{newValue->viewModel.setTimerRemainingSec(newValue)},inStop,{newValue -> viewModel.setInStop(newValue)}, timeCountdown, {newValue -> viewModel.setTimeCountdown(newValue)})
     } else {
-        PhoneRutineExec2Layout(rutina,ejIndexState,{ newValue -> viewModel.setEjIndex(newValue)},cicleIndexState,{newValue -> viewModel.setCicleIndex(newValue)})
+        PhoneRutineExec2Layout(rutina,ejIndexState,{ newValue -> viewModel.setEjIndex(newValue)},cicleIndexState,{newValue -> viewModel.setCicleIndex(newValue)},inBreak,{newValue -> viewModel.setInBreak(newValue)},timerRemainingSec,{newValue->viewModel.setTimerRemainingSec(newValue)},inStop,{newValue -> viewModel.setInStop(newValue)}, timeCountdown, {newValue -> viewModel.setTimeCountdown(newValue)})
     }
 }
 
@@ -157,7 +162,7 @@ fun PhoneRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
             }
 
             /*###########EMPIEZA EL TAIMER###########*/
-            timeRemainingSecChange(rutina.cicles[cicleIndex].ejs[ejIndex].duration*60)
+            if(!(timeRemainingSec>0))timeRemainingSecChange(rutina.cicles[cicleIndex].ejs[ejIndex].duration*60)
             //TODO: esto se rompe porque no esta circularizado!!!
             changeTimeCountdown(rutina.cicles[cicleIndex].ejs[ejIndex+1].duration*60*1000)
                 Box(modifier = Modifier
@@ -178,9 +183,7 @@ fun PhoneRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
                                 //timeRemainingSecChange(rutina.cicles[cicleIndex].ejs[ejIndex].duration*60)
 
                             },
-                            onTimerTick = {
-
-                            },
+                            onTimerTick = timeRemainingSecChange,
                             inBreak = inBreak,
                             inStop = inStop,
                             stopChange = stopChange,
@@ -249,7 +252,7 @@ fun PhoneRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
 }
 
 @Composable
-fun TabletRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -> Unit, cicleIndex: Int,onCicleIndexChange: (Int) -> Unit) {
+fun TabletRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -> Unit, cicleIndex: Int,onCicleIndexChange: (Int) -> Unit, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -369,11 +372,35 @@ fun TabletRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) 
                 .padding(top = 20.dp, bottom = 20.dp)
             ){
                 item{
+                    /*###########EMPIEZA EL TAIMER###########*/
+                    if(!(timeRemainingSec>0))timeRemainingSecChange(rutina.cicles[cicleIndex].ejs[ejIndex].duration*60)
+                    //TODO: esto se rompe porque no esta circularizado!!!
+                    changeTimeCountdown(rutina.cicles[cicleIndex].ejs[ejIndex+1].duration*60*1000)
                     Box(modifier = Modifier
                         .height(100.dp)
                         .fillMaxWidth()
                     ){
-                        Text(text="timer")
+                        if(rutina.cicles[cicleIndex].ejs[ejIndex].duration!=0){
+                            MyTimer(
+                                seconds = timeRemainingSec,
+                                onTimerFinish = {
+                                    onEjIndexChange((ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size)
+                                    if (ejIndex == 0){
+                                        onCicleIndexChange((cicleIndex + 1) % rutina.cicles.size)
+                                    }
+                                    //if(cicleIndex==0 && ejIndex==0) //return since its finished
+                                    stopChange(false)
+                                    breakChange(false)
+                                    //timeRemainingSecChange(rutina.cicles[cicleIndex].ejs[ejIndex].duration*60)
+
+                                },
+                                onTimerTick = timeRemainingSecChange,
+                                inBreak = inBreak,
+                                inStop = inStop,
+                                stopChange = stopChange,
+                                nextRemainingTime = timeCountdown
+                            )
+                        }
                     }
                 }
 
@@ -389,8 +416,14 @@ fun TabletRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) 
                                 modifier = Modifier
                                     .padding(top = 16.dp, start = 16.dp, end = 16.dp),
                                 onClick = {
-                                    onEjIndexChange((ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size)
-                                    if(ejIndex==0) onCicleIndexChange((cicleIndex + 1) % rutina.cicles.size)
+                                    if(timeRemainingSec!=0){
+                                        stopChange(true)
+                                        breakChange(true)
+                                    }
+                                    else{
+                                        onEjIndexChange((ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size)
+                                        if (ejIndex == 0) onCicleIndexChange((cicleIndex + 1) % rutina.cicles.size)
+                                    }
                                 },
                                 colors = ButtonDefaults.buttonColors(Color(0xFF000000))
                             ) {
@@ -402,23 +435,28 @@ fun TabletRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) 
                             }
                         }
 
-                        Row(modifier = Modifier
-                            .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Button(
-                                modifier = Modifier
-                                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                                onClick = {},
-                                colors = ButtonDefaults.buttonColors(Color(0xFF49454F))
+                        if(timeRemainingSec!=0){
+                            Row(modifier = Modifier
+                                .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
                             ) {
-                                Text(
-                                    text = "Descanso",
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    fontWeight = FontWeight.Bold
-                                )
+                                Button(
+                                    modifier = Modifier
+                                        .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                                    onClick = {
+                                        breakChange(!inBreak)
+                                    },
+                                    colors = ButtonDefaults.buttonColors(Color(0xFF49454F))
+                                ) {
+                                    Text(
+                                        text = "Descanso",
+                                        style = MaterialTheme.typography.headlineSmall,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
                             }
                         }
+
                     }
                 }
 
@@ -430,7 +468,7 @@ fun TabletRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) 
 }
 
 @Composable
-fun PhoneRutineExec2Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -> Unit, cicleIndex: Int,onCicleIndexChange: (Int) -> Unit) {
+fun PhoneRutineExec2Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -> Unit, cicleIndex: Int,onCicleIndexChange: (Int) -> Unit, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -522,11 +560,37 @@ fun PhoneRutineExec2Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
             }
 
             item{
+                /*###########EMPIEZA EL TAIMER###########*/
+                timeRemainingSecChange(rutina.cicles[cicleIndex].ejs[ejIndex].duration*60)
+                //TODO: esto se rompe porque no esta circularizado!!!
+                changeTimeCountdown(rutina.cicles[cicleIndex].ejs[ejIndex+1].duration*60*1000)
                 Box(modifier = Modifier
                     .height(100.dp)
                     .fillMaxWidth()
                 ){
-                    Text(text="timer")
+                    if(rutina.cicles[cicleIndex].ejs[ejIndex].duration!=0){
+                        MyTimer(
+                            seconds = timeRemainingSec,
+                            onTimerFinish = {
+                                onEjIndexChange((ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size)
+                                if (ejIndex == 0){
+                                    onCicleIndexChange((cicleIndex + 1) % rutina.cicles.size)
+                                }
+                                //if(cicleIndex==0 && ejIndex==0) //return since its finished
+                                stopChange(false)
+                                breakChange(false)
+                                //timeRemainingSecChange(rutina.cicles[cicleIndex].ejs[ejIndex].duration*60)
+
+                            },
+                            onTimerTick = {
+
+                            },
+                            inBreak = inBreak,
+                            inStop = inStop,
+                            stopChange = stopChange,
+                            nextRemainingTime = timeCountdown
+                        )
+                    }
                 }
             }
 
@@ -634,7 +698,7 @@ fun PhoneRutineExec2Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
 }
 
 @Composable
-fun TabletRutineExec2Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -> Unit, cicleIndex: Int,onCicleIndexChange: (Int) -> Unit) {
+fun TabletRutineExec2Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -> Unit, cicleIndex: Int,onCicleIndexChange: (Int) -> Unit, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -731,11 +795,37 @@ fun TabletRutineExec2Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) 
                 }
 
                 item{
+                    /*###########EMPIEZA EL TAIMER###########*/
+                    timeRemainingSecChange(rutina.cicles[cicleIndex].ejs[ejIndex].duration*60)
+                    //TODO: esto se rompe porque no esta circularizado!!!
+                    changeTimeCountdown(rutina.cicles[cicleIndex].ejs[ejIndex+1].duration*60*1000)
                     Box(modifier = Modifier
                         .height(100.dp)
                         .fillMaxWidth()
                     ){
-                        Text(text="timer")
+                        if(rutina.cicles[cicleIndex].ejs[ejIndex].duration!=0){
+                            MyTimer(
+                                seconds = timeRemainingSec,
+                                onTimerFinish = {
+                                    onEjIndexChange((ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size)
+                                    if (ejIndex == 0){
+                                        onCicleIndexChange((cicleIndex + 1) % rutina.cicles.size)
+                                    }
+                                    //if(cicleIndex==0 && ejIndex==0) //return since its finished
+                                    stopChange(false)
+                                    breakChange(false)
+                                    //timeRemainingSecChange(rutina.cicles[cicleIndex].ejs[ejIndex].duration*60)
+
+                                },
+                                onTimerTick = {
+
+                                },
+                                inBreak = inBreak,
+                                inStop = inStop,
+                                stopChange = stopChange,
+                                nextRemainingTime = timeCountdown
+                            )
+                        }
                     }
                 }
 
