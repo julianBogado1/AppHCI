@@ -13,7 +13,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,6 +34,7 @@ fun MyLoginScreen(viewModel: MainViewModel) {
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
 
+
     if (isTablet) {
         TabletLoginLayout(viewModel)
     } else {
@@ -45,7 +48,7 @@ fun PhoneLoginLayout(viewModel : MainViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .padding(top=16.dp,bottom=80.dp)
+            .padding(top = 16.dp, bottom = 80.dp)
     ){
 
         Row(
@@ -59,6 +62,7 @@ fun PhoneLoginLayout(viewModel : MainViewModel) {
 
         Spacer(modifier = Modifier.height(60.dp))
 
+
         val username = remember { mutableStateOf(TextFieldValue()) }
         OutlinedTextField(
             value = username.value,
@@ -66,7 +70,7 @@ fun PhoneLoginLayout(viewModel : MainViewModel) {
             modifier = Modifier
                 .fillMaxWidth(),
             readOnly = false,
-            label = {Text(stringResource(R.string.username))}
+            label = {Text(stringResource(id = R.string.username))}
         )
 
         Spacer(modifier = Modifier.height(30.dp))
@@ -92,26 +96,6 @@ fun PhoneLoginLayout(viewModel : MainViewModel) {
             fontWeight = FontWeight.Bold,
             onClick = {viewModel.login(username.value.text, password.value.text)},
         )
-        ActionButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-            colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
-            fontWeight = FontWeight.Bold,
-            resId = R.string.logout,
-            onClick = {
-                viewModel.getRoutines()
-                if (viewModel.uiState.routines != null) {
-                    var text = ""
-                    Log.d("routines????idk man", viewModel.uiState.routines.toString())
-                    for (routineContentIt in viewModel.uiState.routines!!.content) {
-                        Log.d("routineContentIt", routineContentIt.toString())
-                        text += (routineContentIt.name + " ")
-                    }
-                    Log.d("SARACATUNGA-TEXT", text)
-                }
-            }
-        )
     }
 }
 
@@ -123,7 +107,7 @@ fun TabletLoginLayout(viewModel : MainViewModel) {
             .fillMaxWidth()
             .fillMaxHeight()
             .padding(16.dp)
-            .padding(start=80.dp)
+            .padding(start = 80.dp)
     ){
         Column( modifier = Modifier
             .fillMaxHeight()
@@ -153,7 +137,7 @@ fun TabletLoginLayout(viewModel : MainViewModel) {
 
             val password = remember { mutableStateOf(TextFieldValue()) }
             OutlinedTextField(
-                value = password.value,
+                value = TextFieldValue(),
                 onValueChange = {password.value = it},
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -169,26 +153,6 @@ fun TabletLoginLayout(viewModel : MainViewModel) {
                 colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
                 fontWeight = FontWeight.Bold,
                 onClick = {viewModel.login(username.value.text, password.value.text)},
-            )
-            ActionButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
-                fontWeight = FontWeight.Bold,
-                resId = R.string.logout,
-                onClick = {
-                    viewModel.getRoutines()
-                    if (viewModel.uiState.routines != null) {
-                        var text = ""
-                        Log.d("routines????idk man", viewModel.uiState.routines.toString())
-                        for (routineContentIt in viewModel.uiState.routines!!.content) {
-                            Log.d("routineContentIt", routineContentIt.toString())
-                            text += (routineContentIt.name + " ")
-                        }
-                        Log.d("SARACATUNGA-TEXT", text)
-                    }
-                }
             )
         }
     }
