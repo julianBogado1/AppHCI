@@ -1,8 +1,11 @@
 package hci.app.Composables
 
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+//import androidx.compose.foundation.layout.RowScopeInstance.weight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share
@@ -19,8 +22,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import hci.app.ui.main.MainViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
 
-
+//todo TRADUCIR TODO ALAVERGAAAAAAAAAAAAAAAAAAAAAA
 @Composable
 fun MyRoutineDetailScreen(viewModel: MainViewModel, routineId: Int) {
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
@@ -50,7 +55,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .padding(bottom = 40.dp)
+            .padding(bottom = 80.dp)
     ) {
 
         item {
@@ -101,8 +106,9 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
             Text(text = "Fecha de Creación: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
         }
 
+        var formatter = SimpleDateFormat("yyyy-MM-dd")
         item{
-            Text(text = "${viewModel.uiState.oneRoutine?.date}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "${formatter.format(Date(viewModel.uiState.oneRoutine?.date?:0))}", style = MaterialTheme.typography.bodyLarge)
         }
 
         item{
@@ -119,7 +125,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
         }
 
         item{
-            Text(text = "${viewModel.uiState.oneRoutine?.metadata?.duration} min", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "${viewModel.uiState.oneRoutine?.metadata?.duration?:""}", style = MaterialTheme.typography.bodyLarge)
         }
 
         item{
@@ -136,23 +142,34 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
         }
 
 
-        when (viewModel.uiState.oneRoutine?.difficulty) {
-            "beginner" -> item{
-                Row(){
+        item {
+            when (viewModel.uiState.oneRoutine?.difficulty) {
+                "rookie" ->
+                    Row() {
+                        ArmFlexIcon()
+                        ArmFlexOutlineIcon()
+                        ArmFlexOutlineIcon()
+                    }
+
+                "beginner" -> Row() {
                     ArmFlexIcon()
                     ArmFlexOutlineIcon()
                     ArmFlexOutlineIcon()
                 }
-            }
-            "intermediate" -> item{
-                Row(){
+
+                "intermediate" -> Row() {
                     ArmFlexIcon()
                     ArmFlexIcon()
                     ArmFlexOutlineIcon()
                 }
-            }
-            "expert" -> item{
-                Row(){
+
+                "advanced" -> Row() {
+                    ArmFlexIcon()
+                    ArmFlexIcon()
+                    ArmFlexIcon()   //todo SARACA
+                }
+
+                "expert" -> Row() {
                     ArmFlexIcon()
                     ArmFlexIcon()
                     ArmFlexIcon()
@@ -213,7 +230,6 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                 item{
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
                             .padding(10.dp)
                             .background(Color(0xFFD9D9D9))
                     ){
@@ -223,7 +239,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                                 .height(IntrinsicSize.Min),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ){
-                            Box{
+                            Box(modifier = Modifier.weight(0.6f)){
                                 Column(
                                     modifier = Modifier
                                         .padding(2.dp),
@@ -236,12 +252,12 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                                 }
                             }
 
-                            Box{
+                            Box(modifier = Modifier.weight(0.4f).background(Color(0xFFBEBEBE))){
                                 Row(
                                     modifier = Modifier
-                                        .width(160.dp)
                                         .fillMaxHeight()
-                                        .background(Color(0xFFBEBEBE))
+                                        .fillMaxSize()
+
                                 ){
                                     Column(
                                         modifier = Modifier
@@ -262,11 +278,11 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                                             .padding(2.dp)
                                     ){
                                         Text(
-                                            text = "Duración (min)", style = MaterialTheme.typography.bodyLarge
+                                            text = "Duración", style = MaterialTheme.typography.bodyLarge
                                         )
 
                                         Text(
-                                            text = "${exercise.duration}", style = MaterialTheme.typography.bodyLarge,
+                                            text = "${exercise.duration} m", style = MaterialTheme.typography.bodyLarge,
                                             modifier = Modifier.align(Alignment.CenterHorizontally)
                                         )
                                     }
@@ -290,6 +306,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
     }
 }
 
+@SuppressLint("SimpleDateFormat")
 @Composable
 fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
 
@@ -346,8 +363,9 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                 Text(text = "Fecha de Creación: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
             }
 
+            var formatter = SimpleDateFormat("yyyy-MM-dd")
             item{
-                Text(text = "${viewModel.uiState.oneRoutine?.date}", style = MaterialTheme.typography.bodyLarge)
+                Text(text = "${formatter.format(Date(viewModel.uiState.oneRoutine?.date?:0))}", style = MaterialTheme.typography.bodyLarge)
             }
 
             item{
@@ -364,7 +382,7 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
             }
 
             item{
-                Text(text = "${viewModel.uiState.oneRoutine?.metadata?.duration} min", style = MaterialTheme.typography.bodyLarge)
+                Text(text = "${viewModel.uiState.oneRoutine?.metadata?.duration?:""}", style = MaterialTheme.typography.bodyLarge)
             }
 
             item{
@@ -380,23 +398,35 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                 Text(text = "Dificultad: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
             }
 
-            when (viewModel.uiState.oneRoutine?.difficulty) {
-                "beginner" -> item{
-                    Row(){
+
+            item {
+                when (viewModel.uiState.oneRoutine?.difficulty) {
+                    "rookie" ->
+                        Row() {
+                            ArmFlexIcon()
+                            ArmFlexOutlineIcon()
+                            ArmFlexOutlineIcon()
+                        }
+
+                    "beginner" -> Row() {
                         ArmFlexIcon()
                         ArmFlexOutlineIcon()
                         ArmFlexOutlineIcon()
                     }
-                }
-                "intermediate" -> item{
-                    Row(){
+
+                    "intermediate" -> Row() {
                         ArmFlexIcon()
                         ArmFlexIcon()
                         ArmFlexOutlineIcon()
                     }
-                }
-                "expert" -> item{
-                    Row(){
+
+                    "advanced" -> Row() {
+                        ArmFlexIcon()
+                        ArmFlexIcon()
+                        ArmFlexIcon()   //todo SARACA
+                    }
+
+                    "expert" -> Row() {
                         ArmFlexIcon()
                         ArmFlexIcon()
                         ArmFlexIcon()
@@ -483,7 +513,7 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                                     .height(IntrinsicSize.Min),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ){
-                                Box{
+                                Box(modifier = Modifier.weight(0.6f)){
                                     Column(
                                         modifier = Modifier
                                             .padding(2.dp),
@@ -496,12 +526,9 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                                     }
                                 }
 
-                                Box{
+                                Box(modifier = Modifier.weight(0.4f).background(Color(0xFFBEBEBE))){
                                     Row(
-                                        modifier = Modifier
-                                            .width(160.dp)
-                                            .fillMaxHeight()
-                                            .background(Color(0xFFBEBEBE))
+                                        modifier = Modifier.fillMaxSize()
                                     ){
                                         Column(
                                             modifier = Modifier
@@ -522,11 +549,11 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                                                 .padding(2.dp)
                                         ){
                                             Text(
-                                                text = "Duración (min)", style = MaterialTheme.typography.bodyLarge
+                                                text = "Duración", style = MaterialTheme.typography.bodyLarge
                                             )
 
                                             Text(
-                                                text = "${exercise.duration}", style = MaterialTheme.typography.bodyLarge,
+                                                text = "${exercise.duration} m", style = MaterialTheme.typography.bodyLarge,
                                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                                             )
                                         }

@@ -472,7 +472,7 @@ fun TabletRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) 
                                     colors = ButtonDefaults.buttonColors(Color(0xFF49454F))
                                 ) {
                                     Text(
-                                        text = "Descanso",
+                                        text = "Descanso",  //todo traducir al espanolo
                                         style = MaterialTheme.typography.headlineSmall,
                                         fontWeight = FontWeight.Bold
                                     )
