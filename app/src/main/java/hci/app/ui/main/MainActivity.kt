@@ -94,7 +94,7 @@ fun MainScreen(
     val currentRoute = navBackStackEntry?.destination?.route
     val appState = rememberMyAppState()
 
-    //if(viewModel.uiState.isAuthenticated) {
+    if(viewModel.uiState.isAuthenticated) {
         Scaffold(
             snackbarHost = {appState.snackbarHostState},
             bottomBar = {
@@ -158,10 +158,10 @@ fun MainScreen(
             val rutina = Rutina("Rutina 1", "Description for Rutina 1", 2, 30, "min",excicle,7.5, "13/11/2023", "Cardio")
             MyRutineExecScreen1(rutina, viewModel)*/
         }
-    //}
-    //else{
-    //    MyLoginScreen(viewModel)
-    //}
+    }
+    else{
+        MyLoginScreen(viewModel)
+    }
 }
 
 

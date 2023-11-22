@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.*
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberUpdatedState
@@ -32,6 +33,7 @@ import androidx.compose.ui.zIndex
 import hci.app.R
 import hci.app.data.network.model.NetworkRoutineContent
 import hci.app.ui.main.MainViewModel
+import kotlinx.coroutines.launch
 
 /*data class Rutina(
     val name: String,
@@ -64,7 +66,11 @@ data class Ejercicio(
 fun MyListScreen(viewModel : MainViewModel, onNavigateToRoutine: (String) -> Unit) {
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
-
+    LaunchedEffect(key1 = Unit) {
+        launch {
+            viewModel.getRoutines() // Trigger fetching routines
+        }
+    }
     if (isTablet) {
         TabletListLayout(viewModel, onNavigateToRoutine = onNavigateToRoutine)
     } else {
@@ -77,16 +83,16 @@ fun PhoneListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> U
     var sortCriteria by remember { mutableStateOf("rate") }
     var sortCriteriaName by remember { mutableStateOf("Dificultad") }
 
-    viewModel.getRoutines()
-    var rutineList = remember { viewModel.uiState.routines?.content?: arrayListOf<NetworkRoutineContent>() }
 
-    val sortedRutineList = remember(rutineList, sortCriteria) {
+    //var viewModel.uiState.routines?.content = remember { viewModel.uiState.routines?.content?: arrayListOf<NetworkRoutineContent>() }
+
+    val sortedRutineList = remember(viewModel.uiState.routines?.content, sortCriteria) {
         when (sortCriteria.lowercase()) {
-            //"rate" -> rutineList.sortedBy { it.rating }   //todo creeeeeeo que no tenemos rating xq somos grupo d 3
-            //"category" -> rutineList.sortedBy {it.category}   //todo tnemos categorias?
-            "date" -> rutineList.sortedByDescending {it.date}
-            //"points" -> rutineList.sortedByDescending {it.points} //todo TENEMOS PUNTOS?? ASJDAJDAD
-            else -> rutineList
+            //"rate" -> viewModel.uiState.routines?.content.sortedBy { it.rating }   //todo creeeeeeo que no tenemos rating xq somos grupo d 3
+            //"category" -> viewModel.uiState.routines?.content.sortedBy {it.category}   //todo tnemos categorias?
+            "date" -> viewModel.uiState.routines?.content?.sortedByDescending {it.date}
+            //"points" -> viewModel.uiState.routines?.content.sortedByDescending {it.points} //todo TENEMOS PUNTOS?? ASJDAJDAD
+            else -> viewModel.uiState.routines?.content
         }
     }
 
@@ -159,9 +165,11 @@ fun PhoneListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> U
             modifier=Modifier
                 .padding(bottom=80.dp)
         ) {
-            items(sortedRutineList.size) { index ->
-                val item = sortedRutineList[index]
-                ListItemComponent(item = item)
+            if (sortedRutineList != null) {
+                items(sortedRutineList.size) { index ->
+                    val item = sortedRutineList[index]
+                    ListItemComponent(item = item, onNavigateToRoutine = onNavigateToRoutine)
+                }
             }
         }
 
@@ -173,7 +181,7 @@ fun TabletListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> 
     var sortCriteria by remember { mutableStateOf("rate") }
     var sortCriteriaName by remember { mutableStateOf("Dificultad") }
     viewModel.getRoutines()
-    var rutineList = remember { viewModel.uiState.routines?.content?: arrayListOf<NetworkRoutineContent>() }
+    //var viewModel.uiState.routines?.content = remember { viewModel.uiState.routines?.content?: arrayListOf<NetworkRoutineContent>() }
 
     /*val excicle =listOf(
         Cicle(
@@ -186,7 +194,7 @@ fun TabletListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> 
             )
         ))*/
 
-    /*val rutineList = remember {
+    /*val viewModel.uiState.routines?.content = remember {
         listOf(
             Rutina("Rutina 1", "Desc 1", 2, 12, "min",excicle,5.0, "13/11/2023", "Piernas"),
             Rutina("Rutina 2", "Desc 2", 3, 9, "min",excicle,3.0, "13/11/2023", "Piernas"),
@@ -203,13 +211,13 @@ fun TabletListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> 
         )
     }*/
 
-    val sortedRutineList = remember(rutineList, sortCriteria) {
+    val sortedRutineList = remember(viewModel.uiState.routines?.content, sortCriteria) {
         when (sortCriteria.lowercase()) {
-            //"rate" -> rutineList.sortedBy { it.rating }   //todo creeeeeeo que no tenemos rating xq somos grupo d 3
-            //"category" -> rutineList.sortedBy {it.category}   //todo tnemos categorias?
-            "date" -> rutineList.sortedByDescending {it.date}
-            //"points" -> rutineList.sortedByDescending {it.points} //todo TENEMOS PUNTOS?? ASJDAJDAD
-            else -> rutineList
+            //"rate" -> viewModel.uiState.routines?.content.sortedBy { it.rating }   //todo creeeeeeo que no tenemos rating xq somos grupo d 3
+            //"category" -> viewModel.uiState.routines?.content.sortedBy {it.category}   //todo tnemos categorias?
+            "date" -> viewModel.uiState.routines?.content?.sortedByDescending {it.date}
+            //"points" -> viewModel.uiState.routines?.content.sortedByDescending {it.points} //todo TENEMOS PUNTOS?? ASJDAJDAD
+            else -> viewModel.uiState.routines?.content
         }
     }
 
@@ -283,9 +291,11 @@ fun TabletListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> 
             modifier=Modifier
                 .padding(bottom=20.dp)
         ) {
-            items(sortedRutineList.size) { index ->
-                val item = sortedRutineList[index]
-                ListItemComponent(item = item)
+            if (sortedRutineList != null) {
+                items(sortedRutineList.size) { index ->
+                    val item = sortedRutineList[index]
+                    ListItemComponent(item = item, onNavigateToRoutine = onNavigateToRoutine)
+                }
             }
         }
 
@@ -306,12 +316,17 @@ private fun DropdownMenuItem(text: String, onItemClick: () -> Unit) {
 }
 
 @Composable
-fun ListItemComponent(item: NetworkRoutineContent) {
+fun ListItemComponent(item: NetworkRoutineContent, onNavigateToRoutine: (String) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(Color(0xFFD9D9D9))
+            .background(Color(0xFFD9D9D9)).
+            clickable {
+                item.id?.let { routineId ->
+                    onNavigateToRoutine("routine-details/$routineId")
+                }
+            }
     ){
         Row(
             modifier = Modifier
