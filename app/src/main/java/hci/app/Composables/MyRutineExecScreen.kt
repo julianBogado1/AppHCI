@@ -32,7 +32,9 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalConfiguration
 import hci.app.ui.main.MainViewModel
-/*
+import hci.app.ui.main.Rutina
+
+
 @Composable
 fun MyRutineExecScreen1(rutina: Rutina, viewModel: MainViewModel) {
     val ejIndexState by viewModel.ejIndexState
@@ -162,7 +164,7 @@ fun PhoneRutineExec1Layout(rutina: Rutina, ejIndex: Int,onEjIndexChange: (Int) -
                     .height(100.dp)
                     .fillMaxWidth()
                 ){
-                    if(timeRemainingSec!=0){
+                    if(rutina.cicles[cicleIndex].ejs[ejIndex].duration!=0){
                         MyTimer(
                             seconds = timeRemainingSec,
                             onTimerFinish = {
@@ -877,6 +879,3 @@ fun MyRutineExecScreenPreview() {
     val rutina = Rutina("Rutina 1", "Description for Rutina 1", 2, 30, "min",excicle,7.5, "13/11/2023", "Cardio")
     MyRutineExecScreen1(rutina)
 }*/
-
-
- */
