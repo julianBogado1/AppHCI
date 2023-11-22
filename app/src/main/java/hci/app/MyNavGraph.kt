@@ -12,6 +12,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import hci.app.Composables.MyListScreen
+import hci.app.Composables.MyRoutineDetailScreen
 import hci.app.ui.main.MainViewModel
 
 @Composable
@@ -38,7 +39,7 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
         }
         composable("routine-details/{routineId}", deepLinks = listOf(
             navDeepLink {
-                uriPattern="https://www.creatina.com/rutina-view/{routineId}"
+                uriPattern="https://www.creatinapproutines.com/rutina-view/{routineId}"
                 action= Intent.ACTION_VIEW
             }
         ),arguments = listOf(
@@ -47,7 +48,7 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
                 defaultValue = -1
             }
         )) {
-            RoutineDetailScreen(
+            MyRoutineDetailScreen(
                 routineId = navController.currentBackStackEntry?.arguments?.getInt("routineId") ?: -1,
                 viewModel = viewModel
             )
