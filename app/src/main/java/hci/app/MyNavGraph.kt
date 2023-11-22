@@ -17,7 +17,7 @@ import hci.app.ui.main.MainViewModel
 
 @Composable
 fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
-
+    val uri = "https://www.creatina.share.com"
     NavHost(
         navController = navController,
         startDestination = Screen.HomeScreen.route,
@@ -37,12 +37,12 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
         composable(Screen.SettingsScreen.route) {
             SettingsScreen(viewModel = viewModel)
         }
-        composable("routine-details/{routineId}", deepLinks = listOf(
-            navDeepLink {
-                uriPattern="https://www.creatinapproutines.com/rutina-view/{routineId}"
-                action= Intent.ACTION_VIEW
+        composable("routine-details/{routineId}",
+            deepLinks = listOf( navDeepLink {
+                uriPattern="$uri/rutinas?id={routineId}"
+                action = Intent.ACTION_VIEW
             }
-        ),arguments = listOf(
+            ),arguments = listOf(
             navArgument("routineId") {
                 type = NavType.IntType
                 defaultValue = -1

@@ -22,6 +22,7 @@
             android:configChanges="orientation|screenSize">
 
             <!-- Intent filter for LAUNCHER -->
+            <tools:validation testUrl="https://www.creatina.share.com/rutinas?id=15" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -29,13 +30,11 @@
 
             <!-- Intent filter for deep linking -->
             <intent-filter>
+                <data android:scheme="https" android:host="www.creatina.share.com"/>
+                <data android:pathPrefix="/rutinas"/>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:host="www.creatinapproutines.com"
-                    android:scheme="https"
-                    android:pathPrefix="/rutina-view" />
             </intent-filter>
         </activity>
     </application>

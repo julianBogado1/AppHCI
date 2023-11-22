@@ -206,10 +206,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int) {
                     )
                 }
             }
-
-            val exercises = viewModel.uiState.cycleExercises?.get(oneCycle.id)
-
-            exercises?.content?.forEach{ exercise ->
+            viewModel.uiState.cycleExercises?.get(oneCycle.id)?.content?.forEach{ exercise ->
                 item{
                     Box(
                         modifier = Modifier
