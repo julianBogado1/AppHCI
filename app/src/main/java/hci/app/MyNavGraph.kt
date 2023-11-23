@@ -13,6 +13,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import hci.app.Composables.MyListScreen
 import hci.app.Composables.MyRoutineDetailScreen
+import hci.app.Composables.MySettingsScreen
 import hci.app.ui.main.MainViewModel
 
 @Composable
@@ -32,7 +33,7 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
             }
         }
         composable(Screen.SettingsScreen.route) {
-            SettingsScreen(viewModel = viewModel)
+            MySettingsScreen(viewModel)
         }
         composable("routine-details/{routineId}",
             deepLinks = listOf( navDeepLink {
