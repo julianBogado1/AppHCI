@@ -25,7 +25,10 @@
     <string name="repetitions">Repetitions</string>
     <string name="copiedLink">Routine link copied to clipboard</string>
     <string name="copyright">Creatina Ltd. All rights reserved.</string>
-
+    <string name="routinePaused">Routine paused</string>
+    <string name="routineUnpaused">Routine resumed</string>
+    <string name="detailedView">Detailed</string>
+    <string name="simpleView">Simple</string>
 
 
     <string name="rutinas">rutinas?</string>

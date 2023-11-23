@@ -1,5 +1,7 @@
 package hci.app.Composables
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,6 +34,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import hci.app.R
@@ -122,6 +125,8 @@ fun MyRutineExecScreen1(navController: NavHostController, viewModel: MainViewMod
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
 
+    val context = LocalContext.current
+
     if(started.value || (cycleIndex == 0 && exerciseIndex == 0)) {
         started.value = true
         if (isTablet) {
@@ -141,7 +146,8 @@ fun MyRutineExecScreen1(navController: NavHostController, viewModel: MainViewMod
                 exerciseIndex = exerciseIndex,
                 cycleIndex = cycleIndex,
                 onExChange = { newValue: Int -> viewModel.setEjIndex(newValue) },
-                onCycleChange = { newValue: Int -> viewModel.setCicleIndex(newValue) })
+                onCycleChange = { newValue: Int -> viewModel.setCicleIndex(newValue) },
+                context = context)
         } else {
             PhoneRutineExec1Layout(
                 navController = navController,
@@ -159,7 +165,8 @@ fun MyRutineExecScreen1(navController: NavHostController, viewModel: MainViewMod
                 exerciseIndex = exerciseIndex,
                 cycleIndex = cycleIndex,
                 onExChange = { newValue: Int -> viewModel.setEjIndex(newValue) },
-                onCycleChange = { newValue: Int -> viewModel.setCicleIndex(newValue) })
+                onCycleChange = { newValue: Int -> viewModel.setCicleIndex(newValue) },
+                context = context)
         }
     }
 }
@@ -205,6 +212,8 @@ fun MyRutineExecScreen2(navController: NavHostController, viewModel: MainViewMod
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
 
+    val context = LocalContext.current
+
     if(started.value || (cycleIndex == 0 && exerciseIndex == 0)) {
         started.value = true
         if (isTablet) {
@@ -224,7 +233,8 @@ fun MyRutineExecScreen2(navController: NavHostController, viewModel: MainViewMod
                 exerciseIndex = exerciseIndex,
                 cycleIndex = cycleIndex,
                 onExChange = { newValue: Int -> viewModel.setEjIndex(newValue) },
-                onCycleChange = { newValue: Int -> viewModel.setCicleIndex(newValue) })
+                onCycleChange = { newValue: Int -> viewModel.setCicleIndex(newValue) },
+                context = context)
         } else {
             PhoneRutineExec2Layout(
                 navController = navController,
@@ -242,7 +252,8 @@ fun MyRutineExecScreen2(navController: NavHostController, viewModel: MainViewMod
                 exerciseIndex = exerciseIndex,
                 cycleIndex = cycleIndex,
                 onExChange = { newValue: Int -> viewModel.setEjIndex(newValue) },
-                onCycleChange = { newValue: Int -> viewModel.setCicleIndex(newValue) })
+                onCycleChange = { newValue: Int -> viewModel.setCicleIndex(newValue) },
+                context = context)
         }
     }
 }
@@ -250,7 +261,7 @@ fun MyRutineExecScreen2(navController: NavHostController, viewModel: MainViewMod
 //rutina: NetworkRoutineCycles?, ejIndex: Int,onEjIndexChange: (Int) -> Unit, cicleIndex: Int,onCicleIndexChange: (Int) -> Unit, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit
 
 @Composable
-fun PhoneRutineExec1Layout(navController: NavHostController, viewModel : MainViewModel, exercisesMap: MutableMap<Int, NetworkCycleExercises>, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit, onNavigateToRoutine: (String) -> Unit, cycleIndex: Int, exerciseIndex: Int, onExChange: (Int) -> Unit, onCycleChange: (Int) -> Unit) {
+fun PhoneRutineExec1Layout(navController: NavHostController, viewModel : MainViewModel, exercisesMap: MutableMap<Int, NetworkCycleExercises>, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit, onNavigateToRoutine: (String) -> Unit, cycleIndex: Int, exerciseIndex: Int, onExChange: (Int) -> Unit, onCycleChange: (Int) -> Unit, context: Context) {
     var totalCycleCount = (viewModel.uiState.cycles?.totalCount?:1) - 1
 
     if(totalCycleCount >= 0) {
@@ -502,6 +513,11 @@ fun PhoneRutineExec1Layout(navController: NavHostController, viewModel : MainVie
                                         modifier = Modifier
                                             .padding(top = 16.dp, start = 16.dp, end = 16.dp),
                                         onClick = {
+                                            if(!inBreak) {
+                                                Toast.makeText(context, R.string.routinePaused, Toast.LENGTH_SHORT).show()
+                                            } else {
+                                                Toast.makeText(context, R.string.routineUnpaused, Toast.LENGTH_SHORT).show()
+                                            }
                                             breakChange(!inBreak)
                                         },
                                         colors = ButtonDefaults.buttonColors(Color(0xFF49454F))
@@ -524,7 +540,7 @@ fun PhoneRutineExec1Layout(navController: NavHostController, viewModel : MainVie
 }
 
 @Composable
-fun TabletRutineExec1Layout(navController: NavHostController, viewModel : MainViewModel, exercisesMap: MutableMap<Int, NetworkCycleExercises>, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit, onNavigateToRoutine: (String) -> Unit, cycleIndex: Int, exerciseIndex: Int, onExChange: (Int) -> Unit, onCycleChange: (Int) -> Unit) {
+fun TabletRutineExec1Layout(navController: NavHostController, viewModel : MainViewModel, exercisesMap: MutableMap<Int, NetworkCycleExercises>, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit, onNavigateToRoutine: (String) -> Unit, cycleIndex: Int, exerciseIndex: Int, onExChange: (Int) -> Unit, onCycleChange: (Int) -> Unit, context: Context) {
     var totalCycleCount = (viewModel.uiState.cycles?.totalCount?:1) - 1
 
     if(totalCycleCount >= 0) {
@@ -800,8 +816,13 @@ fun TabletRutineExec1Layout(navController: NavHostController, viewModel : MainVi
                                             modifier = Modifier
                                                 .padding(top = 16.dp, start = 16.dp, end = 16.dp),
                                             onClick = {
+                                                if(!inBreak) {
+                                                    Toast.makeText(context, R.string.routinePaused, Toast.LENGTH_SHORT).show()
+                                                } else {
+                                                    Toast.makeText(context, R.string.routineUnpaused, Toast.LENGTH_SHORT).show()
+                                                }
                                                 breakChange(!inBreak)
-                                            },
+                                                      },
                                             colors = ButtonDefaults.buttonColors(Color(0xFF49454F))
                                         ) {
                                             Text(
@@ -823,7 +844,7 @@ fun TabletRutineExec1Layout(navController: NavHostController, viewModel : MainVi
 }
 
 @Composable
-fun PhoneRutineExec2Layout(navController: NavHostController, viewModel : MainViewModel, exercisesMap: MutableMap<Int, NetworkCycleExercises>, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit, onNavigateToRoutine: (String) -> Unit, cycleIndex: Int, exerciseIndex: Int, onExChange: (Int) -> Unit, onCycleChange: (Int) -> Unit) {
+fun PhoneRutineExec2Layout(navController: NavHostController, viewModel : MainViewModel, exercisesMap: MutableMap<Int, NetworkCycleExercises>, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit, onNavigateToRoutine: (String) -> Unit, cycleIndex: Int, exerciseIndex: Int, onExChange: (Int) -> Unit, onCycleChange: (Int) -> Unit, context: Context) {
     var totalCycleCount = (viewModel.uiState.cycles?.totalCount?:1) - 1
 
     if(totalCycleCount >= 0) {
@@ -1056,6 +1077,11 @@ fun PhoneRutineExec2Layout(navController: NavHostController, viewModel : MainVie
                                         modifier = Modifier
                                             .padding(top = 16.dp, start = 16.dp, end = 16.dp),
                                         onClick = {
+                                            if(!inBreak) {
+                                                Toast.makeText(context, R.string.routinePaused, Toast.LENGTH_SHORT).show()
+                                            } else {
+                                                Toast.makeText(context, R.string.routineUnpaused, Toast.LENGTH_SHORT).show()
+                                            }
                                             breakChange(!inBreak)
                                         },
                                         colors = ButtonDefaults.buttonColors(Color(0xFF49454F))
@@ -1137,7 +1163,7 @@ fun PhoneRutineExec2Layout(navController: NavHostController, viewModel : MainVie
 
 
 @Composable
-fun TabletRutineExec2Layout(navController: NavHostController, viewModel : MainViewModel, exercisesMap: MutableMap<Int, NetworkCycleExercises>, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit, onNavigateToRoutine: (String) -> Unit, cycleIndex: Int, exerciseIndex: Int, onExChange: (Int) -> Unit, onCycleChange: (Int) -> Unit) {
+fun TabletRutineExec2Layout(navController: NavHostController, viewModel : MainViewModel, exercisesMap: MutableMap<Int, NetworkCycleExercises>, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit, onNavigateToRoutine: (String) -> Unit, cycleIndex: Int, exerciseIndex: Int, onExChange: (Int) -> Unit, onCycleChange: (Int) -> Unit, context: Context) {
     var totalCycleCount = (viewModel.uiState.cycles?.totalCount?:1) - 1
 
     if(totalCycleCount >= 0) {
@@ -1451,6 +1477,11 @@ fun TabletRutineExec2Layout(navController: NavHostController, viewModel : MainVi
                                             modifier = Modifier
                                                 .padding(top = 16.dp, start = 16.dp, end = 16.dp),
                                             onClick = {
+                                                if(!inBreak) {
+                                                    Toast.makeText(context, R.string.routinePaused, Toast.LENGTH_SHORT).show()
+                                                } else {
+                                                    Toast.makeText(context, R.string.routineUnpaused, Toast.LENGTH_SHORT).show()
+                                                }
                                                 breakChange(!inBreak)
                                             },
                                             colors = ButtonDefaults.buttonColors(Color(0xFF49454F))

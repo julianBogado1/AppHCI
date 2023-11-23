@@ -26,6 +26,10 @@
     <string name="repetitions">Repetiociones</string>
     <string name="copiedLink">Link de la rutina copiado al portapapeles</string>
     <string name="copyright">Creatina Ltd. Todos los derechos reservados.</string>
+    <string name="routinePaused">Rutina pausada</string>
+    <string name="routineUnpaused">Rutina resumida</string>
+    <string name="detailedView">Detallada</string>
+    <string name="simpleView">Simple</string>
 
 
     <string name="rutinas">rutinas?</string>

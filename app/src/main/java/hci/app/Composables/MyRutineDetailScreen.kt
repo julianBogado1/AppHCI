@@ -409,7 +409,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
                     ) {
                         Icon(Icons.Default.PlayArrow, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Simple")
+                        Text(stringResource(R.string.simpleView))
                     }
                 }
 
@@ -425,7 +425,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
                     ) {
                         Icon(Icons.Default.PlayArrow, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Detail")
+                        Text(stringResource(R.string.detailedView))
                     }
                 }
             }
