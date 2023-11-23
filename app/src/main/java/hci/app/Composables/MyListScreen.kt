@@ -256,7 +256,7 @@ fun TabletListLayout(viewModel: MainViewModel, onNavigateToRoutine: (String) -> 
                     .onGloballyPositioned { coordinates ->
                         TextFieldSize = coordinates.size.toSize()
                     },
-                label = {Text("Ordenar por")},
+                label = {Text(stringResource(id = R.string.orderBy))},
                 trailingIcon = {
                     Icon(icon,"contentDescription",
                         Modifier.clickable { isDropdownVisible = !isDropdownVisible })

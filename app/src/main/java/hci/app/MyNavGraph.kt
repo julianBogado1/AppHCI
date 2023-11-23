@@ -46,7 +46,7 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
                 navController = navController,
                 routineId = navController.currentBackStackEntry?.arguments?.getInt("routineId")
                     ?: -1, viewModel = viewModel
-            )
+            )   //todo TRADUCIR EJECUCIONS
         }
         composable("routine-details/{routineId}",
             deepLinks = listOf( navDeepLink {

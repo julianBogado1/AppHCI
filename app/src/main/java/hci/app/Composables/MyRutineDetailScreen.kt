@@ -110,7 +110,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
         }
 
         item{
-            Text(text = "Descripción: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+            Text(text = "${stringResource(id = R.string.Description)}: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
         }
 
         item{
@@ -127,7 +127,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
         }
 
         item{
-            Text(text = "Fecha de Creación: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+            Text(text = "${stringResource(id = R.string.creation_date)}: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
         }
 
         var formatter = SimpleDateFormat("yyyy-MM-dd")
@@ -145,7 +145,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
         }
 
         item{
-            Text(text = "Duración: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+            Text(text = "${stringResource(id = R.string.duration)}: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
         }
 
         item{
@@ -162,7 +162,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
         }
 
         item{
-            Text(text = "Dificultad: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+            Text(text = "${stringResource(id = R.string.difficulty)}: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
         }
 
 
@@ -211,7 +211,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
         }
 
         item{
-            Text(text = "Puntuación: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+            Text(text = "${stringResource(id = R.string.score)}: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
         }
 
         item{
@@ -242,7 +242,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
                     }
 
                     Text(
-                        text = "Repeticiones: ${oneCycle.repetitions}",
+                        text = "${stringResource(id = R.string.repetitions)}: ${oneCycle.repetitions}",
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -301,7 +301,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
                                             .padding(2.dp)
                                     ){
                                         Text(
-                                            text = "Duración", style = MaterialTheme.typography.bodyLarge
+                                            text = "${stringResource(id = R.string.duration)}", style = MaterialTheme.typography.bodyLarge
                                         )
 
                                         Text(
@@ -364,7 +364,7 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
                     viewModel.uiState.oneRoutine?.name?.let { Text(text = it, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold) }
                     Image(
                         imageVector = Icons.Default.Share,
-                        contentDescription = "Share",
+                        contentDescription = "${stringResource(id =R.string.share)}",
                         modifier = Modifier
                             .clickable { copyLinkToClipboard("https://www.creatina.share.com/rutinas?id=${viewModel.uiState.oneRoutine?.id}", context) }
                     )
@@ -379,9 +379,8 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
                     .height(1.dp)
                     .background(Color.Gray))
             }
-
             item{
-                Text(text = "Descripción: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+                Text(text = "${stringResource(id =R.string.Description)}: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
             }
 
             item{
@@ -399,7 +398,7 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
 
 
             item{
-                Text(text = "Fecha de Creación: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+                Text(text = "${stringResource(id =R.string.creation_date)}: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
             }
 
             var formatter = SimpleDateFormat("yyyy-MM-dd")
@@ -417,7 +416,7 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
             }
 
             item{
-                Text(text = "Duración: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+                Text(text = "${stringResource(id = R.string.duration)}: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
             }
 
             item{
@@ -434,7 +433,7 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
             }
 
             item{
-                Text(text = "Dificultad: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+                Text(text = "${stringResource(id = R.string.difficulty)}: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
             }
 
 
@@ -483,7 +482,7 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
             }
 
             item{
-                Text(text = "Puntuación: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
+                Text(text = "${stringResource(id = R.string.score)}: ", style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF4C4C4C)))
             }
 
             item{
@@ -530,7 +529,7 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
                         }
 
                         Text(
-                            text = "Repeticiones: ${cycle.repetitions}",
+                            text = "${stringResource(id = R.string.repetitions)}: ${cycle.repetitions}",
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -588,7 +587,7 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
                                                 .padding(2.dp)
                                         ){
                                             Text(
-                                                text = "Duración", style = MaterialTheme.typography.bodyLarge
+                                                text = "${stringResource(id = R.string.duration)}", style = MaterialTheme.typography.bodyLarge
                                             )
 
                                             Text(
