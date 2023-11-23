@@ -87,13 +87,14 @@ fun PhoneSettingsLayout(viewModel : MainViewModel){
 @Composable
 fun TabletSettingsLayout(viewModel: MainViewModel) {
     Column(
-        modifier = Modifier
+        Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .padding(start=80.dp),
+            .padding(start = 80.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
+        Spacer(modifier = Modifier.weight(0.5f)) // This will push the button and text to the middle and bottom respectively
 
         ActionButton(
             modifier = Modifier
