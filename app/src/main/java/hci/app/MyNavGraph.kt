@@ -35,8 +35,17 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
         composable(Screen.SettingsScreen.route) {
             MySettingsScreen(viewModel)
         }
-        composable("routine-exec1/{routineId}") {
-            MyRutineExecScreen1(rutina = null, viewModel = viewModel)
+        composable("routine-exec1/{routineId}",
+            arguments = listOf(
+                navArgument("routineId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )) {
+            MyRutineExecScreen1(
+                routineId = navController.currentBackStackEntry?.arguments?.getInt("routineId")
+                    ?: -1, viewModel = viewModel
+            )
         }
         composable("routine-details/{routineId}",
             deepLinks = listOf( navDeepLink {
@@ -44,11 +53,11 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
                 action = Intent.ACTION_VIEW
             }
             ),arguments = listOf(
-            navArgument("routineId") {
-                type = NavType.IntType
-                defaultValue = -1
-            }
-        )) {
+                navArgument("routineId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )) {
             MyRoutineDetailScreen(
                 routineId = navController.currentBackStackEntry?.arguments?.getInt("routineId") ?: -1,
                 viewModel = viewModel
