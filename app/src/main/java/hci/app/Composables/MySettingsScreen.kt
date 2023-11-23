@@ -89,6 +89,7 @@ fun TabletSettingsLayout(viewModel: MainViewModel) {
     Column(
         Modifier
             .fillMaxSize()
+            .fillMaxWidth()
             .padding(16.dp)
             .padding(start = 80.dp),
         verticalArrangement = Arrangement.Center,

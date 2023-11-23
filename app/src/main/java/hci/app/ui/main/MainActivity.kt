@@ -110,7 +110,7 @@ fun MainScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFF73C7A4))
+            .background(color = Color(0xFFFFFFFF))
     ) {
         if (viewModel.uiState.isAuthenticated) {
             Scaffold(
