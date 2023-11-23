@@ -46,7 +46,14 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
                 navController = navController,
                 routineId = navController.currentBackStackEntry?.arguments?.getInt("routineId")
                     ?: -1, viewModel = viewModel
-            )
+            ) { route ->
+                navController.navigate(route) {
+                    launchSingleTop = true
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                }
+            }
         }
         composable("routine-details/{routineId}",
             deepLinks = listOf( navDeepLink {
@@ -65,9 +72,6 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
             ) { route ->
                 navController.navigate(route) {
                     launchSingleTop = true
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = true
-                    }
                 }
             }
         }

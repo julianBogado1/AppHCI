@@ -88,9 +88,10 @@ fun getRoutineTotalCount(routineId : Int, viewModel: MainViewModel, cicleId : In
 
 
 @Composable
-fun MyRutineExecScreen1(navController: NavHostController, viewModel: MainViewModel, routineId : Int) {
+fun MyRutineExecScreen1(navController: NavHostController, viewModel: MainViewModel, routineId : Int, onNavigateToRoutine: (String) -> Unit) {
     val exercisesMap = remember { mutableStateMapOf<Int, NetworkCycleExercises>() }
-    LaunchedEffect(key1 = routineId, key2 = exercisesMap) {
+    var started = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = routineId) {
         launch {
             viewModel.getOneRoutine(routineId)
             viewModel.getCycles(routineId).invokeOnCompletion {
@@ -105,15 +106,19 @@ fun MyRutineExecScreen1(navController: NavHostController, viewModel: MainViewMod
                         }
                     }
                 }
+                viewModel.setTimerRemainingSec(0)
+                viewModel.setTimeCountdown(0)
+                viewModel.setInBreak(false)
+                viewModel.setInStop(false)
+                viewModel.setEjIndex(0)
+                viewModel.setCicleIndex(0)
             }
         }
     }
     var routineData = viewModel.uiState.oneRoutine!!
-    //mapa de id:ciclo --> ciclo<ejData>
-    var rutina = getRoutine(routineId = routineId, viewModel = viewModel)
 
-    val ejIndexState by viewModel.ejIndexState
-    val cicleIndexState by viewModel.cicleIndexState
+    val exerciseIndex by viewModel.ejIndexState
+    val cycleIndex by viewModel.cicleIndexState
 
     val inBreak by viewModel.inBreak
     val inStop by viewModel.inStop
@@ -123,10 +128,29 @@ fun MyRutineExecScreen1(navController: NavHostController, viewModel: MainViewMod
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
 
-    if (isTablet) {
-        //TabletRutineExec1Layout(viewModel, rutina, routineData,ejIndexState,{ newValue -> viewModel.setEjIndex(newValue)},cicleIndexState,{newValue -> viewModel.setCicleIndex(newValue)},inBreak,{newValue -> viewModel.setInBreak(newValue)},timerRemainingSec,{newValue->viewModel.setTimerRemainingSec(newValue)},inStop,{newValue -> viewModel.setInStop(newValue)}, timeCountdown, {newValue -> viewModel.setTimeCountdown(newValue)})
-    } else {
-        PhoneRutineExec1Layout(navController = navController, viewModel, exercisesMap = exercisesMap, inBreak,{newValue -> viewModel.setInBreak(newValue)},timerRemainingSec,{newValue->viewModel.setTimerRemainingSec(newValue)},inStop,{newValue -> viewModel.setInStop(newValue)}, timeCountdown, {newValue -> viewModel.setTimeCountdown(newValue)})
+    if(started.value || (cycleIndex == 0 && exerciseIndex == 0)) {
+        started.value = true
+        if (isTablet) {
+            //TabletRutineExec1Layout(viewModel, rutina, routineData,ejIndexState,{ newValue -> viewModel.setEjIndex(newValue)},cicleIndexState,{newValue -> viewModel.setCicleIndex(newValue)},inBreak,{newValue -> viewModel.setInBreak(newValue)},timerRemainingSec,{newValue->viewModel.setTimerRemainingSec(newValue)},inStop,{newValue -> viewModel.setInStop(newValue)}, timeCountdown, {newValue -> viewModel.setTimeCountdown(newValue)})
+        } else {
+            PhoneRutineExec1Layout(
+                navController = navController,
+                viewModel,
+                exercisesMap = exercisesMap,
+                inBreak,
+                { newValue: Boolean -> viewModel.setInBreak(newValue) },
+                timerRemainingSec,
+                { newValue: Int -> viewModel.setTimerRemainingSec(newValue) },
+                inStop,
+                { newValue: Boolean -> viewModel.setInStop(newValue) },
+                timeCountdown,
+                { newValue: Int -> viewModel.setTimeCountdown(newValue) },
+                onNavigateToRoutine = onNavigateToRoutine,
+                exerciseIndex = exerciseIndex,
+                cycleIndex = cycleIndex,
+                onExChange = { newValue: Int -> viewModel.setEjIndex(newValue) },
+                onCycleChange = { newValue: Int -> viewModel.setCicleIndex(newValue) })
+        }
     }
 }
 /*
@@ -157,21 +181,19 @@ fun MyRutineExecScreen2(viewModel: MainViewModel,routineData: NetworkRoutineCont
 //rutina: NetworkRoutineCycles?, ejIndex: Int,onEjIndexChange: (Int) -> Unit, cicleIndex: Int,onCicleIndexChange: (Int) -> Unit, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit
 
 @Composable
-fun PhoneRutineExec1Layout(navController: NavHostController, viewModel : MainViewModel, exercisesMap: MutableMap<Int, NetworkCycleExercises>, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit) {
-    var cycleIndex by remember{mutableStateOf(0)}
-    var exerciseIndex by remember{mutableStateOf(0)}
+fun PhoneRutineExec1Layout(navController: NavHostController, viewModel : MainViewModel, exercisesMap: MutableMap<Int, NetworkCycleExercises>, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit, onNavigateToRoutine: (String) -> Unit, cycleIndex: Int, exerciseIndex: Int, onExChange: (Int) -> Unit, onCycleChange: (Int) -> Unit) {
     var totalCycleCount = (viewModel.uiState.cycles?.totalCount?:1) - 1
 
     if(totalCycleCount >= 0) {
         if (cycleIndex == totalCycleCount + 1) {
-            navigateToHome(navController = navController)
+            onNavigateToRoutine("routine-details/${viewModel.uiState.oneRoutine?.id}")
             return
         }
         var totalExerciseCount = (exercisesMap[viewModel.uiState.cycles?.content?.get(cycleIndex)?.id]?.totalCount ?: 1) - 1
         if (totalExerciseCount == -1) {
-            cycleIndex = cycleIndex + 1
-            if (cycleIndex == totalCycleCount) {
-                navigateToHome(navController = navController)
+            onCycleChange(cycleIndex + 1)
+            if (cycleIndex == totalCycleCount + 1) {
+                onNavigateToRoutine("routine-details/${viewModel.uiState.oneRoutine?.id}")
                 return
             }
         } else {
@@ -331,13 +353,12 @@ fun PhoneRutineExec1Layout(navController: NavHostController, viewModel : MainVie
                                             //todo navegacao
                                             return@MyTimer
                                         }
-                                        exerciseIndex =
-                                            ((exerciseIndex + 1) % (totalExerciseCount + 1))
+                                        onExChange((exerciseIndex + 1) % (totalExerciseCount + 1))
                                         //(ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size
                                         if (exerciseIndex == 0) {
-                                            cycleIndex = cycleIndex + 1
-                                            if (cycleIndex == totalCycleCount) {
-                                                navigateToHome(navController = navController)
+                                            onCycleChange(cycleIndex + 1)
+                                            if (cycleIndex == totalCycleCount + 1) {
+                                                onNavigateToRoutine("routine-details/${viewModel.uiState.oneRoutine?.id}")
                                                 return@MyTimer
                                             }
                                         }
@@ -380,13 +401,12 @@ fun PhoneRutineExec1Layout(navController: NavHostController, viewModel : MainVie
                                             stopChange(true)
                                             breakChange(true)
                                         } else {
-                                            exerciseIndex =
-                                                ((exerciseIndex + 1) % totalExerciseCount)
+                                           onExChange((exerciseIndex + 1) % totalExerciseCount)
                                             //(ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size
                                             if (exerciseIndex == 0) {
-                                                cycleIndex = cycleIndex + 1
-                                                if (cycleIndex == totalCycleCount) {
-                                                    navigateToHome(navController = navController)
+                                                onCycleChange(cycleIndex + 1)
+                                                if (cycleIndex == totalCycleCount + 1) {
+                                                    onNavigateToRoutine("routine-details/${viewModel.uiState.oneRoutine?.id}")
                                                     return@Button
                                                 }
                                             }
