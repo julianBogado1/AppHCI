@@ -18,6 +18,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import hci.app.ui.main.ActionButton
 import hci.app.ui.main.MainViewModel
 
 @Composable
@@ -55,28 +57,31 @@ fun MySettingsScreen(viewModel: MainViewModel) {
 @Composable
 fun PhoneSettingsLayout(viewModel : MainViewModel){
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .padding(bottom = 80.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Spacer(modifier = Modifier.weight(0.5f)) // This will push the button and text to the middle and bottom respectively
 
-
-        Button(
+        ActionButton(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-            onClick = {viewModel.logout()},
-            colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4))
-        ) {
-            Text(
-                text = stringResource(R.string.logout),
-                fontWeight = FontWeight.Bold
-            )
-        }
+                .padding(horizontal = 16.dp),
+            colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
+            onClick = { viewModel.logout() },
+            fontWeight = FontWeight.Bold,
+            resId = R.string.logout
+        )
 
+        Spacer(modifier = Modifier.weight(0.45f)) // This will create some space between the button and the text
+
+        Text(
+            text = stringResource(R.string.copyright),
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(bottom = 80.dp)
+        )
+
+        Spacer(modifier = Modifier.weight(0.1f)) // This will push the text a bit up from the bottom
     }
 }
 
