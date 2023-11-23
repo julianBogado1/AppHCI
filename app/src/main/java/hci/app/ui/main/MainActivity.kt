@@ -14,6 +14,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -42,6 +43,7 @@ import hci.app.util.getViewModelFactory
 import java.util.Locale
 import kotlin.random.Random
 import hci.app.Composables.*
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -140,79 +142,4 @@ fun MainScreen(
     }
 }
 
-data class Rutina(
-    val name: String,
-    val description: String,
-    val rating: Int,
-    val duration: Int,
-    val dUnit: String,
-    val cicles: List<Cicle>,
-    val points: Double,
-    val date: String,
-    val category: String
-)
-
-data class Cicle(
-    val name: String,
-    val number: Int,
-    val rep: Int,
-    val ejs: List<Ejercicio>
-)
-
-data class Ejercicio(
-    val name: String,
-    val description: String,
-    val series: Int,
-    val duration: Int,
-    val dUnit: String)
-
-/*if(!viewModel.uiState.isLoading && viewModel.uiState.isAuthenticated) {
-        var routines = viewModel.getRoutines()
-        text = ""
-        for (routine in routines) {
-            for (routineContentIt in routine.content) {
-                text += (routineContentIt.name + " ")
-            }
-        }
-        Log.d("SARACATUNGA-TEXT", text)
-    }
-    /*if(!viewModel.uiState.isLoading) {
-        Log.d("UISTATE_AUTH", uiState.isAuthenticated.toString())
-        viewModel.printAuth()
-    }
-    if(uiState.hasError){
-        appState.showSnackbar(uiState.message, {viewModel.dismissMessage()}, {viewModel.dismissMessage()})
-    }*/
-
-    /*#######cuerpo de MainScreen######*/
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
-    ) {
-            if (!uiState.isAuthenticated) {
-                ActionButton(
-                    resId = R.string.login,
-                    onClick = {
-                        viewModel.login("johndoe", "1234567890")
-                    })
-
-            } else {
-                ActionButton(
-                    resId = R.string.logout,
-                    onClick = {
-                        viewModel.logout()
-                    })
-                }
-            if (uiState.error != null) {
-                Text(
-                    text = "${uiState.error.code} - ${uiState.error.message}",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                    fontSize = 18.sp
-                )
-            }
-        }
-    }*/
 
