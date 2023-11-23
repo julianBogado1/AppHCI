@@ -609,7 +609,7 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
                     Button(
                         modifier = Modifier
                             .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                        onClick = {onNavigateToExec("routine-exec1/${viewModel.uiState.oneRoutine?.id}")},
+                        onClick = {onNavigateToExec("routine-exec2/${viewModel.uiState.oneRoutine?.id}")},
                         colors = ButtonDefaults.buttonColors(Color(0xFF000000))
                     ) {
                         Text(

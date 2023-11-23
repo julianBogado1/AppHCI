@@ -65,7 +65,6 @@ fun PhoneSettingsLayout(viewModel : MainViewModel){
 
         ActionButton(
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
             onClick = { viewModel.logout() },
@@ -96,18 +95,14 @@ fun TabletSettingsLayout(viewModel: MainViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ){
 
-        Button(
+        ActionButton(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-            onClick = {viewModel.logout()},
-            colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4))
-        ) {
-            Text(
-                text = stringResource(R.string.logout),
-                fontWeight = FontWeight.Bold
-            )
-        }
+                .padding(horizontal = 16.dp),
+            colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
+            onClick = { viewModel.logout() },
+            fontWeight = FontWeight.Bold,
+            resId = R.string.logout
+        )
 
     }
 }
