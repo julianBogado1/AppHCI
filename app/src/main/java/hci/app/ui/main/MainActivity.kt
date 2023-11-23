@@ -1,8 +1,13 @@
 package hci.app.ui.main
 
+import android.R.attr.label
+import android.R.attr.text
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
@@ -23,20 +28,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import hci.app.BottomBar
-import hci.app.Composables.MyLoginScreen
+import hci.app.Composables.*
 import hci.app.MyNavGraph
 import hci.app.R
-import hci.app.data.model.Sport
-import hci.app.data.model.User
-import hci.app.data.network.model.NetworkRoutineContent
-import hci.app.data.network.model.NetworkRoutines
 import hci.app.ui.theme.TPETheme
 import hci.app.util.VerticalBar
 import hci.app.util.getViewModelFactory
@@ -61,6 +62,13 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+fun copyLinkToClipboard(link: String, context: Context) {
+    val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip = ClipData.newPlainText("Link", link)
+    clipboardManager.setPrimaryClip(clip)
+    Toast.makeText(context, R.string.copiedLink, Toast.LENGTH_SHORT).show()
 }
 
 @Composable
@@ -111,9 +119,10 @@ fun MainScreen(
                             currentRoute = currentRoute
                         ) { route ->
                             navController.navigate(route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
+                                navController.popBackStack(
+                                    navController.graph.findStartDestination().id,
+                                    false
+                                )
                                 launchSingleTop = true
                                 restoreState = true
                             }

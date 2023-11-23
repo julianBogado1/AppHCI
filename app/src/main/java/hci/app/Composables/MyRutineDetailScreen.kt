@@ -2,8 +2,10 @@ package hci.app.Composables
 
 
 import android.annotation.SuppressLint
-import android.util.Log
+import android.content.Context
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 //import androidx.compose.foundation.layout.RowScopeInstance.weight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,18 +16,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.*
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import hci.app.data.network.model.NetworkCycleExercises
 import hci.app.ui.main.MainViewModel
+import hci.app.ui.main.copyLinkToClipboard
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -35,6 +37,7 @@ fun MyRoutineDetailScreen(viewModel: MainViewModel, routineId: Int) {
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
     val exercisesMap = remember { mutableStateMapOf<Int, NetworkCycleExercises>() }
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = routineId, key2 = exercisesMap) {
         launch {
@@ -56,16 +59,14 @@ fun MyRoutineDetailScreen(viewModel: MainViewModel, routineId: Int) {
     }
 
     if (isTablet) {
-        TabletRutineDetailLayout(viewModel = viewModel, routineId = routineId, exercisesMap = exercisesMap)
+        TabletRutineDetailLayout(viewModel = viewModel, routineId = routineId, exercisesMap = exercisesMap, context = context)
     } else {
-        PhoneRutineDetailLayout(viewModel = viewModel, routineId = routineId, exercisesMap = exercisesMap)
+        PhoneRutineDetailLayout(viewModel = viewModel, routineId = routineId, exercisesMap = exercisesMap, context = context)
     }
 }
 
 @Composable
-fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesMap: MutableMap<Int, NetworkCycleExercises>) {
-
-
+fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesMap: MutableMap<Int, NetworkCycleExercises>, context: Context) {
 
     LazyColumn(
         modifier = Modifier
@@ -88,7 +89,12 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
                     )
                 }
 
-                Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
+                Image(
+                    imageVector = Icons.Default.Share,
+                    contentDescription = "Share",
+                    modifier = Modifier
+                        .clickable { copyLinkToClipboard("https://www.creatina.share.com/rutinas?id=${viewModel.uiState.oneRoutine?.id}", context) }
+                )
             }
         }
 
@@ -323,7 +329,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
 
 @SuppressLint("SimpleDateFormat")
 @Composable
-fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesMap: MutableMap<Int, NetworkCycleExercises>) {
+fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesMap: MutableMap<Int, NetworkCycleExercises>, context: Context) {
 
     Row(
         modifier = Modifier
@@ -341,9 +347,14 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
                     .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
-                    viewModel.uiState.oneRoutine?.name?.let { Text(text = it, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold) }
 
-                    Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
+                    viewModel.uiState.oneRoutine?.name?.let { Text(text = it, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold) }
+                    Image(
+                        imageVector = Icons.Default.Share,
+                        contentDescription = "Share",
+                        modifier = Modifier
+                            .clickable { copyLinkToClipboard("https://www.creatina.share.com/rutinas?id=${viewModel.uiState.oneRoutine?.id}", context) }
+                    )
                 }
             }
 
