@@ -43,6 +43,7 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
                 }
             )) {
             MyRutineExecScreen1(
+                navController = navController,
                 routineId = navController.currentBackStackEntry?.arguments?.getInt("routineId")
                     ?: -1, viewModel = viewModel
             )
@@ -69,6 +70,15 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
                     }
                 }
             }
+        }
+    }
+}
+
+fun navigateToHome(navController: NavHostController) {
+    navController.navigate("routines") {
+        launchSingleTop = true
+        popUpTo(navController.graph.findStartDestination().id) {
+            saveState = true
         }
     }
 }

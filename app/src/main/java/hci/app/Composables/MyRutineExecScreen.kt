@@ -36,10 +36,12 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavHostController
 import hci.app.R
 import hci.app.data.network.model.NetworkCycleExercises
 import hci.app.data.network.model.NetworkRoutineContent
 import hci.app.data.network.model.NetworkRoutineCycles
+import hci.app.navigateToHome
 import hci.app.ui.main.MainViewModel
 import kotlinx.coroutines.launch
 
@@ -86,8 +88,7 @@ fun getRoutineTotalCount(routineId : Int, viewModel: MainViewModel, cicleId : In
 
 
 @Composable
-fun MyRutineExecScreen1(viewModel: MainViewModel, routineId : Int) {
-
+fun MyRutineExecScreen1(navController: NavHostController, viewModel: MainViewModel, routineId : Int) {
     val exercisesMap = remember { mutableStateMapOf<Int, NetworkCycleExercises>() }
     LaunchedEffect(key1 = routineId, key2 = exercisesMap) {
         launch {
@@ -125,7 +126,7 @@ fun MyRutineExecScreen1(viewModel: MainViewModel, routineId : Int) {
     if (isTablet) {
         //TabletRutineExec1Layout(viewModel, rutina, routineData,ejIndexState,{ newValue -> viewModel.setEjIndex(newValue)},cicleIndexState,{newValue -> viewModel.setCicleIndex(newValue)},inBreak,{newValue -> viewModel.setInBreak(newValue)},timerRemainingSec,{newValue->viewModel.setTimerRemainingSec(newValue)},inStop,{newValue -> viewModel.setInStop(newValue)}, timeCountdown, {newValue -> viewModel.setTimeCountdown(newValue)})
     } else {
-        PhoneRutineExec1Layout(viewModel, exercisesMap = exercisesMap)
+        PhoneRutineExec1Layout(navController = navController, viewModel, exercisesMap = exercisesMap, inBreak,{newValue -> viewModel.setInBreak(newValue)},timerRemainingSec,{newValue->viewModel.setTimerRemainingSec(newValue)},inStop,{newValue -> viewModel.setInStop(newValue)}, timeCountdown, {newValue -> viewModel.setTimeCountdown(newValue)})
     }
 }
 /*
@@ -152,211 +153,284 @@ fun MyRutineExecScreen2(viewModel: MainViewModel,routineData: NetworkRoutineCont
     }
 }
 */
+
+//rutina: NetworkRoutineCycles?, ejIndex: Int,onEjIndexChange: (Int) -> Unit, cicleIndex: Int,onCicleIndexChange: (Int) -> Unit, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit
+
 @Composable
-fun PhoneRutineExec1Layout(viewModel : MainViewModel, exercisesMap: MutableMap<Int, NetworkCycleExercises>) {
-    var cycleId by remember{mutableStateOf(0)}
-    var cycleName by remember{mutableStateOf("")}
+fun PhoneRutineExec1Layout(navController: NavHostController, viewModel : MainViewModel, exercisesMap: MutableMap<Int, NetworkCycleExercises>, inBreak: Boolean, breakChange: (Boolean)->Unit, timeRemainingSec: Int, timeRemainingSecChange: (Int)->Unit, inStop: Boolean, stopChange: (Boolean)->Unit, timeCountdown: Int, changeTimeCountdown: (Int)->Unit) {
     var cycleIndex by remember{mutableStateOf(0)}
-    var totalCycleCount = viewModel.uiState.cycles?.totalCount?:0
-    var totalExerciseCount = exercisesMap[viewModel.uiState.cycles?.content?.get(cycleIndex)?.id]?.totalCount?:0
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color(0xFF73C7A4))
-    ) {
+    var exerciseIndex by remember{mutableStateOf(0)}
+    var totalCycleCount = (viewModel.uiState.cycles?.totalCount?:1) - 1
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .padding(top = 40.dp)
-        ){
-            item{
-                Row(modifier = Modifier
-                    .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ){
-                    Text(text="${viewModel.uiState.oneRoutine?.name}",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold)
-                }
+    if(totalCycleCount >= 0) {
+        if (cycleIndex == totalCycleCount + 1) {
+            navigateToHome(navController = navController)
+            return
+        }
+        var totalExerciseCount = (exercisesMap[viewModel.uiState.cycles?.content?.get(cycleIndex)?.id]?.totalCount ?: 1) - 1
+        if (totalExerciseCount == -1) {
+            cycleIndex = cycleIndex + 1
+            if (cycleIndex == totalCycleCount) {
+                navigateToHome(navController = navController)
+                return
             }
-            item {
-                Spacer(modifier = Modifier.height(10.dp))
+        } else {
 
-                HorizontalDivider(
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = Color(0xFF73C7A4))
+            ) {
+
+                LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(1.dp),
-                    color = Color(0xFF000000)
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-            }
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                        .padding(16.dp)
+                        .padding(top = 40.dp)
                 ) {
-                    Text(
-                        text = "${viewModel.uiState.cycles?.content?.get(cycleIndex)?.name}",
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(30.dp))
-            }
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "${exercisesMap[viewModel.uiState.cycles?.content?.get(cycleIndex)?.id]?.content?.get()}",
-                        style = MaterialTheme.typography.headlineLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                }
-
-                Spacer(modifier = Modifier.height(10.dp))
-            }
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    val duration =rutina.get(cicleIndex)?.content?.get(ejIndex)?.duration?:0
-                    val series = rutina.get(cicleIndex)?.content?.get(ejIndex)?.repetitions?:0 //rutina.cicles[cicleIndex].ejs[ejIndex].series
-
-
-                    val displayText = if (duration == 0 || series == 0) {
-                        if (duration == 0) {
-                            "${series} series"
-                        } else {
-                            "${duration} m"
-                        }
-                    } else {
-                        "${duration} m / ${series} series"      //todo chequear unidades
-                    }
-
-                    Text(
-                        text = displayText,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(       //rutina.cicles[cicleIndex].ejs[ejIndex].description
-                        text = "${rutina.get(cicleIndex)?.content?.get(ejIndex)?.exercise?.detail?:""}",
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                }
-            }
-            item {if(!(timeRemainingSec>0))timeRemainingSecChange((rutina.get(cicleIndex)?.content?.get(ejIndex)?.duration?:0)*60)
-                //TODO: esto se rompe porque no esta circularizado!!!
-
-                changeTimeCountdown((rutina.get(cicleIndex)?.content?.get((ejIndex + 1) % totalCount)?.duration?:0)*60*1000)
-                //(ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size
-                //rutina.cicles[cicleIndex].ejs[(ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size].duration
-                Box(modifier = Modifier
-                    .height(100.dp)
-                    .fillMaxWidth()
-                ){
-                    if(rutina.get(cicleIndex)?.content?.get(ejIndex)?.duration?:0!=0){
-                        MyTimer(
-                            seconds = timeRemainingSec,
-                            onTimerFinish = {
-                                if(cicleIndex>=totalRoutineCount && ejIndex>=totalCount){
-                                    //todo navegacao
-                                    return@MyTimer
-                                }
-                                onEjIndexChange((ejIndex + 1) % totalCount)
-                                //(ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size
-                                if (ejIndex == 0){
-                                    onCicleIndexChange((cicleIndex + 1) % totalRoutineCount)
-                                }
-                                //if(cicleIndex==0 && ejIndex==0) //return since its finished
-                                stopChange(false)
-                                breakChange(false)
-                                //timeRemainingSecChange(rutina.cicles[cicleIndex].ejs[ejIndex].duration*60)
-
-                            },
-                            onTimerTick = timeRemainingSecChange,
-                            inBreak = inBreak,
-                            inStop = inStop,
-                            stopChange = stopChange,
-                            nextRemainingTime = timeCountdown
-                        )
-                    }
-                }
-
-            }
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Button(
-                            modifier = Modifier
-                                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                            onClick = {
-                                if ((rutina.get(cicleIndex)?.content?.get(ejIndex)?.duration?:0) != 0) {
-                                    //rutina.cicles[cicleIndex].ejs[ejIndex].duration
-                                    stopChange(true)
-                                    breakChange(true)
-                                } else {
-                                    onEjIndexChange((ejIndex + 1) % totalCount)   //rutina.cicles[cicleIndex].ejs.size
-                                    if (ejIndex == 0) onCicleIndexChange((cicleIndex + 1) % totalRoutineCount)
-                                }
-                                /*saracatunga*/
-                            },
-                            colors = ButtonDefaults.buttonColors(Color(0xFF000000))
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.next),
-                                style = MaterialTheme.typography.headlineSmall,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-
-                    if ((rutina.get(cicleIndex)?.content?.get(ejIndex)?.duration?:0) != 0) {
+                    item {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            Button(
-                                modifier = Modifier
-                                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                                onClick = {
-                                    breakChange(!inBreak)
-                                },
-                                colors = ButtonDefaults.buttonColors(Color(0xFF49454F))
+                            Text(
+                                text = "${viewModel.uiState.oneRoutine?.name}",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(1.dp),
+                            color = Color(0xFF000000)
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "${viewModel.uiState.cycles?.content?.get(cycleIndex)?.name}",
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(30.dp))
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "${
+                                    exercisesMap[viewModel.uiState.cycles?.content?.get(
+                                        cycleIndex
+                                    )?.id]?.content?.get(
+                                        exerciseIndex
+                                    )?.exercise?.name
+                                }",
+                                style = MaterialTheme.typography.headlineLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                        }
+
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            val duration =
+                                exercisesMap[viewModel.uiState.cycles?.content?.get(cycleIndex)?.id]?.content?.get(
+                                    exerciseIndex
+                                )?.duration ?: 0
+                            val series =
+                                exercisesMap[viewModel.uiState.cycles?.content?.get(cycleIndex)?.id]?.content?.get(
+                                    exerciseIndex
+                                )?.repetitions ?: 0
+
+
+                            val displayText = if (duration == 0 || series == 0) {
+                                if (duration == 0) {
+                                    "${series} series"
+                                } else {
+                                    "${duration} m"
+                                }
+                            } else {
+                                "${duration} m / ${series} series"      //todo chequear unidades
+                            }
+
+                            Text(
+                                text = displayText,
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "${
+                                    exercisesMap[viewModel.uiState.cycles?.content?.get(
+                                        cycleIndex
+                                    )?.id]?.content?.get(
+                                        exerciseIndex
+                                    )?.exercise?.detail
+                                }",
+                                style = MaterialTheme.typography.headlineSmall
+                            )
+                        }
+                    }
+                    item {
+                        if (!(timeRemainingSec > 0)) timeRemainingSecChange(
+                            (exercisesMap[viewModel.uiState.cycles?.content?.get(
+                                cycleIndex
+                            )?.id]?.content?.get(exerciseIndex)?.duration ?: 0) * 60
+                        )
+
+                        changeTimeCountdown(
+                            (exercisesMap[viewModel.uiState.cycles?.content?.get(cycleIndex)?.id]?.content?.get(
+                                exerciseIndex
+                            )?.duration ?: 0) * 60 * 1000
+                        )
+                        //(ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size
+                        //rutina.cicles[cicleIndex].ejs[(ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size].duration
+                        Box(
+                            modifier = Modifier
+                                .height(100.dp)
+                                .fillMaxWidth()
+                        ) {
+                            if ((exercisesMap[viewModel.uiState.cycles?.content?.get(cycleIndex)?.id]?.content?.get(
+                                    exerciseIndex
+                                )?.duration ?: 0) != 0
                             ) {
-                                Text(
-                                    text = stringResource(id = R.string.rest),
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    fontWeight = FontWeight.Bold
+                                MyTimer(
+                                    seconds = timeRemainingSec,
+                                    onTimerFinish = {
+                                        if (cycleIndex >= (totalCycleCount)
+                                            && exerciseIndex >= (totalExerciseCount)
+                                        ) {
+                                            //todo navegacao
+                                            return@MyTimer
+                                        }
+                                        exerciseIndex =
+                                            ((exerciseIndex + 1) % (totalExerciseCount + 1))
+                                        //(ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size
+                                        if (exerciseIndex == 0) {
+                                            cycleIndex = cycleIndex + 1
+                                            if (cycleIndex == totalCycleCount) {
+                                                navigateToHome(navController = navController)
+                                                return@MyTimer
+                                            }
+                                        }
+                                        //if(cicleIndex==0 && ejIndex==0) //return since its finished
+                                        stopChange(false)
+                                        breakChange(false)
+                                        //timeRemainingSecChange(rutina.cicles[cicleIndex].ejs[ejIndex].duration*60)
+
+                                    },
+                                    onTimerTick = timeRemainingSecChange,
+                                    inBreak = inBreak,
+                                    inStop = inStop,
+                                    stopChange = stopChange,
+                                    nextRemainingTime = timeCountdown
                                 )
                             }
                         }
-                    }
 
+                    }
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Button(
+                                    modifier = Modifier
+                                        .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                                    onClick = {
+                                        if ((exercisesMap[viewModel.uiState.cycles?.content?.get(
+                                                cycleIndex
+                                            )?.id]?.content?.get(exerciseIndex)?.duration
+                                                ?: 0) != 0
+                                        ) {
+                                            //rutina.cicles[cicleIndex].ejs[ejIndex].duration
+                                            stopChange(true)
+                                            breakChange(true)
+                                        } else {
+                                            exerciseIndex =
+                                                ((exerciseIndex + 1) % totalExerciseCount)
+                                            //(ejIndex + 1) % rutina.cicles[cicleIndex].ejs.size
+                                            if (exerciseIndex == 0) {
+                                                cycleIndex = cycleIndex + 1
+                                                if (cycleIndex == totalCycleCount) {
+                                                    navigateToHome(navController = navController)
+                                                    return@Button
+                                                }
+                                            }
+                                        }
+                                        /*saracatunga*/
+                                    },
+                                    colors = ButtonDefaults.buttonColors(Color(0xFF000000))
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.next),
+                                        style = MaterialTheme.typography.headlineSmall,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+
+                            if ((exercisesMap[viewModel.uiState.cycles?.content?.get(cycleIndex)?.id]?.content?.get(
+                                    exerciseIndex
+                                )?.duration ?: 0) != 0
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Button(
+                                        modifier = Modifier
+                                            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                                        onClick = {
+                                            breakChange(!inBreak)
+                                        },
+                                        colors = ButtonDefaults.buttonColors(Color(0xFF49454F))
+                                    ) {
+                                        Text(
+                                            text = stringResource(id = R.string.rest),
+                                            style = MaterialTheme.typography.headlineSmall,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                }
+                            }
+
+                        }
+                    }
                 }
             }
         }
