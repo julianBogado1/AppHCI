@@ -85,13 +85,18 @@ fun getRoutineTotalCount(routineId : Int, viewModel: MainViewModel, cicleId : In
 }
 
 
-
-
 @Composable
-fun MyRutineExecScreen1(viewModel: MainViewModel, routineData: NetworkRoutineContent) {
+fun MyRutineExecScreen1(viewModel: MainViewModel, routineId : Int) {
 
+    LaunchedEffect(key1 = routineId) {
+        launch {
+            viewModel.getOneRoutine(routineId)
+            viewModel.getCycles(routineId)
+        }
+    }
+    var routineData = viewModel.uiState.oneRoutine!!
     //mapa de id:ciclo --> ciclo<ejData>
-    var rutina = getRoutine(routineId = routineData.id?:0, viewModel = viewModel)
+    var rutina = getRoutine(routineId = routineId, viewModel = viewModel)
 
     val ejIndexState by viewModel.ejIndexState
     val cicleIndexState by viewModel.cicleIndexState
