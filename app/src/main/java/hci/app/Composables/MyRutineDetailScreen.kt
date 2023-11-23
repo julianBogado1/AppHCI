@@ -2,8 +2,9 @@ package hci.app.Composables
 
 
 import android.annotation.SuppressLint
-import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 //import androidx.compose.foundation.layout.RowScopeInstance.weight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,18 +15,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.*
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import hci.app.data.network.model.NetworkCycleExercises
 import hci.app.ui.main.MainViewModel
+import hci.app.ui.main.copyLinkToClipboard
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -65,8 +66,6 @@ fun MyRoutineDetailScreen(viewModel: MainViewModel, routineId: Int) {
 @Composable
 fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesMap: MutableMap<Int, NetworkCycleExercises>) {
 
-
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -87,8 +86,13 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
                         fontWeight = FontWeight.Bold
                     )
                 }
-
-                Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
+                val context = LocalContext.current
+                Image(
+                    imageVector = Icons.Default.Share,
+                    contentDescription = "Share",
+                    modifier = Modifier
+                        .clickable { copyLinkToClipboard("https://www.creatina.share.com/rutinas?id=${viewModel.uiState.oneRoutine?.id}", context) }
+                )
             }
         }
 
@@ -343,7 +347,13 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
                 ){
                     viewModel.uiState.oneRoutine?.name?.let { Text(text = it, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold) }
 
-                    Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
+                    val context = LocalContext.current
+                    Image(
+                        imageVector = Icons.Default.Share,
+                        contentDescription = "Share",
+                        modifier = Modifier
+                            .clickable { copyLinkToClipboard("https://www.creatina.share.com/rutinas?id=${viewModel.uiState.oneRoutine?.id}", context) }
+                    )
                 }
             }
 

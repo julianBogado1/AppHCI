@@ -50,6 +50,5 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
                 viewModel = viewModel
             )
         }
-
     }
 }

@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 
 sealed class Screen(val titleId: Int, val icon: ImageVector, val route: String) {
-    object RoutinesScreen : Screen(R.string.routines, Icons.Filled.PlayArrow, "routines")
+    object RoutinesScreen : Screen(R.string.routines, Icons.Filled.Home, "routines")
     object SettingsScreen : Screen(R.string.settings, Icons.Filled.Settings, "settings")
 }
 
