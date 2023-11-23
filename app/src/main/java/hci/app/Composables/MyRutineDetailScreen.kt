@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.*
 //import androidx.compose.foundation.layout.RowScopeInstance.weight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -402,11 +403,14 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
                     onClick = { onNavigateToExec("routine-exec1/${viewModel.uiState.oneRoutine?.id}") },
                     colors = ButtonDefaults.buttonColors(Color(0xFF000000))
                 ) {
-                    Text(
-                        text = stringResource(id = R.string.next),
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(Icons.Default.PlayArrow, contentDescription = null)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Simple")
+                    }
                 }
 
                 Button(
@@ -415,11 +419,14 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
                     onClick = { onNavigateToExec("routine-exec2/${viewModel.uiState.oneRoutine?.id}") },
                     colors = ButtonDefaults.buttonColors(Color(0xFF000000))
                 ) {
-                    Text(
-                        text = stringResource(id = R.string.next),
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(Icons.Default.PlayArrow, contentDescription = null)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Detail")
+                    }
                 }
             }
         }
@@ -645,121 +652,165 @@ fun TabletRutineDetailLayout(
             )
         }
 
-
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(40.dp)
+                .padding(20.dp)
         ) {
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Divider(
+            Box() {
+                Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(Color.Gray)
-                )
-            }
-
-            viewModel.uiState.cycles?.content?.forEach { cycle ->
-                item {
-                    Row(
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Button(
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                        onClick = { onNavigateToExec("routine-exec1/${viewModel.uiState.oneRoutine?.id}") },
+                        colors = ButtonDefaults.buttonColors(Color(0xFF000000))
                     ) {
-                        cycle.name?.let {
-                            Text(
-                                text = it,
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    color = Color(
-                                        0xFF4C4C4C
-                                    )
-                                )
-                            )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Icon(Icons.Default.PlayArrow, contentDescription = null)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Simple")
                         }
+                    }
 
-                        Text(
-                            text = "${stringResource(id = R.string.repetitions)}: ${cycle.repetitions}",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                    Button(
+                        modifier = Modifier
+                            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                        onClick = { onNavigateToExec("routine-exec2/${viewModel.uiState.oneRoutine?.id}") },
+                        colors = ButtonDefaults.buttonColors(Color(0xFF000000))
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Icon(Icons.Default.PlayArrow, contentDescription = null)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Detail")
+                        }
                     }
                 }
+            }
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(20.dp)
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                exercisesMap.get(cycle.id)?.content?.forEach { exercise ->
+                    Divider(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .background(Color.Gray)
+                    )
+                }
+
+                viewModel.uiState.cycles?.content?.forEach { cycle ->
                     item {
-                        Box(
+                        Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(10.dp)
-                                .background(Color(0xFFD9D9D9))
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Row(
+                            cycle.name?.let {
+                                Text(
+                                    text = it,
+                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                        color = Color(
+                                            0xFF4C4C4C
+                                        )
+                                    )
+                                )
+                            }
+
+                            Text(
+                                text = "${stringResource(id = R.string.repetitions)}: ${cycle.repetitions}",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
+
+                    exercisesMap.get(cycle.id)?.content?.forEach { exercise ->
+                        item {
+                            Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(IntrinsicSize.Min),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                    .padding(10.dp)
+                                    .background(Color(0xFFD9D9D9))
                             ) {
-                                Box(modifier = Modifier.weight(0.6f)) {
-                                    Column(
-                                        modifier = Modifier
-                                            .padding(2.dp),
-                                        verticalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Text(
-                                            text = "${exercise.exercise?.name}",
-                                            style = MaterialTheme.typography.titleLarge
-                                        )
-
-                                        Text(
-                                            text = "${exercise.exercise?.detail}",
-                                            style = MaterialTheme.typography.bodyLarge
-                                        )
-
-                                    }
-                                }
-
-                                Box(
+                                Row(
                                     modifier = Modifier
-                                        .weight(0.4f)
-                                        .background(Color(0xFFBEBEBE))
+                                        .fillMaxWidth()
+                                        .height(IntrinsicSize.Min),
+                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Row(
-                                        modifier = Modifier.fillMaxSize()
+                                    Box(modifier = Modifier.weight(0.6f)) {
+                                        Column(
+                                            modifier = Modifier
+                                                .padding(2.dp),
+                                            verticalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Text(
+                                                text = "${exercise.exercise?.name}",
+                                                style = MaterialTheme.typography.titleLarge
+                                            )
+
+                                            Text(
+                                                text = "${exercise.exercise?.detail}",
+                                                style = MaterialTheme.typography.bodyLarge
+                                            )
+
+                                        }
+                                    }
+
+                                    Box(
+                                        modifier = Modifier
+                                            .weight(0.4f)
+                                            .background(Color(0xFFBEBEBE))
                                     ) {
-                                        Column(
-                                            modifier = Modifier
-                                                .padding(2.dp)
+                                        Row(
+                                            modifier = Modifier.fillMaxSize()
                                         ) {
-                                            Text(
-                                                text = "Series ",
-                                                style = MaterialTheme.typography.bodyLarge
-                                            )
+                                            Column(
+                                                modifier = Modifier
+                                                    .padding(2.dp)
+                                            ) {
+                                                Text(
+                                                    text = "Series ",
+                                                    style = MaterialTheme.typography.bodyLarge
+                                                )
 
-                                            Text(
-                                                text = "${exercise.repetitions}",
-                                                style = MaterialTheme.typography.bodyLarge,
-                                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                                            )
+                                                Text(
+                                                    text = "${exercise.repetitions}",
+                                                    style = MaterialTheme.typography.bodyLarge,
+                                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                                )
+                                            }
+
+                                            Column(
+                                                modifier = Modifier
+                                                    .padding(2.dp)
+                                            ) {
+                                                Text(
+                                                    text = "${stringResource(id = R.string.duration)}",
+                                                    style = MaterialTheme.typography.bodyLarge
+                                                )
+
+                                                Text(
+                                                    text = "${exercise.duration} m",
+                                                    style = MaterialTheme.typography.bodyLarge,
+                                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                                )
+                                            }
+
                                         }
-
-                                        Column(
-                                            modifier = Modifier
-                                                .padding(2.dp)
-                                        ) {
-                                            Text(
-                                                text = "${stringResource(id = R.string.duration)}",
-                                                style = MaterialTheme.typography.bodyLarge
-                                            )
-
-                                            Text(
-                                                text = "${exercise.duration} m",
-                                                style = MaterialTheme.typography.bodyLarge,
-                                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                                            )
-                                        }
-
                                     }
                                 }
                             }
@@ -767,24 +818,9 @@ fun TabletRutineDetailLayout(
                     }
                 }
             }
-            item {
-                Row {
-                    Button(
-                        modifier = Modifier
-                            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                        onClick = { onNavigateToExec("routine-exec2/${viewModel.uiState.oneRoutine?.id}") },
-                        colors = ButtonDefaults.buttonColors(Color(0xFF000000))
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.next),
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-            }
         }
     }
 }
+
 
 

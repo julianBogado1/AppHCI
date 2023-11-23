@@ -418,7 +418,7 @@ fun PhoneRutineExec1Layout(navController: NavHostController, viewModel : MainVie
                                     seconds = timeRemainingSec,
                                     onTimerFinish = {
                                         if (viewModel.cicleIndexState.value >= (totalCycleCount)
-                                            && viewModel.ejIndexState.value >= (totalExerciseCount)
+                                            && viewModel.ejIndexState.value >= (totalExerciseCount + 1)
                                         ) {
                                             //todo navegacao
                                             return@MyTimer
@@ -717,7 +717,7 @@ fun TabletRutineExec1Layout(navController: NavHostController, viewModel : MainVi
                                         seconds = timeRemainingSec,
                                         onTimerFinish = {
                                             if (viewModel.cicleIndexState.value >= (totalCycleCount)
-                                                && viewModel.ejIndexState.value >= (totalExerciseCount)
+                                                && viewModel.ejIndexState.value >= (totalExerciseCount + 1)
                                             ) {
                                                 //todo navegacao
                                                 return@MyTimer
