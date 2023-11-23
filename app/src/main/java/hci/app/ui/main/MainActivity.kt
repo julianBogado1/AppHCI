@@ -107,9 +107,10 @@ fun MainScreen(
                             currentRoute = currentRoute
                         ) { route ->
                             navController.navigate(route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
+                                navController.popBackStack(
+                                    navController.graph.findStartDestination().id,
+                                    false
+                                )
                                 launchSingleTop = true
                                 restoreState = true
                             }

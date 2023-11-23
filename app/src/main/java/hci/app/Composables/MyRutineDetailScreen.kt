@@ -2,6 +2,7 @@ package hci.app.Composables
 
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,6 +37,7 @@ fun MyRoutineDetailScreen(viewModel: MainViewModel, routineId: Int) {
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
     val exercisesMap = remember { mutableStateMapOf<Int, NetworkCycleExercises>() }
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = routineId, key2 = exercisesMap) {
         launch {
@@ -57,14 +59,14 @@ fun MyRoutineDetailScreen(viewModel: MainViewModel, routineId: Int) {
     }
 
     if (isTablet) {
-        TabletRutineDetailLayout(viewModel = viewModel, routineId = routineId, exercisesMap = exercisesMap)
+        TabletRutineDetailLayout(viewModel = viewModel, routineId = routineId, exercisesMap = exercisesMap, context = context)
     } else {
-        PhoneRutineDetailLayout(viewModel = viewModel, routineId = routineId, exercisesMap = exercisesMap)
+        PhoneRutineDetailLayout(viewModel = viewModel, routineId = routineId, exercisesMap = exercisesMap, context = context)
     }
 }
 
 @Composable
-fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesMap: MutableMap<Int, NetworkCycleExercises>) {
+fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesMap: MutableMap<Int, NetworkCycleExercises>, context: Context) {
 
     LazyColumn(
         modifier = Modifier
@@ -86,7 +88,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
                         fontWeight = FontWeight.Bold
                     )
                 }
-                val context = LocalContext.current
+
                 Image(
                     imageVector = Icons.Default.Share,
                     contentDescription = "Share",
@@ -327,7 +329,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
 
 @SuppressLint("SimpleDateFormat")
 @Composable
-fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesMap: MutableMap<Int, NetworkCycleExercises>) {
+fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesMap: MutableMap<Int, NetworkCycleExercises>, context: Context) {
 
     Row(
         modifier = Modifier
@@ -345,9 +347,8 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
                     .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
-                    viewModel.uiState.oneRoutine?.name?.let { Text(text = it, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold) }
 
-                    val context = LocalContext.current
+                    viewModel.uiState.oneRoutine?.name?.let { Text(text = it, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold) }
                     Image(
                         imageVector = Icons.Default.Share,
                         contentDescription = "Share",
