@@ -12,6 +12,7 @@ import androidx.navigation.navDeepLink
 import hci.app.Composables.MyListScreen
 import hci.app.Composables.MyRoutineDetailScreen
 import hci.app.Composables.MyRutineExecScreen1
+import hci.app.Composables.MyRutineExecScreen2
 import hci.app.Composables.MySettingsScreen
 import hci.app.ui.main.MainViewModel
 
@@ -43,6 +44,26 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
                 }
             )) {
             MyRutineExecScreen1(
+                navController = navController,
+                routineId = navController.currentBackStackEntry?.arguments?.getInt("routineId")
+                    ?: -1, viewModel = viewModel
+            ) { route ->
+                navController.navigate(route) {
+                    launchSingleTop = true
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                }
+            }
+        }
+        composable("routine-exec2/{routineId}",
+            arguments = listOf(
+                navArgument("routineId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )) {
+            MyRutineExecScreen2(
                 navController = navController,
                 routineId = navController.currentBackStackEntry?.arguments?.getInt("routineId")
                     ?: -1, viewModel = viewModel
