@@ -320,21 +320,21 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
             item{
                 Spacer(modifier = Modifier.height(8.dp))
             }
+        }
 
-            item {
-                Row {
-                    Button(
-                        modifier = Modifier
-                            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                        onClick = {onNavigateToExec("routine-exec2/${viewModel.uiState.oneRoutine?.id}")},
-                        colors = ButtonDefaults.buttonColors(Color(0xFF000000))
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.next),
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+        item {
+            Row {
+                Button(
+                    modifier = Modifier
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                    onClick = {onNavigateToExec("routine-exec2/${viewModel.uiState.oneRoutine?.id}")},
+                    colors = ButtonDefaults.buttonColors(Color(0xFF000000))
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.next),
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }

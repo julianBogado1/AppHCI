@@ -47,7 +47,14 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
                 navController = navController,
                 routineId = navController.currentBackStackEntry?.arguments?.getInt("routineId")
                     ?: -1, viewModel = viewModel
-            )   //todo TRADUCIR EJECUCIONS
+            )  { route ->
+                navController.navigate(route) {
+                    launchSingleTop = true
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                }
+            }
         }
         composable("routine-exec2/{routineId}",
             arguments = listOf(
@@ -86,9 +93,6 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
             ) { route ->
                 navController.navigate(route) {
                     launchSingleTop = true
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = true
-                    }
                 }
             }
         }
