@@ -12,7 +12,7 @@
     <string name="username">Nombre de usuario</string>
     <string name="password">Contraseña</string>
     <string name="orderBy">Ordenar Por</string>
-    <string name="difficulty">Difficultad</string>
+    <string name="difficulty">Dificultad</string>
     <string name="date">Fecha</string>
     <string name="category">Categoria</string>
     <string name="score">Puntaje</string>

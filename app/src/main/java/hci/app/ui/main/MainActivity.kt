@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -23,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -105,50 +107,55 @@ fun MainScreen(
     val currentRoute = navBackStackEntry?.destination?.route
     val appState = rememberMyAppState() //todo TIRAR ERRORES AWEONAO
 
-    if(viewModel.uiState.isAuthenticated) {
-        Scaffold(
-            snackbarHost = {appState.snackbarHostState},
-            bottomBar = {
-                if (LocalConfiguration.current.screenWidthDp >= 600) {
-                    // Display bottom navigation as a column on the left
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(80.dp) // Set the desired width for the left navigation bar
-                    ) {
-                        VerticalBar(
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(0xFF73C7A4))
+    ) {
+        if (viewModel.uiState.isAuthenticated) {
+            Scaffold(
+                snackbarHost = { appState.snackbarHostState },
+                bottomBar = {
+                    if (LocalConfiguration.current.screenWidthDp >= 600) {
+                        // Display bottom navigation as a column on the left
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .width(80.dp) // Set the desired width for the left navigation bar
+                        ) {
+                            VerticalBar(
+                                currentRoute = currentRoute
+                            ) { route ->
+                                navController.navigate(route) {
+                                    navController.popBackStack(
+                                        navController.graph.findStartDestination().id,
+                                        false
+                                    )
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        }
+                    } else {
+                        BottomBar(
                             currentRoute = currentRoute
                         ) { route ->
                             navController.navigate(route) {
-                                navController.popBackStack(
-                                    navController.graph.findStartDestination().id,
-                                    false
-                                )
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
                                 launchSingleTop = true
                                 restoreState = true
                             }
                         }
                     }
-                } else {
-                    BottomBar(
-                        currentRoute = currentRoute
-                    ) { route ->
-                        navController.navigate(route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
                 }
+            ) {
+                MyNavGraph(navController = navController, viewModel = viewModel)
             }
-        ) {
-            MyNavGraph(navController = navController, viewModel = viewModel)
+        } else {
+            MyLoginScreen(viewModel)
         }
-    }
-    else{
-        MyLoginScreen(viewModel)
     }
 }
 

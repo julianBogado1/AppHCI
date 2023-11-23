@@ -23,10 +23,10 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = GreenGhost,
+    primary = Color(0xFF73C7A4),
     secondary = GreenDark,
-    tertiary = Pink40,
-    onPrimary = Green,
+    tertiary = GreenDark,
+    onPrimary = Color(0xFFFFFFFF),
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
@@ -51,7 +51,7 @@ fun TPETheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
+        darkTheme -> LightColorScheme
         else -> LightColorScheme
     }
     val view = LocalView.current
