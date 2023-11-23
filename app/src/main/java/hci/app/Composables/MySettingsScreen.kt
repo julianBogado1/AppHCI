@@ -105,6 +105,15 @@ fun TabletSettingsLayout(viewModel: MainViewModel) {
             resId = R.string.logout
         )
 
+        Spacer(modifier = Modifier.weight(0.45f)) // This will create some space between the button and the text
+
+        Text(
+            text = stringResource(R.string.copyright),
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(bottom = 80.dp)
+        )
+
+        Spacer(modifier = Modifier.weight(0.1f)) // This will push the text a bit up from the bottom
     }
 }
 
