@@ -88,26 +88,33 @@ fun PhoneSettingsLayout(viewModel : MainViewModel){
 @Composable
 fun TabletSettingsLayout(viewModel: MainViewModel) {
     Column(
-        modifier = Modifier
+        Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .padding(start=80.dp),
+            .padding(start = 80.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
+        Spacer(modifier = Modifier.weight(0.5f)) // This will push the button and text to the middle and bottom respectively
 
-        Button(
+        ActionButton(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-            onClick = {viewModel.logout()},
-            colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4))
-        ) {
-            Text(
-                text = stringResource(R.string.logout),
-                fontWeight = FontWeight.Bold
-            )
-        }
+                .padding(horizontal = 16.dp),
+            colors = ButtonDefaults.buttonColors(Color(0xFF73C7A4)),
+            onClick = { viewModel.logout() },
+            fontWeight = FontWeight.Bold,
+            resId = R.string.logout
+        )
+
+        Spacer(modifier = Modifier.weight(0.45f)) // This will create some space between the button and the text
+
+        Text(
+            text = stringResource(R.string.copyright),
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(bottom = 80.dp)
+        )
+
 
     }
 }
