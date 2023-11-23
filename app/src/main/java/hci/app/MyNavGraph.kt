@@ -2,17 +2,16 @@ package hci.app
 
 import android.content.Intent
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import hci.app.Composables.MyListScreen
 import hci.app.Composables.MyRoutineDetailScreen
+import hci.app.Composables.MyRutineExecScreen1
 import hci.app.Composables.MySettingsScreen
 import hci.app.ui.main.MainViewModel
 
@@ -36,6 +35,9 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
         composable(Screen.SettingsScreen.route) {
             MySettingsScreen(viewModel)
         }
+        composable("routine-exec1/{routineId}") {
+            MyRutineExecScreen1(rutina = null, viewModel = viewModel)
+        }
         composable("routine-details/{routineId}",
             deepLinks = listOf( navDeepLink {
                 uriPattern="$uri/rutinas?id={routineId}"
@@ -50,7 +52,14 @@ fun MyNavGraph(navController: NavHostController, viewModel: MainViewModel) {
             MyRoutineDetailScreen(
                 routineId = navController.currentBackStackEntry?.arguments?.getInt("routineId") ?: -1,
                 viewModel = viewModel
-            )
+            ) { route ->
+                navController.navigate(route) {
+                    launchSingleTop = true
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                }
+            }
         }
     }
 }

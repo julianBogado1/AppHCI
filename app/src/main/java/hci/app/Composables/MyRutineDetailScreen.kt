@@ -24,7 +24,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import hci.app.R
 import hci.app.data.network.model.NetworkCycleExercises
 import hci.app.ui.main.MainViewModel
 import hci.app.ui.main.copyLinkToClipboard
@@ -33,7 +35,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 @Composable
-fun MyRoutineDetailScreen(viewModel: MainViewModel, routineId: Int) {
+fun MyRoutineDetailScreen(viewModel: MainViewModel, routineId: Int, onNavigateToExec: (String) -> Unit) {
     val isTabletState = rememberUpdatedState(LocalConfiguration.current.screenWidthDp >= 600)
     val isTablet = isTabletState.value
     val exercisesMap = remember { mutableStateMapOf<Int, NetworkCycleExercises>() }
@@ -59,14 +61,14 @@ fun MyRoutineDetailScreen(viewModel: MainViewModel, routineId: Int) {
     }
 
     if (isTablet) {
-        TabletRutineDetailLayout(viewModel = viewModel, routineId = routineId, exercisesMap = exercisesMap, context = context)
+        TabletRutineDetailLayout(viewModel = viewModel, routineId = routineId, exercisesMap = exercisesMap, context = context, onNavigateToExec = onNavigateToExec)
     } else {
-        PhoneRutineDetailLayout(viewModel = viewModel, routineId = routineId, exercisesMap = exercisesMap, context = context)
+        PhoneRutineDetailLayout(viewModel = viewModel, routineId = routineId, exercisesMap = exercisesMap, context = context, onNavigateToExec = onNavigateToExec)
     }
 }
 
 @Composable
-fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesMap: MutableMap<Int, NetworkCycleExercises>, context: Context) {
+fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesMap: MutableMap<Int, NetworkCycleExercises>, context: Context, onNavigateToExec: (String) -> Unit) {
 
     LazyColumn(
         modifier = Modifier
@@ -317,11 +319,23 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
 
             item{
                 Spacer(modifier = Modifier.height(8.dp))
+            }
 
-                Divider(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.Gray))
+            item {
+                Row {
+                    Button(
+                        modifier = Modifier
+                            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                        onClick = {onNavigateToExec("routine-exec1/${viewModel.uiState.oneRoutine?.id}")},
+                        colors = ButtonDefaults.buttonColors(Color(0xFF000000))
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.next),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
         }
     }
@@ -329,8 +343,7 @@ fun PhoneRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesM
 
 @SuppressLint("SimpleDateFormat")
 @Composable
-fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesMap: MutableMap<Int, NetworkCycleExercises>, context: Context) {
-
+fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercisesMap: MutableMap<Int, NetworkCycleExercises>, context: Context, onNavigateToExec: (String) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -588,6 +601,22 @@ fun TabletRutineDetailLayout(viewModel: MainViewModel, routineId: Int, exercises
                                 }
                             }
                         }
+                    }
+                }
+            }
+            item {
+                Row {
+                    Button(
+                        modifier = Modifier
+                            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                        onClick = {onNavigateToExec("routine-exec1/${viewModel.uiState.oneRoutine?.id}")},
+                        colors = ButtonDefaults.buttonColors(Color(0xFF000000))
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.next),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }

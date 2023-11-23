@@ -1,6 +1,5 @@
 package hci.app.Composables
 
-import android.content.ClipData.Item
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,7 +25,6 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberUpdatedState
@@ -39,7 +37,7 @@ import hci.app.ui.main.Rutina
 
 
 @Composable
-fun MyRutineExecScreen1(rutina: Rutina, viewModel: MainViewModel) {
+fun MyRutineExecScreen1(rutina: Rutina?, viewModel: MainViewModel) {
     val ejIndexState by viewModel.ejIndexState
     val cicleIndexState by viewModel.cicleIndexState
 
